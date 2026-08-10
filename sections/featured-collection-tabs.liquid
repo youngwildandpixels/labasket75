@@ -88,33 +88,21 @@
 .featured-tabs__nav {
   display: flex;
   justify-content: center;
-  gap: var(--space-2);
-  flex-wrap: wrap;
+  gap: var(--space-6);
 }
 
 .ftab {
-  font-size: clamp(14px, 1.6vw, 18px);
-  font-weight: var(--font-weight-black);
-  color: var(--color-gray-500);
-  background: var(--color-surface);
-  border: 1px solid rgba(17, 19, 17, 0.14);
-  border-radius: 8px;
-  padding: 12px 16px;
+  font-size: clamp(20px, 2.5vw, 28px);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-gray-300);
+  background: none;
+  border: none;
+  padding: 0;
   cursor: pointer;
-  transition: color 0.15s, background 0.15s, border-color 0.15s, transform 0.15s;
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
+  transition: color 0.15s;
+  letter-spacing: -0.5px;
 }
-.ftab:hover {
-  color: var(--color-black);
-  border-color: var(--color-black);
-}
-.ftab--active {
-  color: var(--color-black);
-  background: var(--color-promo);
-  border-color: var(--color-black);
-  transform: translateY(-1px);
-}
+.ftab--active { color: var(--color-black); }
 
 /* Panel */
 .ftab-panel { display: block; }
@@ -139,7 +127,7 @@
 /* Items — ligne horizontale, gap léger, pas de séparateur foncé */
 .slider-items {
   display: flex;
-  gap: var(--space-3);
+  gap: var(--space-1);
   transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform;
 }
@@ -173,9 +161,9 @@
   z-index: 2;
   width: 40px;
   height: 40px;
-  background: var(--color-surface);
-  border: 1px solid rgba(17, 19, 17, 0.16);
-  border-radius: 8px;
+  background: var(--color-white);
+  border: 0.5px solid var(--color-gray-200);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -184,7 +172,7 @@
   transition: background 0.15s, opacity 0.15s;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
-.slider-arrow:hover { background: var(--color-promo); color: var(--color-black); opacity: 1; border-color: var(--color-black); }
+.slider-arrow:hover { background: var(--color-black); color: var(--color-white); opacity: 1; }
 .slider-arrow:disabled { opacity: 0.25; cursor: default; }
 .slider-arrow--prev { left: var(--space-4); }
 .slider-arrow--next { right: var(--space-4); }
@@ -198,16 +186,16 @@
 
 .slider-progress-bar {
   width: 120px;
-  height: 4px;
+  height: 2px;
   background: var(--color-gray-200);
-  border-radius: 9999px;
+  border-radius: 1px;
   overflow: hidden;
 }
 
 .slider-progress-fill {
   height: 100%;
-  background: var(--color-promo);
-  border-radius: 9999px;
+  background: var(--color-black);
+  border-radius: 1px;
   transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   width: 25%;
 }

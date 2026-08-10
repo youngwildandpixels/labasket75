@@ -168,21 +168,20 @@
 
 .hero__label {
   font-size: var(--font-size-small);
-  font-weight: var(--font-weight-black);
-  letter-spacing: 0.8px;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--color-promo);
+  color: var(--color-white);
 }
 
 .hero__title {
-  font-size: clamp(36px, 7vw, 92px);
-  font-weight: var(--font-weight-black);
-  line-height: 0.94;
-  letter-spacing: 0;
+  font-size: clamp(32px, 6vw, 72px);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.0;
+  letter-spacing: -1px;
   color: var(--color-white);
   text-transform: uppercase;
   margin: 0;
-  text-wrap: balance;
 }
 
 .hero__cta-wrap { margin-top: var(--space-2); }
@@ -190,25 +189,18 @@
 .hero__cta {
   display: inline-flex;
   align-items: center;
-  background: var(--color-promo);
-  color: var(--color-black);
-  border: 1.5px solid var(--color-promo);
-  border-radius: 8px;
-  font-size: var(--font-size-small);
-  font-weight: var(--font-weight-black);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  padding: 14px 30px;
-  box-shadow: 5px 5px 0 rgba(255, 255, 255, 0.28);
-  transition: background 0.2s, color 0.2s, transform 0.18s ease, box-shadow 0.18s ease;
-}
-.hero__cta:hover {
   background: var(--color-white);
   color: var(--color-black);
-  opacity: 1;
-  transform: translate(-2px, -2px);
-  box-shadow: 7px 7px 0 rgba(255, 255, 255, 0.22);
+  border: 1.5px solid var(--color-white);
+  border-radius: 9999px;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 12px 32px;
+  transition: background 0.2s, color 0.2s;
 }
+.hero__cta:hover { background: transparent; color: var(--color-white); opacity: 1; }
 
 .hero__dots {
   position: absolute;
@@ -221,15 +213,15 @@
 }
 
 .hero__dot {
-  width: 22px;
+  width: 6px;
   height: 6px;
-  border-radius: 9999px;
+  border-radius: 50%;
   background: rgba(255,255,255,0.45);
   transition: background 0.2s;
   padding: 0;
 }
 .hero__dot--active,
-.hero__dot:hover { background: var(--color-promo); }
+.hero__dot:hover { background: var(--color-white); }
 
 @media (max-width: 768px) {
   .hero { min-height: 80vh; }
