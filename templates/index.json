@@ -1,0 +1,154 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-slideshow",
+      "blocks": {
+        "slide_1": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Campagne_ADS_2.webp",
+            "label": "Nouvelle collection",
+            "title": "DÉCOUVREZ LA SÉLECTION",
+            "cta_link": "\/collections\/all",
+            "cta_label": "DÉCOUVRIR",
+            "vertical_position": "top",
+            "horizontal_align": "left",
+            "overlay_opacity": 30
+          }
+        }
+      },
+      "block_order": [
+        "slide_1"
+      ],
+      "settings": {
+        "autoplay_delay": 5
+      }
+    },
+    "featured_tabs": {
+      "type": "featured-collection-tabs",
+      "settings": {
+        "tab_1_label": "Bestsellers",
+        "collection_1": "sneakers",
+        "tab_2_label": "Nouveautés",
+        "collection_2": "sneakers",
+        "products_to_show": 4
+      }
+    },
+    "brand_banners": {
+      "type": "brand-banners",
+      "blocks": {
+        "brand_1": {
+          "type": "brand",
+          "settings": {
+            "brand_name": "Salomon",
+            "cta_label": "Découvrir",
+            "link": ""
+          }
+        },
+        "brand_2": {
+          "type": "brand",
+          "settings": {
+            "brand_name": "Birkenstock",
+            "cta_label": "Découvrir",
+            "link": ""
+          }
+        },
+        "brand_3": {
+          "type": "brand",
+          "settings": {
+            "brand_name": "Nike",
+            "cta_label": "Découvrir",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "brand_1",
+        "brand_2",
+        "brand_3"
+      ],
+      "settings": {}
+    },
+    "brand_story": {
+      "type": "brand-story",
+      "settings": {
+        "label": "Notre histoire",
+        "title": "The Last Step",
+        "text": "<p>Depuis 2010, The Last Step sélectionne les meilleures sneakers pour vous.<\/p>",
+        "cta_label": "En savoir plus",
+        "cta_link": "\/pages\/about"
+      }
+    },
+    "product_mosaic_igerER": {
+      "type": "product-mosaic",
+      "name": "Product Mosaic",
+      "settings": {
+        "heading": "SLIDES",
+        "collection": "sneakers",
+        "products_to_show": 24
+      }
+    },
+    "trust_bar": {
+      "type": "trust-bar",
+      "blocks": {
+        "item_1": {
+          "type": "item",
+          "settings": {
+            "icon": "store",
+            "title": "Click & Collect",
+            "subtitle": "Disponible en boutique"
+          }
+        },
+        "item_2": {
+          "type": "item",
+          "settings": {
+            "icon": "badge",
+            "title": "100% Authentiques",
+            "subtitle": "Produits garantis originaux"
+          }
+        },
+        "item_3": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Livraison rapide",
+            "subtitle": "24\/48h en France"
+          }
+        },
+        "item_4": {
+          "type": "item",
+          "settings": {
+            "icon": "headphones",
+            "title": "SAV réactif",
+            "subtitle": "Une question ? On répond"
+          }
+        }
+      },
+      "block_order": [
+        "item_1",
+        "item_2",
+        "item_3",
+        "item_4"
+      ],
+      "settings": {}
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "title": "Restez informé",
+        "subtitle": "Nouveautés, offres exclusives, actualités sneakers.",
+        "placeholder": "Votre adresse email",
+        "button_label": "S'inscrire"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "featured_tabs",
+    "brand_banners",
+    "brand_story",
+    "product_mosaic_igerER",
+    "trust_bar",
+    "newsletter"
+  ]
+}

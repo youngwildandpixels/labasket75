@@ -1,0 +1,385 @@
+{%- comment -%} Hero Slideshow — fullwidth, image + CTA avec positionnement libre {%- endcomment -%}
+
+<section class="hero">
+  <div class="hero__track">
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign v = block.settings.vertical_position
+        assign h = block.settings.horizontal_align
+        assign mv = block.settings.mobile_vertical_position | default: v
+        assign mh = block.settings.mobile_horizontal_align | default: h
+        assign content_class = 'hero__content hero__content--v-' | append: v | append: ' hero__content--h-' | append: h | append: ' hero__content--mv-' | append: mv | append: ' hero__content--mh-' | append: mh
+        assign overlay_style = block.settings.overlay_style | default: 'solid'
+        assign mobile_overlay_style = block.settings.mobile_overlay_style | default: overlay_style
+        assign overlay_class = 'hero__overlay hero__overlay--' | append: overlay_style | append: ' hero__overlay--m-' | append: mobile_overlay_style
+        assign overlay_opacity = block.settings.overlay_opacity | divided_by: 100.0
+        assign mobile_overlay_opacity = block.settings.mobile_overlay_opacity | divided_by: 100.0
+      -%}
+      <div class="hero__slide{% if forloop.first %} hero__slide--active{% endif %}" {{ block.shopify_attributes }}>
+        {%- if block.settings.image != blank or block.settings.image_mobile != blank -%}
+          {%- liquid
+            assign desktop_image = block.settings.image
+            assign mobile_image = block.settings.image_mobile
+            assign fallback_image = desktop_image | default: mobile_image
+          -%}
+          <picture>
+            {%- if mobile_image != blank -%}
+              <source
+                media="(max-width: 768px)"
+                srcset="{{ mobile_image | image_url: width: 480 }} 480w, {{ mobile_image | image_url: width: 768 }} 768w, {{ mobile_image | image_url: width: 960 }} 960w"
+                sizes="100vw"
+              >
+            {%- endif -%}
+            <img
+              src="{{ fallback_image | image_url: width: 1920 }}"
+              srcset="{{ fallback_image | image_url: width: 768 }} 768w, {{ fallback_image | image_url: width: 1440 }} 1440w, {{ fallback_image | image_url: width: 1920 }} 1920w"
+              sizes="100vw"
+              alt="{{ fallback_image.alt | escape }}"
+              loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+              width="1920"
+              height="1080"
+              class="hero__img"
+            >
+          </picture>
+        {%- else -%}
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'hero__img hero__img--placeholder' }}
+        {%- endif -%}
+
+        <div class="{{ overlay_class }}" style="--hero-overlay-opacity: {{ overlay_opacity }}; --hero-overlay-mobile-opacity: {{ mobile_overlay_opacity }};"></div>
+
+        <div class="{{ content_class }}">
+          <div class="hero__text-block">
+            {%- if block.settings.label != blank -%}
+              <p class="hero__label">{{ block.settings.label }}</p>
+            {%- endif -%}
+            {%- if block.settings.title != blank -%}
+              <h2 class="hero__title">{{ block.settings.title }}</h2>
+            {%- endif -%}
+            {%- if block.settings.cta_label != blank -%}
+              <div class="hero__cta-wrap">
+                <a href="{{ block.settings.cta_link | default: routes.all_products_collection_url }}" class="hero__cta">
+                  {{ block.settings.cta_label }}
+                </a>
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+
+  {%- if section.blocks.size > 1 -%}
+    <div class="hero__dots" aria-label="Navigation slides">
+      {%- for block in section.blocks -%}
+        <button class="hero__dot{% if forloop.first %} hero__dot--active{% endif %}" data-index="{{ forloop.index0 }}" aria-label="Slide {{ forloop.index }}"></button>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+.hero {
+  position: relative;
+  width: 100%;
+  min-height: 80vh;
+  overflow: hidden;
+  background: var(--color-black);
+}
+
+.hero__track { width: 100%; height: 100%; }
+
+.hero__slide {
+  display: none;
+  position: absolute;
+  inset: 0;
+}
+.hero__slide--active { display: block; }
+
+.hero__slide picture,
+.hero__img,
+.hero__img--placeholder {
+  position: relative;
+  z-index: 0;
+}
+
+.hero__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hero__slide picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.hero__img--placeholder {
+  width: 100%;
+  height: 100%;
+  background: var(--color-gray-100);
+}
+
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: var(--hero-overlay-opacity);
+}
+
+.hero__overlay--none { background: transparent; }
+.hero__overlay--solid { background: #000; }
+.hero__overlay--gradient-top { background: linear-gradient(180deg, #000 0%, rgba(0,0,0,0) 100%); }
+.hero__overlay--gradient-bottom { background: linear-gradient(0deg, #000 0%, rgba(0,0,0,0) 100%); }
+.hero__overlay--gradient-left { background: linear-gradient(90deg, #000 0%, rgba(0,0,0,0) 100%); }
+.hero__overlay--gradient-right { background: linear-gradient(270deg, #000 0%, rgba(0,0,0,0) 100%); }
+
+/* Conteneur de positionnement — grille 3×3 */
+.hero__content {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  padding: 60px;
+}
+
+/* Vertical */
+.hero__content--v-top    { align-items: flex-start; }
+.hero__content--v-center { align-items: center; }
+.hero__content--v-bottom { align-items: flex-end; }
+
+/* Horizontal */
+.hero__content--h-left   { justify-content: flex-start; }
+.hero__content--h-center { justify-content: center; }
+.hero__content--h-right  { justify-content: flex-end; }
+
+/* Bloc texte — adapte son alignement selon la position horizontale */
+.hero__text-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 640px;
+}
+
+.hero__content--h-left   .hero__text-block { align-items: flex-start; text-align: left; }
+.hero__content--h-center .hero__text-block { align-items: center;     text-align: center; }
+.hero__content--h-right  .hero__text-block { align-items: flex-end;   text-align: right; }
+
+.hero__label {
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-black);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--color-promo);
+}
+
+.hero__title {
+  font-size: clamp(36px, 7vw, 92px);
+  font-weight: var(--font-weight-black);
+  line-height: 0.94;
+  letter-spacing: 0;
+  color: var(--color-white);
+  text-transform: uppercase;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.hero__cta-wrap { margin-top: var(--space-2); }
+
+.hero__cta {
+  display: inline-flex;
+  align-items: center;
+  background: var(--color-promo);
+  color: var(--color-black);
+  border: 1.5px solid var(--color-promo);
+  border-radius: 8px;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-black);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 14px 30px;
+  box-shadow: 5px 5px 0 rgba(255, 255, 255, 0.28);
+  transition: background 0.2s, color 0.2s, transform 0.18s ease, box-shadow 0.18s ease;
+}
+.hero__cta:hover {
+  background: var(--color-white);
+  color: var(--color-black);
+  opacity: 1;
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 rgba(255, 255, 255, 0.22);
+}
+
+.hero__dots {
+  position: absolute;
+  bottom: var(--space-6);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: var(--space-2);
+  z-index: 2;
+}
+
+.hero__dot {
+  width: 22px;
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(255,255,255,0.45);
+  transition: background 0.2s;
+  padding: 0;
+}
+.hero__dot--active,
+.hero__dot:hover { background: var(--color-promo); }
+
+@media (max-width: 768px) {
+  .hero { min-height: 80vh; }
+  .hero__content { padding: var(--space-6); }
+  .hero__title { font-size: clamp(24px, 8vw, 40px); }
+  .hero__text-block { max-width: 100%; }
+  .hero__overlay { opacity: var(--hero-overlay-mobile-opacity); }
+
+  .hero__overlay--m-none { background: transparent; }
+  .hero__overlay--m-solid { background: #000; }
+  .hero__overlay--m-gradient-top { background: linear-gradient(180deg, #000 0%, rgba(0,0,0,0) 100%); }
+  .hero__overlay--m-gradient-bottom { background: linear-gradient(0deg, #000 0%, rgba(0,0,0,0) 100%); }
+  .hero__overlay--m-gradient-left { background: linear-gradient(90deg, #000 0%, rgba(0,0,0,0) 100%); }
+  .hero__overlay--m-gradient-right { background: linear-gradient(270deg, #000 0%, rgba(0,0,0,0) 100%); }
+
+  .hero__content--mv-top    { align-items: flex-start; }
+  .hero__content--mv-center { align-items: center; }
+  .hero__content--mv-bottom { align-items: flex-end; }
+
+  .hero__content--mh-left   { justify-content: flex-start; }
+  .hero__content--mh-center { justify-content: center; }
+  .hero__content--mh-right  { justify-content: flex-end; }
+
+  .hero__content--mh-left   .hero__text-block { align-items: flex-start; text-align: left; }
+  .hero__content--mh-center .hero__text-block { align-items: center;     text-align: center; }
+  .hero__content--mh-right  .hero__text-block { align-items: flex-end;   text-align: right; }
+
+  .hero__content--mv-top {
+    padding-top: max(var(--space-6), 15vh);
+  }
+}
+{% endstylesheet %}
+
+<script>
+(function () {
+  var section = document.querySelector('.hero');
+  if (!section) return;
+  var slides = section.querySelectorAll('.hero__slide');
+  var dots   = section.querySelectorAll('.hero__dot');
+  if (slides.length <= 1) return;
+  var current = 0;
+  function goTo(i) {
+    slides[current].classList.remove('hero__slide--active');
+    dots[current].classList.remove('hero__dot--active');
+    current = i;
+    slides[current].classList.add('hero__slide--active');
+    dots[current].classList.add('hero__dot--active');
+  }
+  dots.forEach(function(dot) {
+    dot.addEventListener('click', function() { goTo(Number(dot.dataset.index)); });
+  });
+  setInterval(function() { goTo((current + 1) % slides.length); }, {{ section.settings.autoplay_delay | times: 1000 }});
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Hero Slideshow",
+  "tag": "section",
+  "settings": [
+    { "type": "range", "id": "autoplay_delay","label": "Délai autoplay (s)", "min": 3, "max": 10, "step": 1, "default": 5 }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        { "type": "image_picker", "id": "image",   "label": "Image desktop" },
+        { "type": "image_picker", "id": "image_mobile", "label": "Image mobile" },
+        { "type": "text",         "id": "label",   "label": "Sous-titre",  "default": "Nouvelle collection" },
+        { "type": "text",         "id": "title",   "label": "Titre",       "default": "DÉCOUVREZ LA SÉLECTION" },
+        { "type": "url",          "id": "cta_link","label": "Lien CTA" },
+        { "type": "text",         "id": "cta_label","label": "Texte CTA",  "default": "DÉCOUVRIR" },
+        {
+          "type": "select",
+          "id": "vertical_position",
+          "label": "Position verticale",
+          "options": [
+            { "value": "top",    "label": "Haut" },
+            { "value": "center", "label": "Milieu" },
+            { "value": "bottom", "label": "Bas" }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "select",
+          "id": "horizontal_align",
+          "label": "Alignement horizontal",
+          "options": [
+            { "value": "left",   "label": "Gauche" },
+            { "value": "center", "label": "Centre" },
+            { "value": "right",  "label": "Droite" }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "select",
+          "id": "mobile_vertical_position",
+          "label": "Position verticale mobile",
+          "options": [
+            { "value": "top",    "label": "Haut" },
+            { "value": "center", "label": "Milieu" },
+            { "value": "bottom", "label": "Bas" }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "select",
+          "id": "mobile_horizontal_align",
+          "label": "Alignement horizontal mobile",
+          "options": [
+            { "value": "left",   "label": "Gauche" },
+            { "value": "center", "label": "Centre" },
+            { "value": "right",  "label": "Droite" }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "select",
+          "id": "overlay_style",
+          "label": "Overlay desktop",
+          "options": [
+            { "value": "solid", "label": "Complet" },
+            { "value": "gradient-top", "label": "Dégradé haut vers bas" },
+            { "value": "gradient-bottom", "label": "Dégradé bas vers haut" },
+            { "value": "gradient-left", "label": "Dégradé gauche vers droite" },
+            { "value": "gradient-right", "label": "Dégradé droite vers gauche" },
+            { "value": "none", "label": "Aucun" }
+          ],
+          "default": "solid"
+        },
+        { "type": "range", "id": "overlay_opacity", "label": "Opacité overlay desktop (%)", "min": 0, "max": 70, "step": 5, "default": 30 },
+        {
+          "type": "select",
+          "id": "mobile_overlay_style",
+          "label": "Overlay mobile",
+          "options": [
+            { "value": "solid", "label": "Complet" },
+            { "value": "gradient-top", "label": "Dégradé haut vers bas" },
+            { "value": "gradient-bottom", "label": "Dégradé bas vers haut" },
+            { "value": "gradient-left", "label": "Dégradé gauche vers droite" },
+            { "value": "gradient-right", "label": "Dégradé droite vers gauche" },
+            { "value": "none", "label": "Aucun" }
+          ],
+          "default": "solid"
+        },
+        { "type": "range", "id": "mobile_overlay_opacity", "label": "Opacité overlay mobile (%)", "min": 0, "max": 70, "step": 5, "default": 30 }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Hero Slideshow", "blocks": [{ "type": "slide" }] }]
+}
+{% endschema %}

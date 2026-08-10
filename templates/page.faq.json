@@ -1,0 +1,78 @@
+{
+  "sections": {
+    "faq": {
+      "type": "page-faq",
+      "blocks": {
+        "authenticite": {
+          "type": "question",
+          "settings": {
+            "category": "Authenticité",
+            "question": "Les produits vendus chez Kozy Sneakers sont-ils authentiques ?",
+            "answer": "<p>Oui. Chaque produit est contrôlé avant d'être proposé à la vente.<\/p>"
+          }
+        },
+        "expedition_delais": {
+          "type": "question",
+          "settings": {
+            "category": "Expédition & livraison",
+            "question": "Quels sont les délais d'expédition d'un produit ?",
+            "answer": "<p>Les commandes sont préparées avec soin avant expédition. Le délai peut varier selon le produit et le transporteur sélectionné.<\/p>"
+          }
+        },
+        "expedition_pays": {
+          "type": "question",
+          "settings": {
+            "category": "Expédition & livraison",
+            "question": "Dans quels pays livrez-vous ?",
+            "answer": "<p>Kozy Sneakers livre en France et dans les zones disponibles au moment du checkout.<\/p>"
+          }
+        },
+        "expedition_modes": {
+          "type": "question",
+          "settings": {
+            "category": "Expédition & livraison",
+            "question": "Quels modes de livraison proposez-vous ?",
+            "answer": "<p>Les modes de livraison disponibles sont affichés au checkout selon l'adresse renseignée.<\/p>"
+          }
+        },
+        "expedition_livraison": {
+          "type": "question",
+          "settings": {
+            "category": "Expédition & livraison",
+            "question": "Quels sont les délais de livraison ?",
+            "answer": "<p>Les délais de livraison dépendent du transporteur choisi et de la destination.<\/p>"
+          }
+        },
+        "expedition_reception": {
+          "type": "question",
+          "settings": {
+            "category": "Expédition & livraison",
+            "question": "Quand vais-je recevoir ma commande ?",
+            "answer": "<p>Une fois la commande expédiée, tu reçois les informations de suivi disponibles.<\/p>"
+          }
+        },
+        "expedition_prix": {
+          "type": "question",
+          "settings": {
+            "category": "Expédition & livraison",
+            "question": "Quels sont les prix de livraison ?",
+            "answer": "<p>Les frais de livraison sont calculés et affichés au checkout avant validation de la commande.<\/p>"
+          }
+        }
+      },
+      "block_order": [
+        "authenticite",
+        "expedition_delais",
+        "expedition_pays",
+        "expedition_modes",
+        "expedition_livraison",
+        "expedition_reception",
+        "expedition_prix"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "faq"
+  ]
+}

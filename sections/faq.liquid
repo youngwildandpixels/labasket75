@@ -1,0 +1,148 @@
+{%- comment -%}
+  FAQ — Questions fréquentes (titre + CTA gauche, accordéons droite)
+{%- endcomment -%}
+
+<section class="faq">
+  <div class="faq__layout container">
+    <div class="faq__head">
+      <h2 class="faq__title">{{ section.settings.heading | default: 'Questions fréquentes' }}</h2>
+      {%- if section.settings.cta_label != blank -%}
+        <a href="{{ section.settings.cta_link | default: '#' }}" class="faq__cta">{{ section.settings.cta_label }}</a>
+      {%- endif -%}
+    </div>
+
+    <div class="faq__list">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'qa' -%}
+          <details class="faq-item" {{ block.shopify_attributes }}>
+            <summary class="faq-item__summary">
+              <span>{{ block.settings.question }}</span>
+              <span class="faq-item__icon" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </span>
+            </summary>
+            <div class="faq-item__content">{{ block.settings.answer }}</div>
+          </details>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.faq {
+  padding: var(--space-12) 0;
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.faq__layout {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: var(--space-12);
+  align-items: flex-start;
+}
+
+.faq__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  align-items: flex-start;
+}
+
+.faq__title {
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  letter-spacing: -1.5px;
+  margin: 0;
+}
+
+.faq__cta {
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid var(--color-black);
+  border-radius: 9999px;
+  padding: 10px 24px;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+  transition: background 0.15s, color 0.15s;
+}
+.faq__cta:hover {
+  background: var(--color-black);
+  color: var(--color-white);
+  opacity: 1;
+}
+
+.faq__list {
+  display: flex;
+  flex-direction: column;
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--color-gray-200);
+}
+.faq-item:first-child { border-top: 1px solid var(--color-gray-200); }
+
+.faq-item__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5) 0;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-body);
+  cursor: pointer;
+  list-style: none;
+  gap: var(--space-4);
+}
+.faq-item__summary::-webkit-details-marker { display: none; }
+
+.faq-item__icon { display: flex; transition: transform 0.2s; flex-shrink: 0; }
+.faq-item[open] .faq-item__icon { transform: rotate(180deg); }
+
+.faq-item__content {
+  padding: 0 0 var(--space-5);
+  color: var(--color-gray-700);
+  font-size: var(--font-size-small);
+  line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+  .faq { padding: var(--space-8) 0; }
+  .faq__layout { grid-template-columns: 1fr; gap: var(--space-6); }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAQ",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading",   "label": "Titre",        "default": "Questions fréquentes" },
+    { "type": "text", "id": "cta_label", "label": "Texte du CTA", "default": "Voir la FAQ" },
+    { "type": "url",  "id": "cta_link",  "label": "Lien du CTA" }
+  ],
+  "blocks": [
+    {
+      "type": "qa",
+      "name": "Question / Réponse",
+      "settings": [
+        { "type": "text",     "id": "question", "label": "Question", "default": "Vos produits sont-ils neufs et authentiques ?" },
+        { "type": "richtext", "id": "answer",   "label": "Réponse",  "default": "<p>Oui. Tous nos produits sont neufs et inspectés par nos experts.</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ",
+      "blocks": [
+        { "type": "qa", "settings": { "question": "Vos produits sont-ils neufs et authentiques ?" } },
+        { "type": "qa", "settings": { "question": "Vos produits sont-ils en stock ?" } },
+        { "type": "qa", "settings": { "question": "Quels modes de livraison utilisez-vous ?" } },
+        { "type": "qa", "settings": { "question": "Quand recevrai-je ma commande ?" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

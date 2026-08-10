@@ -1,0 +1,498 @@
+{%- comment -%} Page Cleaning Service — page nettoyage sneakers {%- endcomment -%}
+
+<section class="cleaning-page" id="cleaning-page-{{ section.id }}">
+  <div class="cleaning-page__hero container">
+    <div class="cleaning-page__hero-copy">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="cleaning-page__eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      <h1 class="cleaning-page__title">{{ section.settings.title | default: 'Nettoyage sneakers' }}</h1>
+      {%- if section.settings.intro != blank -%}
+        <div class="cleaning-page__intro">{{ section.settings.intro }}</div>
+      {%- endif -%}
+      <div class="cleaning-page__actions">
+        {%- if section.settings.primary_cta_label != blank -%}
+          <a href="{{ section.settings.primary_cta_link | default: routes.root_url }}" class="btn btn--primary">
+            {{ section.settings.primary_cta_label }}
+          </a>
+        {%- endif -%}
+        {%- if section.settings.secondary_cta_label != blank -%}
+          <a href="{{ section.settings.secondary_cta_link | default: '#cleaning-pricing-' | append: section.id }}" class="btn btn--secondary">
+            {{ section.settings.secondary_cta_label }}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+
+  </div>
+
+  <div class="cleaning-flow container">
+    <div class="cleaning-flow__item">
+      <span>01</span>
+      <strong>Diagnostic</strong>
+      <p>On vérifie la matière, l’état et les zones sensibles avant intervention.</p>
+    </div>
+    <div class="cleaning-flow__item">
+      <span>02</span>
+      <strong>Soin adapté</strong>
+      <p>Nettoyage à la main selon le cuir, le mesh, le daim, le nubuck ou les matières spécifiques.</p>
+    </div>
+    <div class="cleaning-flow__item">
+      <span>03</span>
+      <strong>Finition propre</strong>
+      <p>Contrôle final, séchage et récupération en boutique quand la paire est prête.</p>
+    </div>
+  </div>
+
+  <div class="cleaning-pricing container" id="cleaning-pricing-{{ section.id }}">
+    <div class="cleaning-pricing__head">
+      <p class="cleaning-page__eyebrow">Grille tarifaire</p>
+      <h2>Des tarifs clairs, un soin précis.</h2>
+      <p>Chaque service est choisi après diagnostic en boutique. Les suppléments ne s’appliquent que si la paire le nécessite.</p>
+    </div>
+
+    <div class="cleaning-pricing__grid">
+      <article class="cleaning-price-card cleaning-price-card--featured">
+        <div class="cleaning-price-card__top">
+          <span>Sneakers</span>
+          <h3>Entretien de la paire</h3>
+        </div>
+        <ul>
+          <li>
+            <span>Clean classique <small>mesh / tissu / cuir</small></span>
+            <strong>30€</strong>
+          </li>
+          <li>
+            <span>Clean premium <small>daim / nubuck</small></span>
+            <strong>35€</strong>
+          </li>
+          <li>
+            <span>Retouche couleur / déjaunissement semelle</span>
+            <strong>+10€</strong>
+          </li>
+        </ul>
+      </article>
+
+      <article class="cleaning-price-card">
+        <div class="cleaning-price-card__top">
+          <span>Sacs</span>
+          <h3>Entretien maroquinerie</h3>
+        </div>
+        <ul>
+          <li>
+            <span>Clean sacoche</span>
+            <strong>30€</strong>
+          </li>
+          <li>
+            <span>Clean sac en cuir</span>
+            <strong>40€</strong>
+          </li>
+          <li>
+            <span>Matière spécifique</span>
+            <strong>50€</strong>
+          </li>
+        </ul>
+      </article>
+
+      <article class="cleaning-price-card">
+        <div class="cleaning-price-card__top">
+          <span>Accessoires</span>
+          <h3>Finitions et protection</h3>
+        </div>
+        <ul>
+          <li>
+            <span>Imperméabilisant</span>
+            <strong>10€</strong>
+          </li>
+          <li>
+            <span>Embauchoir</span>
+            <strong>10€</strong>
+          </li>
+          <li>
+            <span>Lacets</span>
+            <strong>10€</strong>
+          </li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.cleaning-page {
+  background: var(--color-white);
+  color: var(--color-black);
+}
+
+.cleaning-page__hero {
+  display: block;
+  padding-top: var(--space-20);
+  padding-bottom: var(--space-12);
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.cleaning-page__hero-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 360px;
+}
+
+.cleaning-page__eyebrow {
+  color: var(--color-gray-500);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 1.7px;
+  margin: 0 0 var(--space-4);
+  text-transform: uppercase;
+}
+
+.cleaning-page__title {
+  max-width: 860px;
+  font-size: clamp(40px, 6vw, 86px);
+  font-weight: var(--font-weight-bold);
+  line-height: 0.96;
+  letter-spacing: -1px;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.cleaning-page__intro {
+  max-width: 560px;
+  color: var(--color-gray-700);
+  font-size: 16px;
+  line-height: 1.55;
+  margin-top: var(--space-6);
+}
+
+.cleaning-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.cleaning-flow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.cleaning-flow__item {
+  min-height: 190px;
+  padding: var(--space-8) var(--space-8) var(--space-8) 0;
+  border-right: 1px solid var(--color-gray-200);
+}
+
+.cleaning-flow__item + .cleaning-flow__item {
+  padding-left: var(--space-8);
+}
+
+.cleaning-flow__item:last-child {
+  border-right: 0;
+}
+
+.cleaning-flow__item span {
+  display: block;
+  color: var(--color-gray-500);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 1.4px;
+  margin-bottom: var(--space-6);
+  text-transform: uppercase;
+}
+
+.cleaning-flow__item strong {
+  display: block;
+  font-size: clamp(20px, 2vw, 28px);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.05;
+  margin-bottom: var(--space-3);
+  text-transform: uppercase;
+}
+
+.cleaning-flow__item p {
+  max-width: 340px;
+  color: var(--color-gray-700);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.cleaning-pricing {
+  padding-top: var(--space-20);
+  padding-bottom: var(--space-20);
+}
+
+.cleaning-pricing__head {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.34fr) minmax(0, 0.9fr) minmax(280px, 0.42fr);
+  gap: var(--space-10);
+  align-items: start;
+  border-top: 1px solid var(--color-black);
+  border-bottom: 1px solid var(--color-gray-200);
+  margin-bottom: 0;
+  padding: var(--space-8) 0;
+}
+
+.cleaning-pricing__head h2 {
+  max-width: 760px;
+  font-size: clamp(34px, 4.6vw, 64px);
+  font-weight: var(--font-weight-bold);
+  line-height: 0.96;
+  letter-spacing: -1px;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.cleaning-pricing__head > p:last-child {
+  color: var(--color-gray-700);
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.cleaning-pricing__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-black);
+  border-left: 1px solid var(--color-black);
+  border-right: 1px solid var(--color-black);
+}
+
+.cleaning-price-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 460px;
+  background: var(--color-white);
+  border-right: 1px solid var(--color-gray-200);
+  padding: clamp(24px, 3vw, 40px);
+}
+
+.cleaning-price-card:last-child {
+  border-right: 0;
+}
+
+.cleaning-price-card--featured {
+  background: var(--color-black);
+  color: var(--color-white);
+}
+
+.cleaning-price-card__top {
+  min-height: 170px;
+  border-bottom: 1px solid currentColor;
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-6);
+}
+
+.cleaning-price-card__top > span {
+  display: block;
+  color: inherit;
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 1.7px;
+  margin-bottom: var(--space-5);
+  opacity: 0.62;
+  text-transform: uppercase;
+}
+
+.cleaning-price-card h3 {
+  max-width: 390px;
+  font-size: clamp(26px, 2.8vw, 42px);
+  font-weight: var(--font-weight-bold);
+  line-height: 0.98;
+  letter-spacing: -0.3px;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.cleaning-price-card ul {
+  display: grid;
+  gap: 0;
+  margin-top: auto;
+}
+
+.cleaning-price-card li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-6);
+  align-items: baseline;
+  border-bottom: 1px solid var(--color-gray-200);
+  padding: var(--space-5) 0;
+}
+
+.cleaning-price-card--featured li {
+  border-bottom-color: rgba(255, 255, 255, 0.24);
+}
+
+.cleaning-price-card li:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.cleaning-price-card span,
+.cleaning-price-card strong {
+  font-size: clamp(15px, 1.5vw, 18px);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.cleaning-price-card small {
+  display: block;
+  color: inherit;
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
+  margin-top: 4px;
+  opacity: 0.68;
+}
+
+.cleaning-price-card strong {
+  white-space: nowrap;
+  font-size: clamp(18px, 2vw, 26px);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+}
+
+@media (max-width: 1024px) {
+  .cleaning-page__hero-copy {
+    min-height: 320px;
+  }
+
+  .cleaning-pricing__head {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+
+  .cleaning-pricing__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cleaning-price-card {
+    border-right: 0;
+    border-bottom: 1px solid var(--color-gray-200);
+  }
+
+  .cleaning-price-card:last-child {
+    border-bottom: 0;
+  }
+
+  .cleaning-price-card {
+    min-height: auto;
+  }
+
+  .cleaning-price-card__top {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .cleaning-page__hero {
+    padding-top: var(--space-10);
+    padding-bottom: var(--space-10);
+  }
+
+  .cleaning-page__title {
+    font-size: clamp(36px, 12vw, 56px);
+  }
+
+  .cleaning-page__intro {
+    font-size: 16px;
+  }
+
+  .cleaning-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .cleaning-flow__item,
+  .cleaning-flow__item + .cleaning-flow__item {
+    min-height: auto;
+    padding: var(--space-6) 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-gray-200);
+  }
+
+  .cleaning-pricing {
+    padding-top: var(--space-10);
+    padding-bottom: var(--space-12);
+  }
+
+  .cleaning-pricing__head {
+    padding: var(--space-6) 0;
+  }
+
+  .cleaning-pricing__head h2 {
+    font-size: clamp(30px, 9vw, 42px);
+    letter-spacing: -0.4px;
+  }
+
+  .cleaning-price-card {
+    padding: var(--space-6);
+    min-height: 0;
+  }
+
+  .cleaning-price-card li {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+    padding: var(--space-4) 0;
+  }
+
+  .cleaning-price-card strong {
+    white-space: normal;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Page nettoyage",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Petit titre",
+      "default": "Kozy Care"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre",
+      "default": "Nettoyage sneakers"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Introduction",
+      "default": "<p>Redonne vie à tes sneakers, sacs et accessoires avec un entretien adapté aux matières. Dépose en boutique, diagnostic rapide et résultat propre.</p>"
+    },
+    {
+      "type": "text",
+      "id": "primary_cta_label",
+      "label": "Texte bouton principal",
+      "default": "Nous contacter"
+    },
+    {
+      "type": "url",
+      "id": "primary_cta_link",
+      "label": "Lien bouton principal"
+    },
+    {
+      "type": "text",
+      "id": "secondary_cta_label",
+      "label": "Texte bouton secondaire",
+      "default": "Voir les tarifs"
+    },
+    {
+      "type": "url",
+      "id": "secondary_cta_link",
+      "label": "Lien bouton secondaire"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Page nettoyage"
+    }
+  ]
+}
+{% endschema %}

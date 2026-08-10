@@ -1,0 +1,413 @@
+{%- comment -%} Sneaker Cleaning Comparison — slider avant/après nettoyage {%- endcomment -%}
+{%- liquid
+  assign before_image = section.settings.before_image
+  assign after_image = section.settings.after_image
+  assign slider_start = section.settings.slider_start | default: 50
+-%}
+
+<section class="cleaning-compare" id="cleaning-compare-{{ section.id }}">
+  <div class="cleaning-compare__inner container">
+    <div class="cleaning-compare__copy">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="cleaning-compare__eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="cleaning-compare__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="cleaning-compare__text">{{ section.settings.text }}</div>
+      {%- endif -%}
+      {%- if section.settings.cta_label != blank -%}
+        <a href="{{ section.settings.cta_link | default: routes.root_url }}" class="cleaning-compare__cta">
+          {{ section.settings.cta_label }}
+        </a>
+      {%- endif -%}
+    </div>
+
+    <div
+      class="cleaning-compare__stage"
+      data-cleaning-compare
+      style="--compare-position: {{ slider_start }}%;"
+    >
+      <div class="cleaning-compare__media cleaning-compare__media--before">
+        {%- if before_image != blank -%}
+          <img
+            src="{{ before_image | image_url: width: 1800 }}"
+            srcset="{{ before_image | image_url: width: 800 }} 800w, {{ before_image | image_url: width: 1200 }} 1200w, {{ before_image | image_url: width: 1800 }} 1800w"
+            sizes="(max-width: 768px) 100vw, 90vw"
+            alt="{{ section.settings.before_label | escape }}"
+            loading="lazy"
+            width="{{ before_image.width }}"
+            height="{{ before_image.height }}"
+          >
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'cleaning-compare__placeholder' }}
+        {%- endif -%}
+      </div>
+
+      <div class="cleaning-compare__media cleaning-compare__media--after" aria-hidden="true">
+        {%- if after_image != blank -%}
+          <img
+            src="{{ after_image | image_url: width: 1800 }}"
+            srcset="{{ after_image | image_url: width: 800 }} 800w, {{ after_image | image_url: width: 1200 }} 1200w, {{ after_image | image_url: width: 1800 }} 1800w"
+            sizes="(max-width: 768px) 100vw, 90vw"
+            alt="{{ section.settings.after_label | escape }}"
+            loading="lazy"
+            width="{{ after_image.width }}"
+            height="{{ after_image.height }}"
+          >
+        {%- else -%}
+          {{ 'product-2' | placeholder_svg_tag: 'cleaning-compare__placeholder' }}
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.before_label != blank -%}
+        <span class="cleaning-compare__label cleaning-compare__label--before">{{ section.settings.before_label }}</span>
+      {%- endif -%}
+      {%- if section.settings.after_label != blank -%}
+        <span class="cleaning-compare__label cleaning-compare__label--after">{{ section.settings.after_label }}</span>
+      {%- endif -%}
+
+      <div class="cleaning-compare__divider" aria-hidden="true">
+        <span class="cleaning-compare__handle">
+          <span></span><span></span><span></span>
+        </span>
+      </div>
+
+      <input
+        class="cleaning-compare__range"
+        type="range"
+        min="0"
+        max="100"
+        value="{{ slider_start }}"
+        aria-label="Révéler la chaussure propre"
+        data-cleaning-range
+      >
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.cleaning-compare {
+  background: var(--color-white);
+  padding: var(--space-16) 0;
+}
+
+.cleaning-compare__inner {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.cleaning-compare__copy {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.cleaning-compare__eyebrow {
+  color: var(--color-gray-500);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 1.5px;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.cleaning-compare__heading {
+  color: var(--color-black);
+  font-size: clamp(32px, 5vw, 64px);
+  font-weight: var(--font-weight-extrabold);
+  line-height: 0.96;
+  margin: 0;
+}
+
+.cleaning-compare__text {
+  color: var(--color-gray-500);
+  font-size: 17px;
+  line-height: 1.45;
+  margin: 0 auto;
+  max-width: 560px;
+}
+
+.cleaning-compare__cta {
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border: 1.5px solid var(--color-black);
+  border-radius: 9999px;
+  color: var(--color-black);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 1.5px;
+  padding: 0 24px;
+  text-transform: uppercase;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.cleaning-compare__cta:hover {
+  background: var(--color-black);
+  color: var(--color-white);
+  opacity: 1;
+}
+
+.cleaning-compare__stage {
+  position: relative;
+  overflow: hidden;
+  min-height: 360px;
+  aspect-ratio: 16 / 8;
+  background: #fdfffc;
+  cursor: ew-resize;
+  user-select: none;
+}
+
+.cleaning-compare__media,
+.cleaning-compare__media img,
+.cleaning-compare__placeholder {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.cleaning-compare__media img,
+.cleaning-compare__placeholder {
+  display: block;
+  object-fit: contain;
+}
+
+.cleaning-compare__media--after {
+  clip-path: inset(0 calc(100% - var(--compare-position)) 0 0);
+}
+
+.cleaning-compare__label {
+  position: absolute;
+  top: var(--space-6);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  background: rgba(245, 245, 245, 0.92);
+  color: var(--color-gray-500);
+  font-size: 18px;
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  padding: 0 10px;
+}
+
+.cleaning-compare__label--before {
+  left: var(--space-8);
+}
+
+.cleaning-compare__label--after {
+  right: var(--space-8);
+}
+
+.cleaning-compare__divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--compare-position);
+  z-index: 3;
+  width: 2px;
+  background: var(--color-white);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.cleaning-compare__handle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-black);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
+  transform: translate(-50%, -50%);
+}
+
+.cleaning-compare__handle span {
+  display: block;
+  width: 2px;
+  height: 16px;
+  background: currentColor;
+}
+
+.cleaning-compare__range {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  width: 100%;
+  height: 100%;
+  cursor: ew-resize;
+  opacity: 0;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.cleaning-compare__range::-webkit-slider-thumb {
+  width: 62px;
+  height: 62px;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.cleaning-compare__range::-moz-range-thumb {
+  width: 62px;
+  height: 62px;
+  border: 0;
+}
+
+@media (max-width: 768px) {
+  .cleaning-compare {
+    padding: var(--space-10) 0;
+  }
+
+  .cleaning-compare__stage {
+    min-height: 420px;
+    aspect-ratio: 4 / 5;
+  }
+
+  .cleaning-compare__label {
+    top: var(--space-4);
+    font-size: 14px;
+    min-height: 30px;
+  }
+
+  .cleaning-compare__label--before {
+    left: var(--space-4);
+  }
+
+  .cleaning-compare__label--after {
+    right: var(--space-4);
+  }
+
+  .cleaning-compare__handle {
+    width: 54px;
+    height: 54px;
+  }
+}
+{% endstylesheet %}
+
+<script>
+(function () {
+  var section = document.getElementById('cleaning-compare-{{ section.id }}');
+  if (!section) return;
+
+  var stage = section.querySelector('[data-cleaning-compare]');
+  var range = section.querySelector('[data-cleaning-range]');
+  if (!stage || !range) return;
+
+  function setPosition(value) {
+    var next = Math.max(0, Math.min(100, Number(value) || 0));
+    stage.style.setProperty('--compare-position', next + '%');
+    range.value = next;
+  }
+
+  range.addEventListener('input', function () {
+    setPosition(range.value);
+  });
+
+  function updateFromPointer(event) {
+    var rect = stage.getBoundingClientRect();
+    var x = event.clientX - rect.left;
+    setPosition((x / rect.width) * 100);
+  }
+
+  stage.addEventListener('pointerdown', function (event) {
+    updateFromPointer(event);
+    stage.setPointerCapture(event.pointerId);
+  });
+
+  stage.addEventListener('pointermove', function (event) {
+    if (event.buttons !== 1) return;
+    updateFromPointer(event);
+  });
+
+  setPosition(range.value);
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Comparateur nettoyage",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Petit titre",
+      "default": "Nettoyage sneakers"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titre",
+      "default": "Avant / après nettoyage"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Texte",
+      "default": "<p>Faites glisser la barre pour révéler le résultat après nettoyage.</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "before_image",
+      "label": "Photo chaussure sale"
+    },
+    {
+      "type": "image_picker",
+      "id": "after_image",
+      "label": "Photo chaussure propre"
+    },
+    {
+      "type": "text",
+      "id": "before_label",
+      "label": "Label image sale",
+      "default": "Avant"
+    },
+    {
+      "type": "text",
+      "id": "after_label",
+      "label": "Label image propre",
+      "default": "Après"
+    },
+    {
+      "type": "range",
+      "id": "slider_start",
+      "label": "Position initiale de la barre",
+      "min": 10,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "default": 50
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Texte du bouton",
+      "default": "Découvrir le nettoyage"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Lien du bouton"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Comparateur nettoyage"
+    }
+  ]
+}
+{% endschema %}

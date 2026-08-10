@@ -1,0 +1,27 @@
+{%- comment -%} SEO meta tags {%- endcomment -%}
+{%- if template.name == 'product' -%}
+  <meta property="og:type" content="product">
+  <meta property="og:title" content="{{ product.title | escape }}">
+  {%- for image in product.images limit: 3 -%}
+    <meta property="og:image" content="{{ image | image_url: width: 1200 }}">
+  {%- endfor -%}
+  <meta property="og:price:amount" content="{{ product.price | money_without_currency | strip_html }}">
+  <meta property="og:price:currency" content="{{ cart.currency.iso_code }}">
+{%- elsif template.name == 'article' -%}
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="{{ article.title | escape }}">
+  {%- if article.image -%}
+    <meta property="og:image" content="{{ article.image | image_url: width: 1200 }}">
+  {%- endif -%}
+{%- else -%}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ page_title | escape }}">
+  {%- if settings.share_image -%}
+    <meta property="og:image" content="{{ settings.share_image | image_url: width: 1200 }}">
+  {%- endif -%}
+{%- endif -%}
+<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:site_name" content="{{ shop.name }}">
+{%- if page_description -%}
+  <meta property="og:description" content="{{ page_description | escape }}">
+{%- endif -%}

@@ -1,0 +1,1722 @@
+{%- comment -%}
+  Main Product — fiche produit reprenant le design de thelaststep.fr
+  Galerie gauche, infos droite (taille + prix par variante)
+{%- endcomment -%}
+{%- liquid
+  assign current = product.selected_or_first_available_variant
+  assign first_col = product.collections.first
+  assign product_form_id = 'product-form-' | append: section.id
+  assign product_type_downcase = product.type | downcase
+  assign is_sneaker = false
+  if product_type_downcase == 'sneakers'
+    assign is_sneaker = true
+  endif
+  assign fulfillment_type = product.metafields.custom.fulfillment_type.value | default: product.metafields.custom.fulfillment_type
+  assign style_id = product.metafields.custom.style_id.value | default: product.metafields.custom.style_id
+  if style_id == blank and product.description contains 'Style ID'
+    assign style_id_parts = product.description | split: 'Style ID'
+    assign style_id_after_label = style_id_parts[1] | strip_html | replace: ':', '' | strip
+    assign style_id = style_id_after_label | split: ' ' | first
+  endif
+  assign fulfillment_type_downcase = fulfillment_type | downcase
+  assign is_partner_sourced = false
+  if fulfillment_type_downcase == 'scraper' or fulfillment_type_downcase == 'partner' or fulfillment_type_downcase == 'revendeur'
+    assign is_partner_sourced = true
+  endif
+  if product.tags contains 'stockx-sync' or product.tags contains 'scraper' or product.tags contains 'livraison-5-12' or product.tags contains 'revendeur-partenaire'
+    assign is_partner_sourced = true
+  endif
+  assign pickup_available = false
+  if current.available and is_partner_sourced == false
+    assign pickup_available = true
+  endif
+  assign size_option_position = 0
+  for option in product.options_with_values
+    assign option_name = option.name | downcase
+    if option_name contains 'taille' or option_name contains 'size' or option_name contains 'pointure'
+      assign size_option_position = option.position
+    endif
+  endfor
+-%}
+
+<section class="pmain" id="product-section-{{ section.id }}">
+  <nav class="breadcrumb container" aria-label="Fil d'Ariane">
+    <a href="{{ routes.root_url }}">Accueil</a>
+    {%- if first_col != blank -%}
+      <span class="breadcrumb__sep">›</span>
+      <a href="{{ first_col.url }}">{{ first_col.title }}</a>
+    {%- endif -%}
+    {%- if product.vendor != blank -%}
+      <span class="breadcrumb__sep">›</span>
+      <span>{{ product.vendor }}</span>
+    {%- endif -%}
+    <span class="breadcrumb__sep">›</span>
+    <span class="breadcrumb__current">{{ product.title }}</span>
+  </nav>
+
+  <div class="pmain__layout container">
+    {%- comment -%} ── GALLERY ── {%- endcomment -%}
+    <div class="pgallery">
+      <div class="pgallery__main">
+        {%- if product.compare_at_price > product.price -%}
+          <span class="badge badge--promo pgallery__badge">PROMO</span>
+        {%- endif -%}
+
+        {%- if product.featured_image != blank -%}
+          <img
+            src="{{ product.featured_image | image_url: width: 1200 }}"
+            srcset="{{ product.featured_image | image_url: width: 600 }} 600w, {{ product.featured_image | image_url: width: 1200 }} 1200w"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            alt="{{ product.featured_image.alt | default: product.title | escape }}"
+            loading="eager"
+            width="1200"
+            height="1200"
+            class="pgallery__main-img"
+            id="pgallery-main-{{ section.id }}"
+            data-zoom-src="{{ product.featured_image | image_url: width: 1800 }}"
+          >
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'pgallery__main-img' }}
+        {%- endif -%}
+
+        <button class="pgallery__expand" aria-label="Agrandir l'image" type="button" data-gallery-zoom>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+        </button>
+
+        {%- if product.images.size > 1 -%}
+          <div class="pgallery__mobile-controls" aria-label="Images produit">
+            <button class="pgallery__mobile-arrow" type="button" data-gallery-mobile-prev aria-label="Image précédente">
+              <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true">
+                <path d="M11.5 3.5L6 9l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div class="pgallery__dots" data-gallery-dots>
+              {%- for image in product.images limit: 8 -%}
+                <button
+                  class="pgallery__dot{% if forloop.first %} is-active{% endif %}"
+                  type="button"
+                  data-gallery-dot
+                  data-gallery-index="{{ forloop.index0 }}"
+                  aria-label="Afficher l'image {{ forloop.index }}"
+                  {% if forloop.first %}aria-current="true"{% endif %}
+                ></button>
+              {%- endfor -%}
+            </div>
+            <button class="pgallery__mobile-arrow" type="button" data-gallery-mobile-next aria-label="Image suivante">
+              <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true">
+                <path d="M6.5 3.5L12 9l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- if product.images.size > 1 -%}
+        <div class="pgallery__thumbs-wrap" data-gallery-thumbs-wrap>
+          <button class="pgallery__thumb-arrow pgallery__thumb-arrow--prev" type="button" data-gallery-thumbs-prev aria-label="Images précédentes">
+            <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true">
+              <path d="M11.5 3.5L6 9l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="pgallery__thumbs" data-gallery-thumbs>
+            {%- for image in product.images limit: 8 -%}
+              <button
+                type="button"
+                class="pgallery__thumb{% if forloop.first %} is-active{% endif %}"
+                data-gallery-index="{{ forloop.index0 }}"
+                data-image-src="{{ image | image_url: width: 1200 }}"
+                data-image-srcset="{{ image | image_url: width: 600 }} 600w, {{ image | image_url: width: 1200 }} 1200w"
+                data-zoom-src="{{ image | image_url: width: 1800 }}"
+                aria-label="Image {{ forloop.index }}"
+              >
+                <img
+                  src="{{ image | image_url: width: 220 }}"
+                  alt=""
+                  loading="lazy"
+                  width="220"
+                  height="220"
+                >
+              </button>
+            {%- endfor -%}
+          </div>
+          <button class="pgallery__thumb-arrow pgallery__thumb-arrow--next" type="button" data-gallery-thumbs-next aria-label="Images suivantes">
+            <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true">
+              <path d="M6.5 3.5L12 9l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} ── INFO ── {%- endcomment -%}
+    <div class="pinfo">
+      {%- if product.vendor != blank -%}
+        <p class="pinfo__vendor">{{ product.vendor }}</p>
+      {%- endif -%}
+
+      <h1 class="pinfo__title">{{ product.title }}</h1>
+
+      {%- if style_id != blank -%}
+        <p class="pinfo__sku">SKU : {{ style_id }}</p>
+      {%- endif -%}
+
+      <div class="pinfo__units">
+        <button type="button" class="size-unit is-active" data-unit="EU" aria-pressed="true">EU</button>
+        <button type="button" class="size-unit" data-unit="US" aria-pressed="false">US M</button>
+        <button type="button" class="size-unit" data-unit="UK" aria-pressed="false">UK</button>
+        <button type="button" class="size-unit" data-unit="CM" aria-pressed="false">CM</button>
+        {%- if is_sneaker -%}
+          <button type="button" class="pinfo__size-guide" data-size-guide-open>Guide des tailles</button>
+        {%- endif -%}
+      </div>
+
+      {%- form 'product', product, id: product_form_id, class: 'pform' -%}
+        <input type="hidden" name="id" value="{{ current.id }}" data-variant-id>
+
+        {%- unless product.has_only_default_variant -%}
+          <div class="size-grid" role="radiogroup" aria-label="Choix de la taille">
+            {%- for variant in product.variants -%}
+              {%- liquid
+                assign variant_size_label = variant.title
+                if size_option_position == 1
+                  assign variant_size_label = variant.option1
+                elsif size_option_position == 2
+                  assign variant_size_label = variant.option2
+                elsif size_option_position == 3
+                  assign variant_size_label = variant.option3
+                endif
+              -%}
+              <label
+                class="size-cell{% unless variant.available %} is-sold-out{% endunless %}{% if variant.id == current.id %} is-selected{% endif %}"
+                data-variant-id="{{ variant.id }}"
+              >
+                <input
+                  type="radio"
+                  name="variant-radio"
+                  value="{{ variant.id }}"
+                  {% unless variant.available %}disabled{% endunless %}
+                  {% if variant.id == current.id %}checked{% endif %}
+                  data-variant-radio
+                  class="visually-hidden"
+                >
+                <span class="size-cell__dot{% if variant.available %} size-cell__dot--available{% endif %}" aria-hidden="true"></span>
+                <span class="size-cell__size" data-size-source="{{ variant_size_label | escape }}">{{ variant_size_label }}</span>
+                <span class="size-cell__prices">
+                  {%- if variant.compare_at_price > variant.price -%}
+                    <span class="size-cell__compare">{{ variant.compare_at_price | money_without_trailing_zeros }}</span>
+                  {%- endif -%}
+                  <span class="size-cell__price">{{ variant.price | money_without_trailing_zeros }}</span>
+                </span>
+              </label>
+            {%- endfor -%}
+          </div>
+        {%- endunless -%}
+
+        {%- if current.inventory_management == 'shopify' and current.inventory_quantity > 0 and current.inventory_quantity <= section.settings.low_stock_threshold -%}
+          <p class="pinfo__stock">Plus que {{ current.inventory_quantity }} produit{% if current.inventory_quantity > 1 %}s{% endif %} en stock</p>
+        {%- endif -%}
+
+        <ul class="pinfo__shipping" aria-label="Delai de livraison">
+          <li class="pinfo__shipping-option{% unless is_partner_sourced %} is-active{% else %} is-muted{% endunless %}">
+            <span class="ship-dot{% unless is_partner_sourced %} ship-dot--filled{% endunless %}"></span>
+            Livraison 24/48h
+          </li>
+          <li
+            class="pinfo__shipping-option{% if is_partner_sourced %} is-active has-tooltip{% else %} is-muted{% endif %}"
+            {% if is_partner_sourced %}tabindex="0" aria-describedby="shipping-tooltip-{{ section.id }}"{% endif %}
+          >
+            <span class="ship-dot{% if is_partner_sourced %} ship-dot--filled{% endif %}"></span>
+            Livraison 5 à 12 jours
+            {%- if is_partner_sourced -%}
+              <span class="pinfo__shipping-tooltip" id="shipping-tooltip-{{ section.id }}" role="tooltip">
+                Approvisionné via notre réseau de revendeurs partenaires. Jours ouvrés uniquement.
+              </span>
+            {%- endif -%}
+          </li>
+        </ul>
+
+        <div class="pinfo__buttons{% if pickup_available %} has-mobile-pickup{% endif %}">
+          <button type="submit" name="add" class="btn btn--primary pinfo__btn"{% unless current.available %} disabled{% endunless %}>
+            {%- if current.available -%}Ajouter au panier{%- else -%}Rupture de stock{%- endif -%}
+          </button>
+          <button type="submit" name="properties[Mode]" value="Retrait en boutique" class="btn pinfo__btn pinfo__btn--pickup"{% unless pickup_available %} disabled{% endunless %}>
+            {%- if pickup_available -%}Retirer en boutique{%- else -%}Retrait indisponible{%- endif -%}
+          </button>
+        </div>
+
+      {%- endform -%}
+
+      {%- if section.blocks.size > 0 or product.description != blank -%}
+        <div class="pinfo__accordions">
+          {%- if product.description != blank -%}
+            <details class="acc">
+              <summary class="acc__summary">
+                <span>Description</span>
+                <span class="acc__icon" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                </span>
+              </summary>
+              <div class="acc__content rte">{{ product.description }}</div>
+            </details>
+          {%- endif -%}
+
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'accordion' -%}
+              <details class="acc" {{ block.shopify_attributes }}>
+                <summary class="acc__summary">
+                  <span>{{ block.settings.title }}</span>
+                  <span class="acc__icon" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                  </span>
+                </summary>
+                <div class="acc__content">{{ block.settings.content }}</div>
+              </details>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if is_sneaker -%}
+    <div class="size-guide-modal" aria-hidden="true" data-size-guide-modal>
+      <button class="size-guide-modal__backdrop" type="button" data-size-guide-close aria-label="Fermer le guide des tailles"></button>
+      <div class="size-guide-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="size-guide-title-{{ section.id }}">
+        <button class="size-guide-modal__close" type="button" data-size-guide-close aria-label="Fermer le guide des tailles">
+          <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+            <path d="M4 4l14 14M18 4L4 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <h2 class="size-guide-modal__title" id="size-guide-title-{{ section.id }}">Guide des tailles</h2>
+        <div class="size-guide-modal__table-wrap">
+          <table class="size-guide-modal__table">
+            <thead>
+              <tr>
+                <th scope="col">EU</th>
+                <th scope="col">US M</th>
+                <th scope="col">UK</th>
+                <th scope="col">CM</th>
+              </tr>
+            </thead>
+            <tbody data-size-guide-body></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div class="pgallery-modal" aria-hidden="true" data-gallery-modal>
+    <button class="pgallery-modal__backdrop" type="button" data-gallery-close aria-label="Fermer l'image"></button>
+    <div class="pgallery-modal__dialog" role="dialog" aria-modal="true" aria-label="{{ product.title | escape }}">
+      <button class="pgallery-modal__close" type="button" data-gallery-close aria-label="Fermer l'image">
+        <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+          <path d="M4 4l14 14M18 4L4 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+      {%- if product.featured_image != blank -%}
+        <img
+          src="{{ product.featured_image | image_url: width: 1800 }}"
+          alt="{{ product.featured_image.alt | default: product.title | escape }}"
+          width="1800"
+          height="1800"
+          class="pgallery-modal__img"
+          data-gallery-modal-img
+        >
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.pmain {
+  background: var(--color-white);
+  padding-bottom: var(--space-16);
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-top: var(--space-4);
+  padding-bottom: var(--space-4);
+  font-size: var(--font-size-small);
+  color: var(--color-gray-500);
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--color-gray-200);
+}
+.breadcrumb a:hover { opacity: 0.6; }
+.breadcrumb__sep { color: var(--color-gray-300); }
+.breadcrumb__current { color: var(--color-black); }
+
+/* Layout */
+.pmain__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 50vw) minmax(0, 50vw);
+  gap: 0;
+  align-items: flex-start;
+  width: 100vw;
+  margin-left: calc(var(--container-padding) * -1);
+  margin-right: calc(var(--container-padding) * -1);
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: var(--space-8);
+  max-width: 100vw;
+}
+
+@media (max-width: 1024px) {
+  .pmain__layout {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: var(--container-padding);
+    padding-right: var(--container-padding);
+  }
+}
+
+/* ── Galerie ── */
+.pgallery {
+  position: sticky;
+  top: calc(var(--header-height) + var(--space-6));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.pgallery__main {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  max-height: min(640px, calc(100vh - var(--site-header-height, var(--header-height)) - 150px));
+  background: var(--color-gray-100);
+  overflow: hidden;
+}
+
+.pgallery__badge {
+  position: absolute;
+  top: var(--space-6);
+  left: var(--space-6);
+  z-index: 2;
+  border-radius: 9999px;
+  padding: 6px 14px;
+}
+
+.pgallery__main-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: clamp(var(--space-6), 4vw, var(--space-12)) var(--space-10);
+}
+
+.pgallery__expand {
+  position: absolute;
+  bottom: var(--space-6);
+  right: var(--space-6);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  color: var(--color-black);
+  z-index: 2;
+  transition: background 0.15s;
+}
+.pgallery__expand:hover { background: transparent; opacity: 0.55; }
+
+.pgallery__mobile-controls {
+  display: none;
+}
+
+.pgallery__thumbs-wrap {
+  position: relative;
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) 36px;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.pgallery__thumbs {
+  display: flex;
+  gap: var(--space-2);
+  max-width: 100%;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+.pgallery__thumbs::-webkit-scrollbar { display: none; }
+
+.pgallery__thumb-arrow {
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid var(--color-black);
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.pgallery__thumb-arrow:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+.pgallery__thumb-arrow[disabled] {
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+.pgallery__thumb {
+  width: 96px;
+  height: 96px;
+  background: var(--color-gray-100);
+  padding: var(--space-2);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+  scroll-snap-align: center;
+}
+.pgallery__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.pgallery__thumb.is-active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--color-black);
+}
+
+.pgallery-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+}
+.pgallery-modal.is-open {
+  display: flex;
+}
+.pgallery-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.pgallery-modal__dialog {
+  position: relative;
+  z-index: 1;
+  width: min(92vw, 1100px);
+  height: min(86vh, 900px);
+  background: var(--color-gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pgallery-modal__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: var(--space-10);
+}
+.pgallery-modal__close {
+  position: absolute;
+  top: var(--space-5);
+  right: var(--space-5);
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--color-black);
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-black);
+}
+.pgallery-modal__close:hover {
+  opacity: 0.6;
+}
+
+@media (max-width: 1024px) {
+  .pgallery { position: static; }
+}
+
+/* ── Info ── */
+.pinfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: min(560px, calc(100% - (var(--container-padding) * 2)));
+  max-width: 560px;
+  justify-self: center;
+  padding-top: var(--space-1);
+  min-width: 0;
+}
+
+.pinfo__vendor {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--color-black);
+}
+
+.pinfo__title {
+  font-size: clamp(32px, 3.25vw, 46px);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.02;
+  letter-spacing: -1px;
+  margin: 0;
+}
+
+.pinfo__sku {
+  font-size: var(--font-size-small);
+  color: var(--color-gray-500);
+  letter-spacing: 1px;
+}
+
+/* Unit toggle */
+.pinfo__units {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.size-unit {
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-gray-500);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0;
+}
+.size-unit.is-active {
+  color: var(--color-black);
+  font-weight: var(--font-weight-bold);
+}
+
+.pinfo__size-guide {
+  margin-left: auto;
+  border: 0;
+  background: none;
+  color: var(--color-black);
+  cursor: pointer;
+  font-size: var(--font-size-small);
+  padding: 0;
+  text-decoration: underline;
+}
+
+.size-guide-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+}
+
+.size-guide-modal.is-open {
+  display: flex;
+}
+
+.size-guide-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.size-guide-modal__dialog {
+  position: relative;
+  z-index: 1;
+  width: min(1080px, calc(100vw - var(--space-10)));
+  max-height: min(800px, calc(100vh - var(--space-12)));
+  background: var(--color-white);
+  padding: var(--space-10);
+  border: 1.5px solid var(--color-black);
+  border-radius: 8px;
+  box-shadow: 0 5px 0 var(--color-black);
+  overflow: hidden;
+}
+
+.size-guide-modal__close {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--color-black);
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-black);
+}
+
+.size-guide-modal__close:hover {
+  opacity: 0.6;
+}
+
+.size-guide-modal__title {
+  margin: 0 0 var(--space-6);
+  font-size: 28px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0;
+}
+
+.size-guide-modal__table-wrap {
+  max-height: min(620px, calc(100vh - 240px));
+  overflow: auto;
+  border: 1.5px solid var(--color-black);
+  border-radius: 8px;
+  box-shadow: 0 3px 0 var(--color-black);
+}
+
+.size-guide-modal__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-body);
+}
+
+.size-guide-modal__table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--color-black);
+  color: var(--color-white);
+  font-weight: var(--font-weight-bold);
+}
+
+.size-guide-modal__table th,
+.size-guide-modal__table td {
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--color-gray-200);
+  text-align: center;
+}
+
+/* Size grid avec prix */
+.size-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin: 0;
+}
+
+.size-cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-3);
+  border: 1.5px solid var(--color-black);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s, transform 0.15s;
+  min-height: 72px;
+  background: var(--color-white);
+  box-shadow: 0 3px 0 var(--color-black);
+}
+.size-cell:hover:not(.is-sold-out) {
+  background: var(--color-black);
+  border-color: var(--color-black);
+  color: var(--color-white);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 0 var(--color-black);
+}
+.size-cell:hover:not(.is-sold-out) .size-cell__dot--available {
+  background: var(--color-white);
+}
+.size-cell.is-selected {
+  background: var(--color-black);
+  border-color: var(--color-black);
+  color: var(--color-white);
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--color-black);
+}
+.size-cell.is-sold-out {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 0 var(--color-gray-300);
+}
+.size-cell.is-sold-out::after {
+  content: '';
+  position: absolute;
+  left: 8px; right: 8px;
+  top: 50%;
+  height: 1px;
+  background: var(--color-gray-500);
+}
+
+.size-cell__dot {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-gray-300);
+}
+.size-cell__dot--available { background: var(--color-black); }
+.size-cell.is-selected .size-cell__dot--available { background: var(--color-white); }
+
+.size-cell__size {
+  font-weight: var(--font-weight-bold);
+  font-size: 18px;
+  line-height: 1;
+}
+.size-cell__prices {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-top: 5px;
+  line-height: 1;
+}
+.size-cell__compare,
+.size-cell__price {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  color: inherit;
+  line-height: 1;
+}
+.size-cell__compare {
+  color: var(--color-gray-500);
+  text-decoration: line-through;
+}
+.size-cell.is-selected .size-cell__compare { color: rgba(255,255,255,0.6); }
+
+/* Stock */
+.pinfo__stock {
+  font-size: var(--font-size-small);
+  color: var(--color-gray-700);
+}
+
+/* Shipping pills */
+.pinfo__shipping {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  list-style: none;
+  padding: 0;
+  align-items: center;
+  margin-top: var(--space-4);
+}
+.pinfo__shipping-option {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 32px;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
+  border: 0;
+  background: var(--color-gray-100);
+  padding: 6px 13px;
+  border-radius: 9999px;
+  width: fit-content;
+}
+.pinfo__shipping-option.is-muted {
+  color: var(--color-gray-500);
+  background: var(--color-gray-200);
+  opacity: 0.75;
+}
+.pinfo__shipping-option.is-active {
+  color: var(--color-black);
+  background: var(--color-gray-100);
+  opacity: 1;
+}
+.pinfo__shipping-option.has-tooltip {
+  outline: none;
+}
+.pinfo__shipping-option.has-tooltip:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-white), 0 0 0 4px var(--color-black);
+}
+.ship-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid var(--color-black);
+  display: inline-block;
+  flex: 0 0 auto;
+}
+.ship-dot--filled { background: var(--color-black); }
+.pinfo__shipping-tooltip {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + var(--space-3));
+  z-index: 2;
+  width: min(340px, calc(100vw - 40px));
+  padding: var(--space-4);
+  border: 1px solid var(--color-gray-200);
+  border-radius: 22px;
+  background: var(--color-white);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.10);
+  color: var(--color-black);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.2;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(var(--space-1));
+  transition: opacity 0.15s, transform 0.15s;
+}
+.pinfo__shipping-option:hover .pinfo__shipping-tooltip,
+.pinfo__shipping-option:focus .pinfo__shipping-tooltip,
+.pinfo__shipping-option:focus-within .pinfo__shipping-tooltip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Buy buttons */
+.pinfo__buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+.pinfo__btn {
+  width: 100%;
+  min-height: 58px;
+  padding: 15px var(--space-6);
+  font-weight: var(--font-weight-semibold);
+}
+.pinfo__btn--pickup {
+  background: var(--color-gray-200);
+  color: var(--color-gray-500);
+  border: 1.5px solid var(--color-gray-300);
+}
+.pinfo__btn--pickup:hover {
+  background: var(--color-gray-200);
+  border-color: var(--color-gray-200);
+  opacity: 1;
+}
+.pinfo__btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Accordéons */
+.pinfo__accordions {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--space-4);
+}
+.acc {
+  border-bottom: 1.5px solid var(--color-black);
+}
+.acc:first-child { border-top: 1.5px solid var(--color-black); }
+.acc__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5) 0;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-body);
+  cursor: pointer;
+  list-style: none;
+}
+.acc__summary::-webkit-details-marker { display: none; }
+.acc__icon { display: flex; transition: transform 0.2s; }
+.acc[open] .acc__icon { transform: rotate(180deg); }
+.acc__content {
+  padding: 0 0 var(--space-5);
+  color: var(--color-gray-700);
+  font-size: var(--font-size-small);
+  line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+  .pmain {
+    padding-bottom: calc(198px + env(safe-area-inset-bottom));
+  }
+
+  .breadcrumb {
+    padding-top: var(--space-3);
+    padding-bottom: var(--space-3);
+    font-size: var(--font-size-xs);
+  }
+
+  .pmain__layout {
+    padding-top: var(--space-5);
+  }
+
+  .pgallery__main {
+    aspect-ratio: 4 / 5;
+    margin-left: calc(var(--container-padding) * -1);
+    margin-right: calc(var(--container-padding) * -1);
+  }
+
+  .pgallery__main-img {
+    padding: var(--space-10) var(--space-5) var(--space-16);
+  }
+
+  .pgallery__badge {
+    top: var(--space-4);
+    left: var(--space-5);
+  }
+
+  .pgallery__thumbs-wrap {
+    display: none;
+  }
+
+  .pgallery__expand {
+    right: var(--space-5);
+    bottom: var(--space-5);
+  }
+
+  .pgallery__mobile-controls {
+    position: absolute;
+    left: var(--space-5);
+    right: calc(var(--space-5) + 48px);
+    bottom: var(--space-5);
+    z-index: 3;
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) 34px;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .pgallery__mobile-arrow {
+    width: 34px;
+    height: 34px;
+    border: 1.5px solid var(--color-black);
+    border-radius: 50%;
+    background: var(--color-white);
+    color: var(--color-black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pgallery__dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-width: 0;
+  }
+
+  .pgallery__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 9999px;
+    background: var(--color-gray-300);
+    transition: width 0.18s ease, background 0.18s ease;
+  }
+
+  .pgallery__dot.is-active {
+    width: 22px;
+    background: var(--color-black);
+  }
+
+  .pgallery-modal {
+    padding: var(--space-5);
+  }
+
+  .pgallery-modal__dialog {
+    width: 100%;
+    height: 72vh;
+  }
+
+  .pgallery-modal__img {
+    padding: var(--space-5);
+  }
+
+  .pinfo {
+    max-width: none;
+    width: 100%;
+    justify-self: stretch;
+    padding: 0;
+    gap: var(--space-4);
+  }
+
+  .pinfo__title {
+    font-size: 32px;
+  }
+
+  .pinfo__units {
+    margin-top: var(--space-2);
+    flex-wrap: wrap;
+  }
+
+  .pinfo__size-guide {
+    flex: 1 0 100%;
+    margin-left: 0;
+  }
+
+  .size-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+
+  .size-cell {
+    align-items: center;
+    text-align: center;
+    min-height: 68px;
+  }
+
+  .pinfo__buttons {
+    position: relative;
+    grid-template-columns: 1fr;
+  }
+
+  .pinfo__buttons::before {
+    content: '';
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1099;
+    height: calc(78px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--color-gray-200);
+    background: var(--color-white);
+    box-shadow: 0 -8px 24px rgba(0,0,0,0.08);
+  }
+
+  .pinfo__buttons.has-mobile-pickup::before {
+    height: calc(144px + env(safe-area-inset-bottom));
+  }
+
+  .pinfo__btn {
+    min-height: 54px;
+  }
+
+  .pinfo__btn.btn--primary {
+    position: fixed;
+    left: var(--container-padding);
+    right: var(--container-padding);
+    bottom: 0;
+    z-index: 1100;
+    width: auto;
+    margin: 0;
+    min-height: 54px;
+    padding: 15px var(--space-6);
+    transform: translateY(calc((var(--space-3) + env(safe-area-inset-bottom)) * -1));
+  }
+
+  .pinfo__buttons.has-mobile-pickup .pinfo__btn--pickup {
+    position: fixed;
+    left: var(--container-padding);
+    right: var(--container-padding);
+    bottom: 0;
+    z-index: 1100;
+    width: auto;
+    margin: 0;
+    min-height: 54px;
+    transform: translateY(calc((var(--space-6) + 54px + env(safe-area-inset-bottom)) * -1));
+  }
+
+  .size-guide-modal {
+    padding: var(--space-4);
+    align-items: flex-end;
+  }
+
+  .size-guide-modal__dialog {
+    width: 100%;
+    max-height: calc(100vh - var(--space-8));
+    padding: var(--space-6) var(--space-5);
+  }
+
+  .size-guide-modal__title {
+    padding-right: var(--space-10);
+    font-size: 24px;
+  }
+
+  .size-guide-modal__table-wrap {
+    max-height: calc(100vh - 210px);
+  }
+
+  .size-guide-modal__table th,
+  .size-guide-modal__table td {
+    padding: var(--space-3);
+  }
+
+}
+{% endstylesheet %}
+
+<script>
+(function () {
+  var section = document.getElementById('product-section-{{ section.id }}');
+  if (!section) return;
+
+  // Variant selector
+  var radios = section.querySelectorAll('[data-variant-radio]');
+  var hiddenInput = section.querySelector('[data-variant-id]');
+  var cells = section.querySelectorAll('.size-cell');
+
+  radios.forEach(function (radio) {
+    radio.addEventListener('change', function () {
+      if (hiddenInput) hiddenInput.value = radio.value;
+      cells.forEach(function (c) { c.classList.remove('is-selected'); });
+      var cell = radio.closest('.size-cell');
+      if (cell) cell.classList.add('is-selected');
+      var url = new URL(window.location);
+      url.searchParams.set('variant', radio.value);
+      window.history.replaceState({}, '', url);
+    });
+  });
+
+  // Gallery thumbnails
+  var thumbs = section.querySelectorAll('.pgallery__thumb');
+  var thumbsTrack = section.querySelector('[data-gallery-thumbs]');
+  var thumbsPrev = section.querySelector('[data-gallery-thumbs-prev]');
+  var thumbsNext = section.querySelector('[data-gallery-thumbs-next]');
+  var dots = section.querySelectorAll('[data-gallery-dot]');
+  var mobilePrev = section.querySelector('[data-gallery-mobile-prev]');
+  var mobileNext = section.querySelector('[data-gallery-mobile-next]');
+  var mainImg = section.querySelector('#pgallery-main-{{ section.id }}');
+  var zoomButton = section.querySelector('[data-gallery-zoom]');
+  var modal = section.querySelector('[data-gallery-modal]');
+  var modalImg = section.querySelector('[data-gallery-modal-img]');
+  var closeButtons = section.querySelectorAll('[data-gallery-close]');
+  var sizeGuideOpen = section.querySelector('[data-size-guide-open]');
+  var sizeGuideModal = section.querySelector('[data-size-guide-modal]');
+  var sizeGuideCloseButtons = section.querySelectorAll('[data-size-guide-close]');
+  var sizeGuideBody = section.querySelector('[data-size-guide-body]');
+
+  function setZoomImage(src) {
+    if (!modalImg || !src) return;
+    modalImg.src = src;
+  }
+
+  function openZoom() {
+    if (!modal || !modalImg || !mainImg) return;
+    setZoomImage(mainImg.dataset.zoomSrc || mainImg.currentSrc || mainImg.src);
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.documentElement.style.overflow = 'hidden';
+  }
+
+  function closeZoom() {
+    if (!modal) return;
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.documentElement.style.overflow = '';
+  }
+
+  function openSizeGuide() {
+    if (!sizeGuideModal) return;
+    sizeGuideModal.classList.add('is-open');
+    sizeGuideModal.setAttribute('aria-hidden', 'false');
+    document.documentElement.style.overflow = 'hidden';
+  }
+
+  function closeSizeGuide() {
+    if (!sizeGuideModal) return;
+    sizeGuideModal.classList.remove('is-open');
+    sizeGuideModal.setAttribute('aria-hidden', 'true');
+    document.documentElement.style.overflow = '';
+  }
+
+  function updateThumbArrows() {
+    if (!thumbsTrack || !thumbsPrev || !thumbsNext) return;
+    var maxScroll = thumbsTrack.scrollWidth - thumbsTrack.clientWidth;
+    var hasOverflow = maxScroll > 2;
+    thumbsPrev.hidden = !hasOverflow;
+    thumbsNext.hidden = !hasOverflow;
+    thumbsPrev.disabled = !hasOverflow || thumbsTrack.scrollLeft <= 2;
+    thumbsNext.disabled = !hasOverflow || thumbsTrack.scrollLeft >= maxScroll - 2;
+  }
+
+  function scrollActiveThumb(thumb) {
+    if (!thumb || !thumbsTrack) return;
+    thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    window.setTimeout(updateThumbArrows, 220);
+  }
+
+  function scrollThumbs(direction) {
+    if (!thumbsTrack) return;
+    var amount = Math.max(thumbsTrack.clientWidth * 0.75, 120);
+    thumbsTrack.scrollBy({ left: direction * amount, behavior: 'smooth' });
+    window.setTimeout(updateThumbArrows, 240);
+  }
+
+  function getActiveIndex() {
+    var active = section.querySelector('.pgallery__thumb.is-active');
+    if (!active) return 0;
+    return parseInt(active.dataset.galleryIndex || '0', 10);
+  }
+
+  function setActiveImage(index) {
+    if (!thumbs.length) return;
+    var nextIndex = (index + thumbs.length) % thumbs.length;
+    var thumb = thumbs[nextIndex];
+    if (!thumb) return;
+    thumbs.forEach(function (x) { x.classList.remove('is-active'); });
+    dots.forEach(function (dot) {
+      var isActive = parseInt(dot.dataset.galleryIndex || '0', 10) === nextIndex;
+      dot.classList.toggle('is-active', isActive);
+      if (isActive) {
+        dot.setAttribute('aria-current', 'true');
+      } else {
+        dot.removeAttribute('aria-current');
+      }
+    });
+    thumb.classList.add('is-active');
+    var src = thumb.dataset.imageSrc;
+    if (src && mainImg) {
+      mainImg.src = src;
+      if (thumb.dataset.imageSrcset) mainImg.srcset = thumb.dataset.imageSrcset;
+      mainImg.dataset.zoomSrc = thumb.dataset.zoomSrc || src;
+      setZoomImage(mainImg.dataset.zoomSrc);
+    }
+    scrollActiveThumb(thumb);
+  }
+
+  thumbs.forEach(function (t) {
+    t.addEventListener('click', function () {
+      setActiveImage(parseInt(t.dataset.galleryIndex || '0', 10));
+    });
+  });
+
+  dots.forEach(function (dot) {
+    dot.addEventListener('click', function () {
+      setActiveImage(parseInt(dot.dataset.galleryIndex || '0', 10));
+    });
+  });
+
+  if (mobilePrev) {
+    mobilePrev.addEventListener('click', function () {
+      setActiveImage(getActiveIndex() - 1);
+    });
+  }
+
+  if (mobileNext) {
+    mobileNext.addEventListener('click', function () {
+      setActiveImage(getActiveIndex() + 1);
+    });
+  }
+
+  if (thumbsPrev) {
+    thumbsPrev.addEventListener('click', function () { scrollThumbs(-1); });
+  }
+
+  if (thumbsNext) {
+    thumbsNext.addEventListener('click', function () { scrollThumbs(1); });
+  }
+
+  if (thumbsTrack) {
+    thumbsTrack.addEventListener('scroll', updateThumbArrows, { passive: true });
+    window.addEventListener('resize', updateThumbArrows);
+    updateThumbArrows();
+  }
+
+  if (zoomButton) {
+    zoomButton.addEventListener('click', openZoom);
+  }
+
+  closeButtons.forEach(function (button) {
+    button.addEventListener('click', closeZoom);
+  });
+
+  if (sizeGuideOpen) {
+    sizeGuideOpen.addEventListener('click', openSizeGuide);
+  }
+
+  sizeGuideCloseButtons.forEach(function (button) {
+    button.addEventListener('click', closeSizeGuide);
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+      closeZoom();
+      closeSizeGuide();
+    }
+  });
+
+  // Size unit conversion
+  var unitBtns = section.querySelectorAll('.size-unit');
+  var sizeLabels = section.querySelectorAll('.size-cell__size');
+  var productTitle = {{ product.title | json }}.toLowerCase();
+  var productVendor = {{ product.vendor | json }}.toLowerCase();
+  var productSizingText = productVendor + ' ' + productTitle;
+  var usesThirdEuSizing = /adidas|yeezy|samba|gazelle|spezial|campus|superstar|handball|forum|ozweego|ultraboost/.test(productSizingText);
+  var sizeProfile = productTitle.indexOf('(w)') !== -1 || productTitle.indexOf("women") !== -1 || productTitle.indexOf("femme") !== -1
+    ? 'women'
+    : productTitle.indexOf('(gs)') !== -1 || productTitle.indexOf("grade school") !== -1
+      ? 'gs'
+      : 'men';
+  var sizeMap = {
+    '35': { US: '3', UK: '2.5', CM: '22' },
+    '35.5': { US: '3.5', UK: '3', CM: '22.5' },
+    '36': { US: '4', UK: '3.5', CM: '23' },
+    '36.5': { US: '4.5', UK: '4', CM: '23.5' },
+    '36.7': { US: '4.5', UK: '4', CM: '23.5' },
+    '37.3': { US: '5', UK: '4.5', CM: '23.5' },
+    '37.5': { US: '5', UK: '4.5', CM: '23.5' },
+    '38': { US: '5.5', UK: '5', CM: '24' },
+    '38.5': { US: '6', UK: '5.5', CM: '24' },
+    '38.7': { US: '6', UK: '5.5', CM: '24' },
+    '39': { US: '6.5', UK: '6', CM: '24.5' },
+    '39.3': { US: '6.5', UK: '6', CM: '24.5' },
+    '40': { US: '7', UK: '6', CM: '25' },
+    '40.5': { US: '7.5', UK: '6.5', CM: '25.5' },
+    '40.7': { US: '7.5', UK: '6.5', CM: '25.5' },
+    '41': { US: '8', UK: '7', CM: '26' },
+    '41.3': { US: '8', UK: '7', CM: '26' },
+    '42': { US: '8.5', UK: '7.5', CM: '26.5' },
+    '42.5': { US: '9', UK: '8', CM: '27' },
+    '42.7': { US: '9', UK: '8.5', CM: '27' },
+    '43': { US: '9.5', UK: '8.5', CM: '27.5' },
+    '43.3': { US: '9.5', UK: '9', CM: '27.5' },
+    '44': { US: '10', UK: '9', CM: '28' },
+    '44.5': { US: '10.5', UK: '9.5', CM: '28.5' },
+    '44.7': { US: '10.5', UK: '10', CM: '28.5' },
+    '45': { US: '11', UK: '10', CM: '29' },
+    '45.3': { US: '11', UK: '10.5', CM: '29' },
+    '45.5': { US: '11.5', UK: '10.5', CM: '29.5' },
+    '46': { US: '12', UK: '11', CM: '30' },
+    '46.5': { US: '12.5', UK: '11.5', CM: '30.5' },
+    '46.7': { US: '12.5', UK: '12', CM: '30.5' },
+    '47': { US: '12.5', UK: '11.5', CM: '30.5' },
+    '47.3': { US: '13', UK: '12.5', CM: '31' },
+    '47.5': { US: '13', UK: '12', CM: '31' },
+    '48': { US: '13.5', UK: '12.5', CM: '31.5' },
+    '48.5': { US: '14', UK: '13', CM: '32' },
+    '48.7': { US: '14', UK: '13.5', CM: '32' },
+    '49': { US: '14.5', UK: '13.5', CM: '32.5' },
+    '49.3': { US: '14.5', UK: '14', CM: '32.5' },
+    '49.5': { US: '15', UK: '14', CM: '33' },
+    '50': { US: '15.5', UK: '14.5', CM: '33.5' },
+    '50.5': { US: '16', UK: '15', CM: '34' },
+    '51': { US: '16.5', UK: '15.5', CM: '34.5' },
+    '51.5': { US: '17', UK: '16', CM: '35' },
+    '52': { US: '17.5', UK: '16.5', CM: '35.5' },
+    '52.5': { US: '18', UK: '17', CM: '36' }
+  };
+  var thirdEuByUs = {
+    '4': '36',
+    '4.5': '36.7',
+    '5': '37.3',
+    '5.5': '38',
+    '6': '38.7',
+    '6.5': '39.3',
+    '7': '40',
+    '7.5': '40.7',
+    '8': '41.3',
+    '8.5': '42',
+    '9': '42.7',
+    '9.5': '43.3',
+    '10': '44',
+    '10.5': '44.7',
+    '11': '45.3',
+    '11.5': '46',
+    '12': '46.7',
+    '12.5': '47.3',
+    '13': '48',
+    '13.5': '48.7',
+    '14': '49.3',
+    '14.5': '50',
+    '15': '50.7',
+    '15.5': '51.3',
+    '16': '52'
+  };
+
+  function normalizeDecimal(value) {
+    var number = Number(value);
+    if (!Number.isFinite(number)) return '';
+    var rounded = Math.round(number * 10) / 10;
+    return String(rounded).replace(/\.0$/, '');
+  }
+
+  function formatSize(value) {
+    return String(value).replace('.', ',').replace(/,0$/, '');
+  }
+
+  function formatEuSize(value) {
+    var normalized = normalizeDecimal(value);
+    if (!usesThirdEuSizing) return formatSize(normalized || value);
+    var numericValue = Number(normalized);
+    if (!Number.isFinite(numericValue)) return formatSize(value);
+    var whole = Math.floor(numericValue);
+    var decimal = Math.round((numericValue - whole) * 10);
+    if (decimal === 3) return whole + ' 1/3';
+    if (decimal === 7) return whole + ' 2/3';
+    return String(whole);
+  }
+
+  function addSizeAmount(value, amount) {
+    var size = Number(value);
+    if (!Number.isFinite(size)) return value;
+    return normalizeDecimal(size + amount);
+  }
+
+  function normalizeSizeText(value) {
+    return String(value || '')
+      .toLowerCase()
+      .replace(/,/g, '.')
+      .replace(/\u00a0/g, ' ')
+      .replace(/⅓/g, ' 1/3')
+      .replace(/⅔/g, ' 2/3')
+      .replace(/½/g, '.5')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function normalizeSizeKey(value) {
+    var normalized = normalizeSizeText(value)
+      .replace(/\beu\b|\beur\b|taille|size|pointure/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    var fraction = normalized.match(/(\d{2})\s*(1|2)\/3/);
+    if (fraction) {
+      return normalizeDecimal(Number(fraction[1]) + (fraction[2] === '1' ? 0.3 : 0.7));
+    }
+
+    var number = normalized.match(/\d{2}(?:\.\d+)?/);
+    if (!number) return '';
+    return normalizeDecimal(number[0]);
+  }
+
+  function findNearestEuKey(key) {
+    if (!key) return '';
+    if (sizeMap[key]) return key;
+    var numericKey = Number(key);
+    if (!Number.isFinite(numericKey)) return '';
+    var nearest = '';
+    var nearestDistance = Infinity;
+    Object.keys(sizeMap).forEach(function (candidate) {
+      var distance = Math.abs(Number(candidate) - numericKey);
+      if (distance < nearestDistance) {
+        nearest = candidate;
+        nearestDistance = distance;
+      }
+    });
+    return nearestDistance <= 0.06 ? nearest : '';
+  }
+
+  function findEuKeyByUnit(sourceUnit, sourceValue) {
+    var normalizedValue = normalizeDecimal(sourceValue);
+    if (!normalizedValue) return '';
+
+    if (sourceUnit === 'EU') {
+      return findNearestEuKey(normalizedValue);
+    }
+
+    if (usesThirdEuSizing && sourceUnit === 'US' && thirdEuByUs[normalizedValue]) {
+      return findNearestEuKey(thirdEuByUs[normalizedValue]) || thirdEuByUs[normalizedValue];
+    }
+
+    var matchedKeys = [];
+    Object.keys(sizeMap).forEach(function (candidate) {
+      var candidateValue = sizeMap[candidate][sourceUnit];
+      if (!candidateValue) return;
+      if (normalizeDecimal(String(candidateValue).replace(/[^\d.]/g, '')) === normalizedValue) {
+        matchedKeys.push(candidate);
+      }
+    });
+    if (!matchedKeys.length) return '';
+
+    if (sourceUnit === 'US') {
+      var preferredKeys = matchedKeys.filter(shouldShowGuideSize);
+      if (preferredKeys.length) return preferredKeys[0];
+    }
+
+    return matchedKeys[0];
+  }
+
+  function parseSizeValue(value) {
+    var normalized = normalizeSizeText(value);
+    var sourceUnit = '';
+    var sourceValue = '';
+    var unitBefore = normalized.match(/\b(eu|eur|us(?:\s*[mwy])?|uk|cm|jp)\s*(\d+(?:\.\d+)?(?:\s*(?:1|2)\/3)?)/);
+    var unitAfter = normalized.match(/(\d+(?:\.\d+)?(?:\s*(?:1|2)\/3)?)\s*(eu|eur|us(?:\s*[mwy])?|uk|cm|jp)\b/);
+    var match = unitBefore || unitAfter;
+
+    if (match) {
+      sourceUnit = (unitBefore ? match[1] : match[2]).toUpperCase().replace(/\s+/g, '');
+      sourceValue = unitBefore ? match[2] : match[1];
+      if (sourceUnit === 'EUR') sourceUnit = 'EU';
+      if (sourceUnit === 'USM' || sourceUnit === 'USW' || sourceUnit === 'USY') sourceUnit = 'US';
+      if (sourceUnit === 'JP') sourceUnit = 'CM';
+    }
+
+    if (!sourceValue) {
+      var fraction = normalized.match(/(\d+)\s*(1|2)\/3/);
+      if (fraction) {
+        sourceValue = normalizeDecimal(Number(fraction[1]) + (fraction[2] === '1' ? 0.3 : 0.7));
+      } else {
+        var number = normalized.match(/\d+(?:\.\d+)?/);
+        sourceValue = number ? number[0] : '';
+      }
+    }
+
+    if (!sourceUnit && sourceValue) {
+      var numericValue = Number(sourceValue);
+      sourceUnit = numericValue >= 30 ? 'EU' : 'US';
+    }
+
+    return {
+      unit: sourceUnit,
+      value: sourceValue,
+      euKey: findEuKeyByUnit(sourceUnit, sourceValue)
+    };
+  }
+
+  function getConvertedSize(rawSize, unit) {
+    var parsed = parseSizeValue(rawSize);
+    var key = parsed.euKey || findNearestEuKey(normalizeSizeKey(rawSize));
+    var converted = '';
+
+    if (unit === 'EU') {
+      converted = key || (parsed.unit === 'EU' ? parsed.value : '');
+    } else if (key && sizeMap[key] && sizeMap[key][unit]) {
+      converted = sizeMap[key][unit];
+    }
+
+    if (!converted && key) {
+      var numericKey = Number(key);
+      Object.keys(sizeMap).some(function (candidate) {
+        if (Math.abs(Number(candidate) - numericKey) <= 0.06 && sizeMap[candidate][unit]) {
+          converted = sizeMap[candidate][unit];
+          return true;
+        }
+        return false;
+      });
+    }
+
+    if (unit === 'US' && converted && sizeProfile === 'women') {
+      converted = addSizeAmount(converted, 1.5);
+    }
+    if (unit === 'US' && converted && sizeProfile === 'gs') {
+      converted = converted + 'Y';
+    }
+
+    if (unit === 'EU' && converted) {
+      return formatEuSize(converted);
+    }
+
+    return converted ? formatSize(converted) : rawSize;
+  }
+
+  function formatSizeWithUnit(rawSize, unit) {
+    var convertedSize = getConvertedSize(rawSize, unit);
+    if (unit === 'EU') return unit + ' ' + convertedSize;
+    if (unit === 'US') return convertedSize + ' US M';
+    return convertedSize + ' ' + unit;
+  }
+
+  function formatGuideValue(value) {
+    return String(value || '').replace(',', '.');
+  }
+
+  function shouldShowGuideSize(key) {
+    var numericKey = Number(key);
+    if (!Number.isFinite(numericKey)) return false;
+    var decimal = Math.round((numericKey - Math.floor(numericKey)) * 10);
+    return usesThirdEuSizing ? decimal === 0 || decimal === 3 || decimal === 7 : decimal === 0 || decimal === 5;
+  }
+
+  function populateSizeGuide() {
+    if (!sizeGuideBody) return;
+    sizeGuideBody.innerHTML = '';
+    Object.keys(sizeMap)
+      .filter(shouldShowGuideSize)
+      .sort(function (a, b) { return Number(a) - Number(b); })
+      .forEach(function (key) {
+        var row = document.createElement('tr');
+        ['EU', 'US', 'UK', 'CM'].forEach(function (unit) {
+          var cell = document.createElement('td');
+          cell.textContent = formatGuideValue(getConvertedSize(key, unit));
+          row.appendChild(cell);
+        });
+        sizeGuideBody.appendChild(row);
+      });
+  }
+
+  function updateSizeUnit(unit) {
+    sizeLabels.forEach(function (label) {
+      var sourceSize = label.getAttribute('data-size-source') || label.dataset.sizeSource || label.textContent.trim();
+      label.dataset.sizeSource = sourceSize;
+      label.dataset.sizeKey = normalizeSizeKey(sourceSize);
+      label.textContent = formatSizeWithUnit(sourceSize, unit);
+    });
+  }
+
+  populateSizeGuide();
+  updateSizeUnit('EU');
+
+  unitBtns.forEach(function (b) {
+    b.addEventListener('click', function (event) {
+      event.preventDefault();
+      unitBtns.forEach(function (x) { x.classList.remove('is-active'); });
+      b.classList.add('is-active');
+      unitBtns.forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      updateSizeUnit(b.dataset.unit || 'EU');
+    });
+  });
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Product",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "url",
+      "id": "size_guide_url",
+      "label": "Lien Guide des tailles"
+    },
+    {
+      "type": "range",
+      "id": "low_stock_threshold",
+      "label": "Seuil affichage stock faible",
+      "min": 1,
+      "max": 20,
+      "step": 1,
+      "default": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "accordion",
+      "name": "Accordéon info",
+      "settings": [
+        { "type": "text",     "id": "title",   "label": "Titre",   "default": "Entretien" },
+        { "type": "richtext", "id": "content", "label": "Contenu", "default": "<p>Décrivez ici les conseils d'entretien de la paire.</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product",
+      "blocks": [
+        { "type": "accordion", "settings": { "title": "Entretien" } },
+        { "type": "accordion", "settings": { "title": "Livraison et retours" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

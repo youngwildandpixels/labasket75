@@ -1,0 +1,33 @@
+{
+  "sections": {
+    "cleaning_service": {
+      "type": "page-cleaning-service",
+      "settings": {
+        "eyebrow": "Kozy Care",
+        "title": "Nettoyage sneakers",
+        "intro": "<p>Redonne vie à tes sneakers, sacs et accessoires avec un entretien adapté aux matières. Dépose en boutique, diagnostic rapide et résultat propre.<\/p>",
+        "primary_cta_label": "Nous contacter",
+        "primary_cta_link": "\/pages\/contact",
+        "secondary_cta_label": "Voir les tarifs",
+        "secondary_cta_link": ""
+      }
+    },
+    "cleaning_compare": {
+      "type": "sneaker-cleaning-comparison",
+      "settings": {
+        "eyebrow": "Avant \/ après",
+        "heading": "Le résultat en un geste",
+        "text": "<p>Ajoute une photo sale et une photo propre, puis laisse le client faire glisser la barre pour révéler le résultat.<\/p>",
+        "before_label": "Avant",
+        "after_label": "Après",
+        "slider_start": 50,
+        "cta_label": "Nous confier une paire",
+        "cta_link": "\/pages\/contact"
+      }
+    }
+  },
+  "order": [
+    "cleaning_service",
+    "cleaning_compare"
+  ]
+}

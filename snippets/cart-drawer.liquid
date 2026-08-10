@@ -1,0 +1,62 @@
+{%- comment -%} Cart Drawer — panneau panier global {%- endcomment -%}
+<div class="cart-drawer" id="cart-drawer" aria-hidden="true" data-cart-drawer data-currency="{{ cart.currency.iso_code }}">
+  <div class="cart-drawer__overlay" data-cart-close></div>
+  <aside class="cart-drawer__panel" role="dialog" aria-modal="true" aria-labelledby="cart-drawer-title">
+    <button type="button" class="cart-drawer__close" aria-label="Fermer le panier" data-cart-close>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+        <path d="M6 6l12 12"/><path d="M18 6L6 18"/>
+      </svg>
+    </button>
+
+    <header class="cart-drawer__head">
+      <h2 id="cart-drawer-title">Panier</h2>
+    </header>
+
+    <div class="cart-drawer__body" data-cart-drawer-body aria-live="polite">
+      {%- if cart.item_count > 0 -%}
+        <div class="cart-drawer__items">
+          {%- for item in cart.items -%}
+            <article class="cart-drawer-line">
+              <a href="{{ item.url }}" class="cart-drawer-line__media" tabindex="-1">
+                {%- if item.image != blank -%}
+                  <img src="{{ item.image | image_url: width: 220 }}" alt="{{ item.image.alt | default: item.product.title | escape }}" width="110" height="110" loading="lazy">
+                {%- else -%}
+                  {{ 'product-1' | placeholder_svg_tag: 'cart-drawer-line__placeholder' }}
+                {%- endif -%}
+              </a>
+              <div class="cart-drawer-line__info">
+                {%- if item.product.vendor != blank -%}<p>{{ item.product.vendor }}</p>{%- endif -%}
+                <a href="{{ item.url }}" class="cart-drawer-line__title">{{ item.product.title | escape }}</a>
+                {%- unless item.product.has_only_default_variant -%}
+                  <span class="cart-drawer-line__variant">{{ item.variant.title }}</span>
+                {%- endunless -%}
+                <div class="cart-drawer-line__qty">
+                  <button type="button" data-cart-change data-line="{{ forloop.index }}" data-quantity="{{ item.quantity | minus: 1 }}" aria-label="Diminuer la quantité">−</button>
+                  <span>{{ item.quantity }}</span>
+                  <button type="button" data-cart-change data-line="{{ forloop.index }}" data-quantity="{{ item.quantity | plus: 1 }}" aria-label="Augmenter la quantité">+</button>
+                  <button type="button" class="cart-drawer-line__remove" data-cart-change data-line="{{ forloop.index }}" data-quantity="0">Retirer</button>
+                </div>
+              </div>
+              <strong class="cart-drawer-line__price">{{ item.final_line_price | money }}</strong>
+            </article>
+          {%- endfor -%}
+        </div>
+      {%- else -%}
+        <div class="cart-drawer__empty">
+          <p>Votre panier est vide</p>
+          <a href="{{ routes.all_products_collection_url | default: routes.root_url }}" data-cart-close>Explorer nos produits</a>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <footer class="cart-drawer__footer" data-cart-drawer-footer{% if cart.item_count == 0 %} hidden{% endif %}>
+      <div class="cart-drawer__subtotal">
+        <span>Sous-total</span>
+        <strong data-cart-subtotal>{{ cart.total_price | money }}</strong>
+      </div>
+      <p>Livraison calculée à l'étape suivante.</p>
+      <a href="/checkout" class="cart-drawer__checkout">Passer la commande</a>
+      <a href="{{ routes.cart_url }}" class="cart-drawer__view">Voir le panier</a>
+    </footer>
+  </aside>
+</div>

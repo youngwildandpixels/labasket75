@@ -1,0 +1,114 @@
+{%- comment -%} Newsletter — champ email Klaviyo ou Shopify natif {%- endcomment -%}
+
+<section class="newsletter">
+  <div class="newsletter__inner container">
+    <div class="newsletter__text">
+      {%- if section.settings.title != blank -%}
+        <h2 class="newsletter__title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subtitle != blank -%}
+        <p class="newsletter__subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </div>
+    <form class="newsletter__form" action="/contact#contact_form" method="post" accept-charset="UTF-8">
+      <input type="hidden" name="form_type" value="customer">
+      <input type="hidden" name="utf8" value="✓">
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <div class="newsletter__fields">
+        <input
+          type="email"
+          name="contact[email]"
+          id="newsletter-email-{{ section.id }}"
+          class="newsletter__input"
+          placeholder="{{ section.settings.placeholder | default: 'Votre adresse email' }}"
+          required
+          aria-label="{{ section.settings.placeholder | default: 'Votre adresse email' }}"
+        >
+        <button type="submit" class="newsletter__btn">
+          {{ section.settings.button_label | default: "S'inscrire" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+{% stylesheet %}
+.newsletter {
+  background: var(--color-black);
+  padding: var(--space-12) 0;
+}
+
+.newsletter__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-10);
+}
+
+.newsletter__title {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-white);
+  margin-bottom: var(--space-2);
+}
+
+.newsletter__subtitle {
+  font-size: var(--font-size-small);
+  color: var(--color-footer-link);
+}
+
+.newsletter__fields {
+  display: flex;
+  min-width: 380px;
+}
+
+.newsletter__input {
+  flex: 1;
+  background: var(--color-footer-input);
+  border: 0.5px solid var(--color-footer-border);
+  border-right: none;
+  color: var(--color-white);
+  font-size: var(--font-size-small);
+  letter-spacing: 0.5px;
+  padding: 12px 16px;
+  outline: none;
+  border-radius: 0;
+}
+.newsletter__input::placeholder { color: #555; }
+.newsletter__input:focus { border-color: var(--color-gray-500); }
+
+.newsletter__btn {
+  background: var(--color-white);
+  color: var(--color-black);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 12px 24px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+  margin-left: var(--space-2);
+  flex-shrink: 0;
+}
+.newsletter__btn:hover { opacity: 0.85; }
+
+@media (max-width: 768px) {
+  .newsletter__inner { flex-direction: column; align-items: stretch; gap: var(--space-6); }
+  .newsletter__fields { min-width: 0; }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "title",        "label": "Titre",       "default": "Restez informé" },
+    { "type": "text", "id": "subtitle",     "label": "Sous-titre",  "default": "Nouveautés, offres exclusives, actualités." },
+    { "type": "text", "id": "placeholder",  "label": "Placeholder", "default": "Votre adresse email" },
+    { "type": "text", "id": "button_label", "label": "Bouton",      "default": "S'inscrire" }
+  ],
+  "presets": [{ "name": "Newsletter" }]
+}
+{% endschema %}

@@ -1,0 +1,229 @@
+{%- comment -%}
+  Brand Banners — 1 grande bannière gauche + 2 empilées droite
+  Blocks : block 0 = grande gauche, blocks 1 & 2 = droite empilées
+{%- endcomment -%}
+
+<section class="brand-banners">
+  <div class="brand-banners__grid">
+    {%- for block in section.blocks -%}
+      <a
+        href="{{ block.settings.link | default: routes.all_products_collection_url }}"
+        class="brand-banner brand-banner--{{ forloop.index0 }}"
+        {{ block.shopify_attributes }}
+      >
+        <div class="brand-banner__media">
+          {%- if block.settings.image != blank -%}
+            <img
+              src="{{ block.settings.image | image_url: width: 1200 }}"
+              srcset="{{ block.settings.image | image_url: width: 600 }} 600w, {{ block.settings.image | image_url: width: 1200 }} 1200w"
+              sizes="(max-width: 768px) 100vw, 50vw"
+              alt="{{ block.settings.brand_name | escape }}"
+              loading="lazy"
+              width="1200"
+              height="800"
+              class="brand-banner__img"
+            >
+          {%- else -%}
+            {{ 'collection-apparel-1' | placeholder_svg_tag: 'brand-banner__img brand-banner__img--placeholder' }}
+          {%- endif -%}
+
+          <div class="brand-banner__overlay"></div>
+
+          <div class="brand-banner__content">
+            {%- if block.settings.brand_name != blank -%}
+              <h3 class="brand-banner__name">{{ block.settings.brand_name }}</h3>
+            {%- endif -%}
+            {%- if block.settings.cta_label != blank -%}
+              <span class="brand-banner__cta">{{ block.settings.cta_label }}</span>
+            {%- endif -%}
+          </div>
+        </div>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% stylesheet %}
+.brand-banners {
+  width: 100%;
+}
+
+/* Grille : colonne gauche 50% pleine hauteur, colonne droite 2 rangées */
+.brand-banners__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 2px;
+  background: var(--color-white);
+  height: 80vh;
+  min-height: 500px;
+  transition: grid-template-columns 0.45s ease;
+}
+
+.brand-banners__grid:has(.brand-banner--0:hover) {
+  grid-template-columns: 1.08fr 0.92fr;
+}
+
+.brand-banners__grid:has(.brand-banner--1:hover),
+.brand-banners__grid:has(.brand-banner--2:hover) {
+  grid-template-columns: 0.92fr 1.08fr;
+}
+
+/* Grande bannière gauche — s'étend sur 2 rangées */
+.brand-banner--0 {
+  grid-column: 1;
+  grid-row: 1 / 3;
+}
+
+/* Les 2 petites à droite */
+.brand-banner--1 {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.brand-banner--2 {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.brand-banner {
+  display: block;
+  overflow: hidden;
+  position: relative;
+}
+
+.brand-banner__media {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.brand-banner__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+  display: block;
+}
+.brand-banner__img--placeholder {
+  background: var(--color-gray-100);
+}
+
+.brand-banner:hover .brand-banner__img {
+  transform: scale(1.04);
+  opacity: 1;
+}
+
+.brand-banner__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, rgba(0,0,0,0.35) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.brand-banner__content {
+  position: absolute;
+  top: var(--space-6);
+  left: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.brand-banner__name {
+  font-size: clamp(28px, 4vw, 52px);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-white);
+  line-height: 1;
+  letter-spacing: -0.5px;
+  margin: 0;
+}
+
+.brand-banner--1 .brand-banner__name,
+.brand-banner--2 .brand-banner__name {
+  font-size: clamp(22px, 3vw, 40px);
+}
+
+.brand-banner__cta {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-white);
+  border: 1.5px solid var(--color-white);
+  border-radius: 9999px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 8px 20px;
+  transition: background 0.2s, color 0.2s;
+  width: fit-content;
+}
+.brand-banner:hover .brand-banner__cta {
+  background: var(--color-white);
+  color: var(--color-black);
+  opacity: 1;
+}
+
+/* Mobile — empilés verticalement */
+@media (max-width: 768px) {
+  .brand-banners__grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    height: auto;
+  }
+
+  .brand-banners__grid:has(.brand-banner:hover) {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-banner--0 {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .brand-banner--1 {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .brand-banner--2 {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .brand-banner__media {
+    aspect-ratio: 4 / 3;
+  }
+
+  .brand-banner__name { font-size: 32px; }
+  .brand-banner--1 .brand-banner__name,
+  .brand-banner--2 .brand-banner__name { font-size: 32px; }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Brand Banners",
+  "tag": "section",
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Marque",
+      "settings": [
+        { "type": "image_picker", "id": "image",      "label": "Image" },
+        { "type": "text",         "id": "brand_name", "label": "Nom de la marque", "default": "Marque" },
+        { "type": "text",         "id": "cta_label",  "label": "Texte du bouton",  "default": "Découvrir" },
+        { "type": "url",          "id": "link",       "label": "Lien collection" }
+      ]
+    }
+  ],
+  "max_blocks": 3,
+  "presets": [{
+    "name": "Brand Banners",
+    "blocks": [
+      { "type": "brand", "settings": { "brand_name": "Salomon",     "cta_label": "Découvrir" } },
+      { "type": "brand", "settings": { "brand_name": "Birkenstock", "cta_label": "Découvrir" } },
+      { "type": "brand", "settings": { "brand_name": "Nike",        "cta_label": "Découvrir" } }
+    ]
+  }]
+}
+{% endschema %}

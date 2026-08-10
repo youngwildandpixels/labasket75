@@ -1,0 +1,196 @@
+{%- comment -%} Page FAQ — questions fréquentes dédiées {%- endcomment -%}
+
+<section class="page-faq" id="page-faq-{{ section.id }}">
+  <div class="page-faq__inner container">
+    <header class="page-faq__hero">
+      <h1 class="page-faq__title">{{ section.settings.title | default: page.title | escape }}</h1>
+    </header>
+
+    <div class="page-faq__list">
+      {%- assign current_category = blank -%}
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign block_category = block.settings.category | default: section.settings.default_category
+          if block_category != current_category
+            assign current_category = block_category
+            assign show_category = true
+          else
+            assign show_category = false
+          endif
+        -%}
+        {%- if show_category and current_category != blank -%}
+          <h2 class="page-faq__category">{{ current_category }}</h2>
+        {%- endif -%}
+        <details class="page-faq__item" {{ block.shopify_attributes }}>
+          <summary class="page-faq__summary">
+            <span>{{ block.settings.question }}</span>
+            <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true">
+              <path d="M3 6l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </summary>
+          <div class="page-faq__answer">{{ block.settings.answer }}</div>
+        </details>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.page-faq {
+  background: var(--color-white);
+  color: var(--color-black);
+  padding: var(--space-16) 0 var(--space-16);
+}
+
+.page-faq__inner {
+  display: grid;
+  gap: var(--space-16);
+  max-width: 900px;
+}
+
+.page-faq__hero {
+  text-align: center;
+}
+
+.page-faq__title {
+  font-size: clamp(56px, 7vw, 86px);
+  font-weight: var(--font-weight-bold);
+  line-height: 0.95;
+  letter-spacing: 0;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.page-faq__list {
+  display: grid;
+}
+
+.page-faq__category {
+  font-size: clamp(28px, 3.2vw, 36px);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  letter-spacing: 0;
+  margin: 72px 0 28px;
+}
+
+.page-faq__category:first-child {
+  margin: 0 0 28px;
+}
+
+.page-faq__summary {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  border-bottom: 1px solid var(--color-black);
+  color: var(--color-black);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: var(--font-weight-bold);
+  list-style: none;
+  padding: 0 0 var(--space-1);
+}
+
+.page-faq__summary::-webkit-details-marker {
+  display: none;
+}
+
+.page-faq__summary svg {
+  flex: 0 0 auto;
+  transition: transform 0.2s ease;
+}
+
+.page-faq__item[open] .page-faq__summary svg {
+  transform: rotate(180deg);
+}
+
+.page-faq__answer {
+  max-width: 780px;
+  color: var(--color-gray-700);
+  font-size: 15px;
+  line-height: 1.65;
+  padding: var(--space-4) 0 var(--space-6);
+  border-bottom: 1px solid var(--color-black);
+}
+
+.page-faq__answer p {
+  margin: 0 0 var(--space-4);
+}
+
+@media (max-width: 900px) {
+  .page-faq {
+    padding: var(--space-10) 0 var(--space-12);
+  }
+
+  .page-faq__title {
+    font-size: 54px;
+  }
+
+  .page-faq__inner {
+    gap: var(--space-10);
+  }
+
+  .page-faq__summary {
+    min-height: 58px;
+    font-size: 15px;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Page FAQ",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Titre", "default": "FAQ" },
+    { "type": "text", "id": "default_category", "label": "Catégorie par défaut", "default": "Questions fréquentes" }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "category", "label": "Catégorie", "default": "Authenticité" },
+        { "type": "text", "id": "question", "label": "Question", "default": "Vos produits sont-ils authentiques ?" },
+        { "type": "richtext", "id": "answer", "label": "Réponse", "default": "<p>Oui, chaque produit est contrôlé avant d'être proposé sur Kozy Sneakers.</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Page FAQ",
+      "blocks": [
+        {
+          "type": "question",
+          "settings": {
+            "question": "Vos produits sont-ils authentiques ?",
+            "answer": "<p>Oui. Chaque paire est inspectée avant d'être mise en vente afin de vérifier son authenticité et son état.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "Les produits sont-ils disponibles immédiatement ?",
+            "answer": "<p>Les produits affichés en stock sont disponibles à la commande. Si une information manque, l'équipe peut confirmer la disponibilité avant achat.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "Quels sont les délais de livraison ?",
+            "answer": "<p>Les commandes sont préparées avec soin, puis expédiées selon le transporteur sélectionné au checkout.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "Puis-je venir en boutique ?",
+            "answer": "<p>Oui, tu peux passer à la boutique Kozy Sneakers à Clermont-Ferrand pour voir les produits, déposer une paire au cleaning ou demander conseil.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

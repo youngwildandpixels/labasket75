@@ -1,0 +1,24 @@
+{
+  "sections": {
+    "boutique": {
+      "type": "page-boutique",
+      "settings": {
+        "eyebrow": "Kozy Sneakers",
+        "title": "La boutique de Kozy Sneakers",
+        "intro": "<p>Sneakers | Textiles | Cleaning 👟<\/p>",
+        "about_text": "<p>Kozy Sneakers rassemble une selection de sneakers, textiles et accessoires, avec un service cleaning pour garder tes paires propres plus longtemps.<\/p>",
+        "monday_hours": "14h-19h",
+        "week_hours": "11h-19h",
+        "gallery_caption_1": "La boutique",
+        "gallery_caption_2": "Sneakers et textiles",
+        "gallery_caption_3": "Cleaning",
+        "address_title": "Passe nous voir",
+        "address": "14 Rue Saint-Esprit, Clermont-Ferrand",
+        "map_link": "https:\/\/www.google.com\/maps\/search\/?api=1&query=14%20Rue%20Saint-Esprit%2C%20Clermont-Ferrand"
+      }
+    }
+  },
+  "order": [
+    "boutique"
+  ]
+}

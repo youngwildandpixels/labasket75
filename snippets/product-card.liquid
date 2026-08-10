@@ -1,0 +1,73 @@
+{%- comment -%}
+  Paramètres :
+  - product : objet product Shopify
+  - show_vendor : boolean
+  - show_quick_add : boolean (pill "Achat express" en hover)
+  - show_secondary_image : boolean (affiche la 2e image en hover)
+  - lazy : boolean (lazy-load image)
+{%- endcomment -%}
+{%- liquid
+  assign has_sale = false
+  if product.compare_at_price > product.price
+    assign has_sale = true
+  endif
+
+  assign secondary_image = blank
+  if show_secondary_image and product.images.size > 1
+    assign secondary_image = product.images[1]
+  endif
+-%}
+<article class="product-card">
+  <a href="{{ product.url }}" class="product-card__link">
+    <div class="product-card__media{% if secondary_image != blank %} product-card__media--has-secondary{% endif %}">
+      {%- if has_sale -%}
+        <span class="badge badge--promo">PROMO</span>
+      {%- endif -%}
+      {%- if product.featured_image != blank -%}
+        <img
+          src="{{ product.featured_image | image_url: width: 600 }}"
+          srcset="{{ product.featured_image | image_url: width: 400 }} 400w, {{ product.featured_image | image_url: width: 600 }} 600w"
+          sizes="(max-width: 768px) 50vw, 25vw"
+          alt="{{ product.featured_image.alt | escape }}"
+          loading="{{ lazy | default: 'lazy' }}"
+          width="600"
+          height="545"
+          class="product-card__img product-card__img--primary"
+        >
+        {%- if secondary_image != blank -%}
+          <img
+            src="{{ secondary_image | image_url: width: 600 }}"
+            srcset="{{ secondary_image | image_url: width: 400 }} 400w, {{ secondary_image | image_url: width: 600 }} 600w"
+            sizes="(max-width: 768px) 50vw, 25vw"
+            alt="{{ secondary_image.alt | escape }}"
+            loading="lazy"
+            width="600"
+            height="545"
+            class="product-card__img product-card__img--secondary"
+          >
+        {%- endif -%}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'product-card__img product-card__img--placeholder' }}
+      {%- endif -%}
+      {%- if show_quick_add -%}
+        <span class="product-card__quick-add" aria-hidden="true">Achat express</span>
+      {%- endif -%}
+    </div>
+    <div class="product-card__info">
+      {%- if show_vendor and product.vendor != blank -%}
+        <p class="product-card__brand">{{ product.vendor }}</p>
+      {%- endif -%}
+      <p class="product-card__name">{{ product.title }}</p>
+      <div class="product-card__prices">
+        <span class="product-card__price{% if has_sale %} product-card__price--sale{% endif %}">
+          {{ product.price | money_without_trailing_zeros }}
+        </span>
+        {%- if has_sale -%}
+          <span class="product-card__price product-card__price--compare">
+            {{ product.compare_at_price | money_without_trailing_zeros }}
+          </span>
+        {%- endif -%}
+      </div>
+    </div>
+  </a>
+</article>

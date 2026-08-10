@@ -1,0 +1,85 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "entretien": {
+          "type": "accordion",
+          "settings": {
+            "title": "Entretien",
+            "content": "<p>Nettoyez vos sneakers avec un chiffon doux légèrement humide. Évitez l'eau chaude et les produits agressifs.<\/p>"
+          }
+        },
+        "livraison": {
+          "type": "accordion",
+          "settings": {
+            "title": "Livraison et retours",
+            "content": "<p>Livraison standard 24\/48h en France métropolitaine. Retours gratuits sous 14 jours.<\/p>"
+          }
+        }
+      },
+      "block_order": [
+        "entretien",
+        "livraison"
+      ],
+      "settings": {}
+    },
+    "related": {
+      "type": "related-products",
+      "settings": {
+        "heading": "Vous aimerez aussi",
+        "products_to_show": 8
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "qa",
+          "settings": {
+            "question": "Vos produits sont-ils neufs et authentiques ?",
+            "answer": "<p>Oui. Tous nos produits sont 100% neufs, inspectés et authentifiés par nos experts.<\/p>"
+          }
+        },
+        "q2": {
+          "type": "qa",
+          "settings": {
+            "question": "Vos produits sont-ils en stock ?",
+            "answer": "<p>Oui, tous les articles affichés sur le site sont en stock dans nos boutiques ou notre entrepôt.<\/p>"
+          }
+        },
+        "q3": {
+          "type": "qa",
+          "settings": {
+            "question": "Quels modes de livraison utilisez-vous ?",
+            "answer": "<p>Nous proposons la livraison express 24\/48h, la livraison standard et le retrait en boutique gratuit.<\/p>"
+          }
+        },
+        "q4": {
+          "type": "qa",
+          "settings": {
+            "question": "Quand recevrai-je ma commande ?",
+            "answer": "<p>Les commandes passées avant 14h sont expédiées le jour même. Comptez 24 à 48h en France métropolitaine.<\/p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4"
+      ],
+      "settings": {}
+    },
+    "trust": {
+      "type": "trust-bar",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "related",
+    "faq",
+    "trust"
+  ]
+}

@@ -1,0 +1,295 @@
+{%- comment -%} Page Notre concept — présentation Kozy Sneakers {%- endcomment -%}
+
+<section class="concept-page" id="concept-page-{{ section.id }}">
+  <div class="concept-page__hero container">
+    <div class="concept-page__hero-copy">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="concept-page__eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      <h1 class="concept-page__title">{{ section.settings.title | default: page.title | escape }}</h1>
+    </div>
+    {%- if section.settings.intro != blank -%}
+      <div class="concept-page__intro">{{ section.settings.intro }}</div>
+    {%- endif -%}
+  </div>
+
+  <div class="concept-page__statement container">
+    <p>{{ section.settings.statement }}</p>
+  </div>
+
+  <div class="concept-page__pillars container">
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'pillar' -%}
+        <article class="concept-page__pillar" {{ block.shopify_attributes }}>
+          <span>{{ forloop.index | prepend: '0' }}</span>
+          <h2>{{ block.settings.title }}</h2>
+          <div>{{ block.settings.text }}</div>
+        </article>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  <div class="concept-page__visit container">
+    <div>
+      <p class="concept-page__eyebrow">{{ section.settings.cta_eyebrow }}</p>
+      <h2>{{ section.settings.cta_title }}</h2>
+    </div>
+    <div class="concept-page__visit-copy">
+      <p>{{ section.settings.cta_text }}</p>
+      {%- if section.settings.cta_label != blank -%}
+        <a href="{{ section.settings.cta_link | default: '/collections/sneakers' }}" class="concept-page__button">
+          {{ section.settings.cta_label }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.concept-page {
+  background: var(--color-white);
+  color: var(--color-black);
+  padding: var(--space-12) 0 var(--space-16);
+}
+
+.concept-page__hero {
+  min-height: 420px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.42fr);
+  gap: var(--space-10);
+  align-items: end;
+  border-bottom: 1px solid var(--color-black);
+  padding-bottom: var(--space-8);
+}
+
+.concept-page__eyebrow {
+  color: var(--color-gray-500);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 1.4px;
+  margin: 0 0 var(--space-4);
+  text-transform: uppercase;
+}
+
+.concept-page__title {
+  max-width: 1000px;
+  font-size: clamp(46px, 8vw, 112px);
+  font-weight: var(--font-weight-bold);
+  line-height: 0.92;
+  letter-spacing: -1px;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.concept-page__intro {
+  color: var(--color-gray-700);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.concept-page__statement {
+  padding-top: var(--space-12);
+  padding-bottom: var(--space-12);
+}
+
+.concept-page__statement p {
+  max-width: 980px;
+  font-size: clamp(28px, 4vw, 56px);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  letter-spacing: -1px;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.concept-page__pillars {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--color-black);
+  border-bottom: 1px solid var(--color-black);
+}
+
+.concept-page__pillar {
+  min-height: 360px;
+  padding: var(--space-8);
+  border-right: 1px solid var(--color-gray-200);
+}
+
+.concept-page__pillar:first-child {
+  padding-left: 0;
+}
+
+.concept-page__pillar:last-child {
+  border-right: 0;
+}
+
+.concept-page__pillar span {
+  display: block;
+  color: var(--color-gray-500);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 1.4px;
+  margin-bottom: var(--space-8);
+  text-transform: uppercase;
+}
+
+.concept-page__pillar h2 {
+  font-size: clamp(24px, 2.6vw, 36px);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  margin: 0 0 var(--space-4);
+  text-transform: uppercase;
+}
+
+.concept-page__pillar div {
+  color: var(--color-gray-700);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.concept-page__visit {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.48fr);
+  gap: var(--space-10);
+  align-items: start;
+  padding-top: var(--space-12);
+}
+
+.concept-page__visit h2 {
+  max-width: 680px;
+  font-size: clamp(32px, 5vw, 70px);
+  font-weight: var(--font-weight-bold);
+  line-height: 0.96;
+  letter-spacing: -1px;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.concept-page__visit-copy p {
+  color: var(--color-gray-700);
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0 0 var(--space-6);
+}
+
+.concept-page__button {
+  min-height: 48px;
+  border: 1.5px solid var(--color-black);
+  border-radius: 9999px;
+  background: var(--color-black);
+  color: var(--color-white);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--space-7);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+}
+
+.concept-page__button:hover {
+  background: var(--color-white);
+  color: var(--color-black);
+  opacity: 1;
+}
+
+@media (max-width: 900px) {
+  .concept-page {
+    padding: var(--space-10) 0 var(--space-12);
+  }
+
+  .concept-page__hero,
+  .concept-page__visit {
+    grid-template-columns: 1fr;
+  }
+
+  .concept-page__hero {
+    min-height: 300px;
+  }
+
+  .concept-page__title {
+    font-size: 44px;
+  }
+
+  .concept-page__pillars {
+    grid-template-columns: 1fr;
+  }
+
+  .concept-page__pillar,
+  .concept-page__pillar:first-child {
+    min-height: 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-gray-200);
+    padding: var(--space-6) 0;
+  }
+
+  .concept-page__pillar:last-child {
+    border-bottom: 0;
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Page notre concept",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Surtitre", "default": "Notre concept" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "La culture sneaker, version Kozy" },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Introduction",
+      "default": "<p>Kozy Sneakers rassemble sélection, conseil et services autour de la sneaker. Une approche claire, locale et exigeante pour trouver, porter et entretenir les paires qui comptent.</p>"
+    },
+    {
+      "type": "text",
+      "id": "statement",
+      "label": "Phrase forte",
+      "default": "Des paires sélectionnées avec soin, une expérience simple, un service proche du terrain."
+    },
+    { "type": "text", "id": "cta_eyebrow", "label": "Surtitre CTA", "default": "Kozy Sneakers" },
+    { "type": "text", "id": "cta_title", "label": "Titre CTA", "default": "Découvrir la sélection" },
+    { "type": "text", "id": "cta_text", "label": "Texte CTA", "default": "Explore les dernières sneakers disponibles en ligne ou passe en boutique pour échanger avec l'équipe." },
+    { "type": "text", "id": "cta_label", "label": "Libellé CTA", "default": "Voir les sneakers" },
+    { "type": "url", "id": "cta_link", "label": "Lien CTA" }
+  ],
+  "blocks": [
+    {
+      "type": "pillar",
+      "name": "Pilier",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Titre", "default": "Sélection" },
+        { "type": "richtext", "id": "text", "label": "Texte", "default": "<p>Une sélection pensée autour des modèles, des matières et des détails qui font la différence.</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Page notre concept",
+      "blocks": [
+        {
+          "type": "pillar",
+          "settings": {
+            "title": "Sélection",
+            "text": "<p>Des sneakers choisies pour leur histoire, leur silhouette et leur potentiel au quotidien.</p>"
+          }
+        },
+        {
+          "type": "pillar",
+          "settings": {
+            "title": "Confiance",
+            "text": "<p>Une approche transparente : produits contrôlés, informations claires et accompagnement avant achat.</p>"
+          }
+        },
+        {
+          "type": "pillar",
+          "settings": {
+            "title": "Service",
+            "text": "<p>Une boutique, du conseil et un service cleaning pour prolonger la vie de tes paires.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

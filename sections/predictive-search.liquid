@@ -1,0 +1,22 @@
+{%- comment -%} Predictive search — rendu via /search/suggest?section_id=predictive-search {%- endcomment -%}
+{%- if predictive_search.performed -%}
+  {%- assign products = predictive_search.resources.products -%}
+  {%- if products.size > 0 -%}
+    <div class="search-drawer__grid">
+      {%- for product in products -%}
+        {%- render 'product-card', product: product, show_vendor: false, show_quick_add: false, lazy: 'lazy' -%}
+      {%- endfor -%}
+    </div>
+    <div class="search-drawer__more">
+      <a href="{{ routes.search_url }}?q={{ predictive_search.terms | url_encode }}" class="search-drawer__more-link">
+        Voir tous les résultats
+      </a>
+    </div>
+  {%- else -%}
+    <p class="search-drawer__empty">Aucun résultat pour « {{ predictive_search.terms }} ».</p>
+  {%- endif -%}
+{%- endif -%}
+
+{% schema %}
+{ "name": "Predictive Search" }
+{% endschema %}

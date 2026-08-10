@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "contact": {
+      "type": "page-contact",
+      "settings": {
+        "map_link": "https:\/\/www.google.com\/maps\/search\/?api=1&query=14%20Rue%20Saint-Esprit%2C%20Clermont-Ferrand",
+        "instagram_link": "https:\/\/www.instagram.com\/kozy.sneakers\/",
+        "facebook_link": "https:\/\/www.facebook.com\/p\/Sneakers-Finder-100065433551858\/",
+        "tiktok_link": "https:\/\/www.tiktok.com\/@kozy.sneakers"
+      }
+    }
+  },
+  "order": [
+    "contact"
+  ]
+}

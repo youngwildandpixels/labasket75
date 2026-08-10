@@ -1,0 +1,378 @@
+{%- comment -%} Featured Collection Tabs — slider avec flèches + barre de progression {%- endcomment -%}
+{%- liquid
+  assign col1 = section.settings.collection_1
+  assign col2 = section.settings.collection_2
+  assign limit = section.settings.products_to_show
+-%}
+
+<section class="featured-tabs" id="featured-tabs-{{ section.id }}">
+  <div class="featured-tabs__head container">
+    <div class="featured-tabs__nav" role="tablist">
+      <button class="ftab ftab--active" role="tab" aria-selected="true" data-tab="0">
+        {{ section.settings.tab_1_label | default: 'Bestsellers' }}
+      </button>
+      {%- if col2 != blank -%}
+        <button class="ftab" role="tab" aria-selected="false" data-tab="1">
+          {{ section.settings.tab_2_label | default: 'Nouveautés' }}
+        </button>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- for tab_index in (0..1) -%}
+    {%- liquid
+      if tab_index == 0
+        assign current_col = col1
+        assign is_active = true
+      else
+        assign current_col = col2
+        assign is_active = false
+      endif
+    -%}
+    {%- if tab_index == 1 and col2 == blank -%}{%- continue -%}{%- endif -%}
+
+    <div
+      class="ftab-panel{% if is_active %} ftab-panel--active{% endif %}"
+      data-panel="{{ tab_index }}"
+      {% unless is_active %}hidden{% endunless %}
+    >
+      <div class="slider-wrapper">
+        <button class="slider-arrow slider-arrow--prev" aria-label="Précédent">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </button>
+
+        <div class="slider-track" data-track>
+          <div class="slider-items" data-items>
+            {%- for product in current_col.products limit: limit -%}
+              <div class="slider-item">
+                {%- render 'product-card', product: product, show_vendor: false, show_quick_add: true, show_secondary_image: true, lazy: 'lazy' -%}
+              </div>
+            {%- else -%}
+              {%- for i in (1..5) -%}
+                <div class="slider-item slider-item--placeholder">
+                  {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
+              {%- endfor -%}
+            {%- endfor -%}
+          </div>
+        </div>
+
+        <button class="slider-arrow slider-arrow--next" aria-label="Suivant">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="slider-progress-wrap">
+        <div class="slider-progress-bar">
+          <div class="slider-progress-fill" data-fill></div>
+        </div>
+      </div>
+    </div>
+  {%- endfor -%}
+</section>
+
+{% stylesheet %}
+.featured-tabs {
+  padding: var(--space-10) 0 var(--space-8);
+}
+
+/* Header tabs */
+.featured-tabs__head {
+  margin-bottom: var(--space-6);
+}
+
+.featured-tabs__nav {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.ftab {
+  font-size: clamp(14px, 1.6vw, 18px);
+  font-weight: var(--font-weight-black);
+  color: var(--color-gray-500);
+  background: var(--color-surface);
+  border: 1px solid rgba(17, 19, 17, 0.14);
+  border-radius: 8px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s, border-color 0.15s, transform 0.15s;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+.ftab:hover {
+  color: var(--color-black);
+  border-color: var(--color-black);
+}
+.ftab--active {
+  color: var(--color-black);
+  background: var(--color-promo);
+  border-color: var(--color-black);
+  transform: translateY(-1px);
+}
+
+/* Panel */
+.ftab-panel { display: block; }
+.ftab-panel[hidden] { display: none; }
+
+/* Slider wrapper — position pour les flèches, full viewport */
+.slider-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+
+/* Track — clip le défilement, 100vw sans padding */
+.slider-track {
+  overflow: hidden;
+  width: 100%;
+  padding: 0;
+}
+
+/* Items — ligne horizontale, gap léger, pas de séparateur foncé */
+.slider-items {
+  display: flex;
+  gap: var(--space-3);
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+.slider-item {
+  /* 4 cartes entières + moitié de la 5e ; 4 gaps de 4px visibles */
+  flex: 0 0 calc((100% - 16px) / 4.5);
+  min-width: 0;
+}
+
+.featured-tabs .product-card__media {
+  aspect-ratio: 3 / 4;
+}
+
+.featured-tabs .product-card__img {
+  object-fit: contain;
+  object-position: center;
+}
+
+.slider-item--placeholder {
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+}
+.slider-item--placeholder svg { width: 100%; height: 100%; }
+
+/* Flèches */
+.slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  background: var(--color-surface);
+  border: 1px solid rgba(17, 19, 17, 0.16);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-black);
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.slider-arrow:hover { background: var(--color-promo); color: var(--color-black); opacity: 1; border-color: var(--color-black); }
+.slider-arrow:disabled { opacity: 0.25; cursor: default; }
+.slider-arrow--prev { left: var(--space-4); }
+.slider-arrow--next { right: var(--space-4); }
+
+/* Barre de progression */
+.slider-progress-wrap {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-6) 0 0;
+}
+
+.slider-progress-bar {
+  width: 120px;
+  height: 4px;
+  background: var(--color-gray-200);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.slider-progress-fill {
+  height: 100%;
+  background: var(--color-promo);
+  border-radius: 9999px;
+  transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  width: 25%;
+}
+
+@media (max-width: 1024px) {
+  .slider-item { flex: 0 0 calc(33.333% - 3px); }
+}
+
+@media (max-width: 768px) {
+  .featured-tabs { padding: var(--space-8) 0 var(--space-6); }
+  /* 1 carte entière + moitié de la 2e ; 1 gap de 4px visible */
+  .slider-item { flex: 0 0 calc((100% - 4px) / 1.5); }
+  .slider-arrow { width: 32px; height: 32px; }
+  .slider-arrow--prev { left: var(--space-2); }
+  .slider-arrow--next { right: var(--space-2); }
+  .ftab { font-size: 20px; }
+}
+{% endstylesheet %}
+
+<script>
+(function () {
+  var section = document.getElementById('featured-tabs-{{ section.id }}');
+  if (!section) return;
+
+  // --- Tabs ---
+  var tabs   = section.querySelectorAll('.ftab');
+  var panels = section.querySelectorAll('.ftab-panel');
+
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      tabs.forEach(function (t) { t.classList.remove('ftab--active'); t.setAttribute('aria-selected', 'false'); });
+      panels.forEach(function (p) { p.hidden = true; p.classList.remove('ftab-panel--active'); });
+      tab.classList.add('ftab--active');
+      tab.setAttribute('aria-selected', 'true');
+      var panel = section.querySelector('[data-panel="' + tab.dataset.tab + '"]');
+      panel.hidden = false;
+      panel.classList.add('ftab-panel--active');
+      initSlider(panel);
+    });
+  });
+
+  // --- Slider factory ---
+  function initSlider(panel) {
+    if (panel._sliderInit) return;
+    panel._sliderInit = true;
+
+    var items     = panel.querySelector('[data-items]');
+    var fill      = panel.querySelector('[data-fill]');
+    var btnPrev   = panel.querySelector('.slider-arrow--prev');
+    var btnNext   = panel.querySelector('.slider-arrow--next');
+    var cards     = items.querySelectorAll('.slider-item');
+    var total     = cards.length;
+    if (total === 0) return;
+
+    var current   = 0;
+    var visible   = getVisible();
+    var touchStartX = 0;
+    var touchStartY = 0;
+    var touchDeltaX = 0;
+    var touchDragging = false;
+
+    function getVisible() {
+      if (window.innerWidth <= 768)  return 1.5;
+      if (window.innerWidth <= 1024) return 3;
+      return 4.5;
+    }
+
+    function cardWidth() {
+      var gap = parseFloat(getComputedStyle(items).columnGap) || 0;
+      return cards[0].offsetWidth + gap;
+    }
+
+    function maxIndex() {
+      return Math.max(0, Math.ceil(total - getVisible()));
+    }
+
+    function update() {
+      visible = getVisible();
+      var offset = current * cardWidth();
+      items.style.transform = 'translateX(-' + offset + 'px)';
+
+      // Progress
+      var max = maxIndex();
+      var pct = max === 0 ? 100 : Math.round((current / max) * 100);
+      fill.style.width = Math.max(Math.round(100 / Math.max(total, 1)), pct) + '%';
+
+      // Masque les flèches + barre quand rien à scroller
+      var needsArrows = total > visible;
+      btnPrev.style.display = needsArrows ? '' : 'none';
+      btnNext.style.display = needsArrows ? '' : 'none';
+      var progressWrap = panel.querySelector('.slider-progress-wrap');
+      if (progressWrap) progressWrap.style.display = needsArrows ? '' : 'none';
+
+      btnPrev.disabled = current === 0;
+      btnNext.disabled = current >= max;
+    }
+
+    btnPrev.addEventListener('click', function () {
+      if (current > 0) { current--; update(); }
+    });
+
+    btnNext.addEventListener('click', function () {
+      if (current < maxIndex()) { current++; update(); }
+    });
+
+    items.addEventListener('touchstart', function (event) {
+      if (!event.touches || event.touches.length !== 1) return;
+      touchStartX = event.touches[0].clientX;
+      touchStartY = event.touches[0].clientY;
+      touchDeltaX = 0;
+      touchDragging = false;
+    }, { passive: true });
+
+    items.addEventListener('touchmove', function (event) {
+      if (!event.touches || event.touches.length !== 1) return;
+      var deltaX = event.touches[0].clientX - touchStartX;
+      var deltaY = event.touches[0].clientY - touchStartY;
+
+      if (Math.abs(deltaX) > 12 && Math.abs(deltaX) > Math.abs(deltaY)) {
+        touchDragging = true;
+        touchDeltaX = deltaX;
+        event.preventDefault();
+      }
+    }, { passive: false });
+
+    items.addEventListener('touchend', function () {
+      if (!touchDragging) return;
+      var threshold = Math.max(40, cardWidth() * 0.18);
+
+      if (touchDeltaX < -threshold && current < maxIndex()) {
+        current++;
+      } else if (touchDeltaX > threshold && current > 0) {
+        current--;
+      }
+
+      update();
+      touchDragging = false;
+      touchDeltaX = 0;
+    });
+
+    window.addEventListener('resize', function () {
+      current = Math.min(current, maxIndex());
+      update();
+    });
+
+    update();
+  }
+
+  // Init le premier panel
+  var firstPanel = section.querySelector('.ftab-panel--active');
+  if (firstPanel) initSlider(firstPanel);
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Featured Collection Tabs",
+  "tag": "section",
+  "settings": [
+    { "type": "text",       "id": "tab_1_label",      "label": "Onglet 1",           "default": "Bestsellers" },
+    { "type": "collection", "id": "collection_1",      "label": "Collection 1" },
+    { "type": "text",       "id": "tab_2_label",      "label": "Onglet 2",           "default": "Nouveautés" },
+    { "type": "collection", "id": "collection_2",      "label": "Collection 2" },
+    { "type": "range",      "id": "products_to_show", "label": "Produits à afficher", "min": 4, "max": 16, "step": 2, "default": 8 }
+  ],
+  "presets": [{ "name": "Featured Collection Tabs" }]
+}
+{% endschema %}

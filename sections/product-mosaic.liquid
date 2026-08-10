@@ -1,0 +1,183 @@
+{%- comment -%}
+  Product Mosaic - grille simple de produits
+  Fond blanc, juste les images
+{%- endcomment -%}
+{%- liquid
+  assign coll = section.settings.collection
+  assign user_limit = section.settings.products_to_show
+  assign mobile_user_limit = section.settings.products_to_show_mobile | default: user_limit
+  assign max_items = 32
+  if user_limit > max_items
+    assign limit = max_items
+  else
+    assign limit = user_limit
+  endif
+  if mobile_user_limit > max_items
+    assign mobile_limit = max_items
+  else
+    assign mobile_limit = mobile_user_limit
+  endif
+  assign mobile_limit_next = mobile_limit | plus: 1
+-%}
+
+<style>
+  @media (max-width: 768px) {
+    #ProductMosaic-{{ section.id }} .pmosaic__item:nth-child(n+{{ mobile_limit_next }}) {
+      display: none;
+    }
+  }
+</style>
+
+<section class="pmosaic" id="ProductMosaic-{{ section.id }}">
+  {%- if section.settings.heading != blank -%}
+    <div class="pmosaic__head container">
+      <h2 class="pmosaic__title">{{ section.settings.heading }}</h2>
+    </div>
+  {%- endif -%}
+
+  <div class="pmosaic__grid">
+    {%- if coll != blank and coll.products.size > 0 -%}
+      {%- for product in coll.products limit: limit -%}
+        <a
+          href="{{ product.url }}"
+          class="pmosaic__item"
+          aria-label="{{ product.title | escape }}"
+        >
+          {%- if product.featured_image != blank -%}
+            <img
+              src="{{ product.featured_image | image_url: width: 500 }}"
+              srcset="{{ product.featured_image | image_url: width: 300 }} 300w, {{ product.featured_image | image_url: width: 500 }} 500w"
+              sizes="(max-width: 768px) 33vw, 12.5vw"
+              alt="{{ product.featured_image.alt | default: product.title | escape }}"
+              loading="lazy"
+              width="500"
+              height="500"
+              class="pmosaic__img"
+            >
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag: 'pmosaic__img' }}
+          {%- endif -%}
+        </a>
+      {%- endfor -%}
+    {%- else -%}
+      {%- for i in (1..20) -%}
+        <a href="#" class="pmosaic__item" aria-hidden="true">
+          {{ 'product-' | append: i | placeholder_svg_tag: 'pmosaic__img' }}
+        </a>
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+.pmosaic {
+  background: var(--color-white);
+  padding: var(--space-12) 0;
+  overflow: hidden;
+}
+
+.pmosaic__head {
+  margin-bottom: var(--space-8);
+}
+
+.pmosaic__title {
+  font-size: clamp(20px, 2vw, 24px);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-black);
+  margin: 0;
+}
+
+/* Grid 8 colonnes x 4 rangees - full width */
+.pmosaic__grid {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: var(--space-4) var(--space-6);
+  width: 100%;
+  max-width: 100%;
+  padding: 0 var(--space-4);
+}
+
+.pmosaic__item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  aspect-ratio: 1;
+  padding: var(--space-3);
+  transition: opacity 0.2s, transform 0.3s ease;
+}
+.pmosaic__item:hover { opacity: 1; }
+.pmosaic__item:hover .pmosaic__img { transform: scale(1.06); }
+
+.pmosaic__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+@media (max-width: 1024px) {
+  .pmosaic__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+}
+
+@media (max-width: 768px) {
+  .pmosaic { padding: var(--space-6) 0; }
+
+  .pmosaic__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    padding: 0 var(--space-3);
+  }
+
+  .pmosaic__item {
+    width: 100%;
+    padding: var(--space-2);
+  }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product Mosaic",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titre",
+      "default": "SLIDES"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Produits à afficher",
+      "info": "Plafonné automatiquement à 32 pour tenir en 4 rangées.",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "products_to_show_mobile",
+      "label": "Produits à afficher sur mobile",
+      "min": 3,
+      "max": 24,
+      "step": 1,
+      "default": 20
+    }
+  ],
+  "presets": [{ "name": "Product Mosaic" }]
+}
+{% endschema %}

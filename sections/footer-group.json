@@ -1,0 +1,26 @@
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "settings": {
+        "contact_heading": "Nous contacter",
+        "contact_label": "Portail de contact",
+        "contact_text": "Notre équipe s'engage à vous répondre en 24 à 48h ouvrées.",
+        "contact_link": "",
+        "about_heading": "À propos de Kozy Sneakers",
+        "about_text": "La Basket 75 sélectionne des sneakers, vêtements et accessoires pour les passionnés de style, de confort et de belles pièces.",
+        "social_heading": "Retrouvez-nous sur",
+        "instagram_url": "",
+        "tiktok_url": "",
+        "facebook_url": "",
+        "pinterest_url": "",
+        "legal_menu": ""
+      }
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

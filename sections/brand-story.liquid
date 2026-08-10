@@ -1,0 +1,112 @@
+{%- comment -%} Brand Story — texte + image côte à côte {%- endcomment -%}
+
+<section class="brand-story">
+  <div class="brand-story__inner container">
+    <div class="brand-story__text">
+      {%- if section.settings.label != blank -%}
+        <p class="brand-story__label">{{ section.settings.label }}</p>
+      {%- endif -%}
+      {%- if section.settings.title != blank -%}
+        <h2 class="brand-story__title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="brand-story__body">{{ section.settings.text }}</div>
+      {%- endif -%}
+      {%- if section.settings.cta_label != blank -%}
+        {%- liquid
+          assign cta_url = section.settings.cta_link
+          if section.settings.cta_page != blank
+            assign cta_url = pages[section.settings.cta_page].url
+          endif
+        -%}
+        <a href="{{ cta_url | default: '#' }}" class="btn btn--primary brand-story__cta">
+          {{ section.settings.cta_label }}
+        </a>
+      {%- endif -%}
+    </div>
+    <div class="brand-story__media">
+      {%- if section.settings.image != blank -%}
+        <img
+          src="{{ section.settings.image | image_url: width: 800 }}"
+          alt="{{ section.settings.image.alt | escape }}"
+          loading="lazy"
+          width="800"
+          height="1000"
+          class="brand-story__img"
+        >
+      {%- else -%}
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'brand-story__img brand-story__img--placeholder' }}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+.brand-story { padding: var(--space-16) 0; }
+
+.brand-story__inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-16);
+  align-items: center;
+}
+
+.brand-story__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-gray-500);
+  margin-bottom: var(--space-3);
+}
+
+.brand-story__title {
+  font-size: var(--font-size-display);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.0;
+  letter-spacing: -1px;
+  margin-bottom: var(--space-6);
+}
+
+.brand-story__body {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-light);
+  color: var(--color-gray-700);
+  line-height: 1.7;
+  margin-bottom: var(--space-8);
+}
+
+.brand-story__img {
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  object-fit: cover;
+  aspect-ratio: 4 / 5;
+  display: block;
+}
+
+.brand-story__img--placeholder { background: var(--color-gray-100); aspect-ratio: 4/5; }
+
+@media (max-width: 768px) {
+  .brand-story__inner { grid-template-columns: 1fr; gap: var(--space-8); }
+  .brand-story__title { font-size: var(--font-size-h1); }
+  .brand-story__media { order: -1; }
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Brand Story",
+  "tag": "section",
+  "settings": [
+    { "type": "text",         "id": "label",     "label": "Label",      "default": "Notre histoire" },
+    { "type": "text",         "id": "title",     "label": "Titre",      "default": "The Last Step" },
+    { "type": "richtext",     "id": "text",      "label": "Texte",      "default": "<p>Présentation de la boutique.</p>" },
+    { "type": "text",         "id": "cta_label", "label": "Texte CTA",  "default": "En savoir plus" },
+    { "type": "page",         "id": "cta_page",  "label": "Page CTA" },
+    { "type": "url",          "id": "cta_link",  "label": "Lien CTA manuel" },
+    { "type": "image_picker", "id": "image",     "label": "Image" }
+  ],
+  "presets": [{ "name": "Brand Story" }]
+}
+{% endschema %}
