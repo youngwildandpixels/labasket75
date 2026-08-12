@@ -12,9 +12,9 @@
 -%}
 
 <style>
-  body { padding-top: {{ header_height | plus: 12 }}px; }
+  body { padding-top: {{ header_height | plus: 8 }}px; }
   @media (max-width: 768px) {
-    body { padding-top: 88px; }
+    body { padding-top: 84px; }
   }
 </style>
 
@@ -258,7 +258,7 @@
   background: transparent;
   border-bottom: 0;
   min-height: var(--header-height);
-  height: calc(var(--site-header-height, var(--header-height)) + 24px);
+  height: calc(var(--site-header-height, var(--header-height)) + 16px);
 }
 
 .site-header__inner {
