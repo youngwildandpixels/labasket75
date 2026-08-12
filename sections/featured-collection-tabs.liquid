@@ -93,44 +93,50 @@
 }
 
 .featured-tabs__nav {
+  position: relative;
   display: flex;
   justify-content: flex-start;
-  gap: var(--space-5);
+  gap: 0;
+  width: fit-content;
+  padding: 3px;
+  background: var(--color-gray-100);
+  border: var(--surface-border);
+  border-radius: 9999px;
+}
+
+.featured-tabs__nav::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: var(--featured-tabs-pill-width, 0px);
+  border-radius: 9999px;
+  background: var(--color-white);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  transform: translateX(var(--featured-tabs-pill-x, 0px));
+  transition: transform 0.24s ease, width 0.24s ease;
 }
 
 .ftab {
   position: relative;
+  z-index: 1;
   font-size: 14px;
   font-weight: var(--font-weight-bold);
   color: var(--color-gray-500);
   background: none;
   border: none;
-  padding: 0 0 var(--space-1);
+  border-radius: 9999px;
+  padding: 9px 14px;
   cursor: pointer;
   transition: color 0.15s;
   letter-spacing: 0;
   text-transform: uppercase;
 }
-.ftab::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 1.5px;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: center;
-  transition: transform 0.2s ease;
-}
 .ftab--active,
 .ftab:hover {
   color: var(--color-black);
   opacity: 1;
-}
-.ftab--active::after,
-.ftab:hover::after {
-  transform: scaleX(1);
 }
 
 /* Panel */
@@ -151,13 +157,13 @@
   overflow: hidden;
   width: 100%;
   padding: 0;
-  background: var(--color-gray-200);
+  background: var(--color-white);
 }
 
 /* Items — ligne horizontale, gap léger, pas de séparateur foncé */
 .slider-items {
   display: flex;
-  gap: 1px;
+  gap: 0;
   transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform;
 }
@@ -246,11 +252,14 @@
 @media (max-width: 768px) {
   .featured-tabs { padding: var(--space-4); }
   /* 1 carte entière + moitié de la 2e ; 1 gap de 4px visible */
-  .slider-item { flex: 0 0 calc((100% - 1px) / 1.5); }
+  .slider-item { flex: 0 0 calc(100% / 1.5); }
   .slider-arrow { width: 32px; height: 32px; }
   .slider-arrow--prev { left: var(--space-2); }
   .slider-arrow--next { right: var(--space-2); }
-  .ftab { font-size: 13px; }
+  .ftab {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
 }
 {% endstylesheet %}
 
@@ -262,6 +271,15 @@
   // --- Tabs ---
   var tabs   = section.querySelectorAll('.ftab');
   var panels = section.querySelectorAll('.ftab-panel');
+  var tabNav = section.querySelector('.featured-tabs__nav');
+
+  function updateActivePill() {
+    if (!tabNav) return;
+    var activeTab = section.querySelector('.ftab--active');
+    if (!activeTab) return;
+    tabNav.style.setProperty('--featured-tabs-pill-width', activeTab.offsetWidth + 'px');
+    tabNav.style.setProperty('--featured-tabs-pill-x', activeTab.offsetLeft - 3 + 'px');
+  }
 
   tabs.forEach(function (tab) {
     tab.addEventListener('click', function () {
@@ -272,9 +290,13 @@
       var panel = section.querySelector('[data-panel="' + tab.dataset.tab + '"]');
       panel.hidden = false;
       panel.classList.add('ftab-panel--active');
+      updateActivePill();
       initSlider(panel);
     });
   });
+
+  updateActivePill();
+  window.addEventListener('resize', updateActivePill);
 
   // --- Slider factory ---
   function initSlider(panel) {
