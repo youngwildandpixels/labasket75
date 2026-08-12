@@ -158,54 +158,6 @@
 {%- assign automatic_collection_pills = automatic_collection_pills | strip -%}
 
 <section class="collection-page">
-  <div class="collection-page__head container">
-    <nav class="collection-page__breadcrumb" aria-label="Fil d'Ariane">
-      <a href="{{ routes.root_url }}">Accueil</a>
-      <span aria-hidden="true">/</span>
-      <span>{{ collection.title | escape }}</span>
-    </nav>
-
-    <h1 class="collection-page__title">{{ collection.title | escape }}</h1>
-
-    {%- if use_manual_collection_menu and collection_menu.links != blank or automatic_collection_pills != blank -%}
-      <div class="collection-page__collections-wrap">
-        <button class="collection-page__collections-arrow collection-page__collections-arrow--prev" type="button" data-collections-prev aria-label="Collections précédentes">
-          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
-            <path d="M11.5 3.5L6 9l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-        <nav class="collection-page__collections" data-collections-track aria-label="Collections">
-          {%- if use_manual_collection_menu and collection_menu.links != blank -%}
-            {%- for collection_link in collection_menu.links -%}
-              {%- liquid
-                assign is_current_collection = false
-                if collection_link.type == 'collection_link' and collection_link.object.handle == collection.handle
-                  assign is_current_collection = true
-                elsif collection_link.url == collection.url
-                  assign is_current_collection = true
-                endif
-              -%}
-              <a
-                href="{{ collection_link.url }}"
-                class="collection-page__collection-pill{% if is_current_collection %} is-active{% endif %}"
-                {% if is_current_collection %}aria-current="page"{% endif %}
-              >
-                {{ collection_link.title | escape }}
-              </a>
-            {%- endfor -%}
-          {%- elsif automatic_collection_pills != blank -%}
-            {{ automatic_collection_pills }}
-          {%- endif -%}
-        </nav>
-        <button class="collection-page__collections-arrow collection-page__collections-arrow--next" type="button" data-collections-next aria-label="Collections suivantes">
-          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
-            <path d="M6.5 3.5L12 9l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-      </div>
-    {%- endif -%}
-  </div>
-
   {%- paginate collection.products by paginate_limit -%}
     <div class="collection-page__body container">
       <button class="collection-page__filters-backdrop" type="button" data-close-filters aria-label="Fermer les filtres"></button>
@@ -527,6 +479,54 @@
       </aside>
 
       <div class="collection-page__content">
+        <div class="collection-page__head">
+          <nav class="collection-page__breadcrumb" aria-label="Fil d'Ariane">
+            <a href="{{ routes.root_url }}">Accueil</a>
+            <span aria-hidden="true">/</span>
+            <span>{{ collection.title | escape }}</span>
+          </nav>
+
+          <h1 class="collection-page__title">{{ collection.title | escape }}</h1>
+
+          {%- if use_manual_collection_menu and collection_menu.links != blank or automatic_collection_pills != blank -%}
+            <div class="collection-page__collections-wrap">
+              <button class="collection-page__collections-arrow collection-page__collections-arrow--prev" type="button" data-collections-prev aria-label="Collections précédentes">
+                <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+                  <path d="M11.5 3.5L6 9l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <nav class="collection-page__collections" data-collections-track aria-label="Collections">
+                {%- if use_manual_collection_menu and collection_menu.links != blank -%}
+                  {%- for collection_link in collection_menu.links -%}
+                    {%- liquid
+                      assign is_current_collection = false
+                      if collection_link.type == 'collection_link' and collection_link.object.handle == collection.handle
+                        assign is_current_collection = true
+                      elsif collection_link.url == collection.url
+                        assign is_current_collection = true
+                      endif
+                    -%}
+                    <a
+                      href="{{ collection_link.url }}"
+                      class="collection-page__collection-pill{% if is_current_collection %} is-active{% endif %}"
+                      {% if is_current_collection %}aria-current="page"{% endif %}
+                    >
+                      {{ collection_link.title | escape }}
+                    </a>
+                  {%- endfor -%}
+                {%- elsif automatic_collection_pills != blank -%}
+                  {{ automatic_collection_pills }}
+                {%- endif -%}
+              </nav>
+              <button class="collection-page__collections-arrow collection-page__collections-arrow--next" type="button" data-collections-next aria-label="Collections suivantes">
+                <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+                  <path d="M6.5 3.5L12 9l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          {%- endif -%}
+        </div>
+
         <div class="collection-page__mobile-bar">
           <button class="collection-page__filter-toggle" type="button" data-open-filters aria-expanded="false">
             <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
@@ -676,16 +676,7 @@ body.template-collection::before {
 }
 
 .collection-page__head {
-  width: auto;
-  margin-right: var(--collection-block-gap);
-  margin-bottom: 0;
-  margin-left: var(--collection-block-gap);
-  text-align: center;
-  background: var(--color-white);
-  border: var(--collection-block-border);
-  border-radius: var(--collection-block-radius);
-  box-shadow: var(--collection-block-shadow);
-  padding: var(--space-5);
+  text-align: left;
   padding-bottom: var(--space-5);
 }
 
@@ -695,26 +686,25 @@ body.template-collection::before {
   display: flex;
   gap: var(--space-2);
   align-items: center;
-  justify-content: center;
-  margin-bottom: var(--space-4);
+  justify-content: flex-start;
+  margin-bottom: var(--space-2);
 }
 .collection-page__breadcrumb a { color: var(--color-gray-500); }
 
 .collection-page__title {
-  font-size: var(--font-size-display);
+  font-size: 42px;
   font-weight: var(--font-weight-bold);
   line-height: 1.0;
-  letter-spacing: -1px;
+  letter-spacing: 0;
   text-transform: uppercase;
   margin: 0;
 }
 
 .collection-page__collections-wrap {
   position: relative;
-  width: 100vw;
-  margin: var(--space-5) 0 var(--space-12);
-  margin-left: calc(50% - 50vw);
-  padding: 0 var(--space-16);
+  width: 100%;
+  margin: var(--space-4) 0 0;
+  padding: 0;
 }
 
 .collection-page__collections {
@@ -1299,11 +1289,11 @@ body.template-collection::before {
 }
 
 @media (max-width: 768px) {
-  .collection-page__title { font-size: 32px; letter-spacing: -0.5px; }
+  .collection-page__title { font-size: 30px; letter-spacing: 0; }
   .collection-page__collections-wrap {
     margin-top: var(--space-4);
-    margin-bottom: var(--space-8);
-    padding: 0 var(--space-12);
+    margin-bottom: 0;
+    padding: 0;
   }
   .collection-page__collection-pill {
     padding: var(--space-3) var(--space-4);
@@ -1322,7 +1312,7 @@ body.template-collection::before {
     display: block;
   }
   .collection-page__head {
-    padding: var(--space-4);
+    padding-bottom: var(--space-4);
   }
   .collection-page__content {
     padding: var(--space-4);
