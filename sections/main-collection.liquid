@@ -682,14 +682,18 @@ body.template-collection::before {
 }
 
 .collection-page__breadcrumb {
+  width: fit-content;
   font-size: var(--font-size-small);
   color: var(--color-gray-500);
   display: flex;
   gap: var(--space-2);
   align-items: center;
+  align-self: flex-start;
   justify-content: flex-start;
   text-align: left;
+  margin-right: 0;
   margin-bottom: var(--space-2);
+  margin-left: 0;
 }
 .collection-page__breadcrumb a { color: var(--color-gray-500); }
 
