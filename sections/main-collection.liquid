@@ -167,53 +167,43 @@
 
     <h1 class="collection-page__title">{{ collection.title | escape }}</h1>
 
-    <div class="collection-page__collections-wrap">
-      <button class="collection-page__collections-arrow collection-page__collections-arrow--prev" type="button" data-collections-prev aria-label="Collections précédentes">
-        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
-          <path d="M11.5 3.5L6 9l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-      <nav class="collection-page__collections" data-collections-track aria-label="Collections">
-        {%- if use_manual_collection_menu and collection_menu.links != blank -%}
-          {%- for collection_link in collection_menu.links -%}
-            {%- liquid
-              assign is_current_collection = false
-              if collection_link.type == 'collection_link' and collection_link.object.handle == collection.handle
-                assign is_current_collection = true
-              elsif collection_link.url == collection.url
-                assign is_current_collection = true
-              endif
-            -%}
-            <a
-              href="{{ collection_link.url }}"
-              class="collection-page__collection-pill{% if is_current_collection %} is-active{% endif %}"
-              {% if is_current_collection %}aria-current="page"{% endif %}
-            >
-              {{ collection_link.title | escape }}
-            </a>
-          {%- endfor -%}
-        {%- elsif automatic_collection_pills != blank -%}
-          {{ automatic_collection_pills }}
-        {%- else -%}
-          {%- for collection_link in collections -%}
-            {%- unless collection_link.handle == 'frontpage' -%}
+    {%- if use_manual_collection_menu and collection_menu.links != blank or automatic_collection_pills != blank -%}
+      <div class="collection-page__collections-wrap">
+        <button class="collection-page__collections-arrow collection-page__collections-arrow--prev" type="button" data-collections-prev aria-label="Collections précédentes">
+          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+            <path d="M11.5 3.5L6 9l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <nav class="collection-page__collections" data-collections-track aria-label="Collections">
+          {%- if use_manual_collection_menu and collection_menu.links != blank -%}
+            {%- for collection_link in collection_menu.links -%}
+              {%- liquid
+                assign is_current_collection = false
+                if collection_link.type == 'collection_link' and collection_link.object.handle == collection.handle
+                  assign is_current_collection = true
+                elsif collection_link.url == collection.url
+                  assign is_current_collection = true
+                endif
+              -%}
               <a
                 href="{{ collection_link.url }}"
-                class="collection-page__collection-pill{% if collection_link.handle == collection.handle %} is-active{% endif %}"
-                {% if collection_link.handle == collection.handle %}aria-current="page"{% endif %}
+                class="collection-page__collection-pill{% if is_current_collection %} is-active{% endif %}"
+                {% if is_current_collection %}aria-current="page"{% endif %}
               >
                 {{ collection_link.title | escape }}
               </a>
-            {%- endunless -%}
-          {%- endfor -%}
-        {%- endif -%}
-      </nav>
-      <button class="collection-page__collections-arrow collection-page__collections-arrow--next" type="button" data-collections-next aria-label="Collections suivantes">
-        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
-          <path d="M6.5 3.5L12 9l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-    </div>
+            {%- endfor -%}
+          {%- elsif automatic_collection_pills != blank -%}
+            {{ automatic_collection_pills }}
+          {%- endif -%}
+        </nav>
+        <button class="collection-page__collections-arrow collection-page__collections-arrow--next" type="button" data-collections-next aria-label="Collections suivantes">
+          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+            <path d="M6.5 3.5L12 9l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    {%- endif -%}
   </div>
 
   {%- paginate collection.products by paginate_limit -%}
