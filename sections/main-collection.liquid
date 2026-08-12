@@ -672,12 +672,12 @@ body.template-collection::before {
   --collection-block-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
   display: grid;
   gap: var(--collection-block-gap);
-  padding: var(--collection-block-gap) var(--collection-block-gap) var(--space-12);
+  padding: var(--collection-block-gap) 0 var(--space-12);
 }
 
 .collection-page__head {
   width: auto;
-  margin: 0;
+  margin: 0 var(--collection-block-gap);
   text-align: center;
   background: var(--color-white);
   border: var(--collection-block-border);
@@ -863,7 +863,7 @@ body.template-collection::before {
 
 .collection-page__body {
   width: auto;
-  margin: 0;
+  margin: 0 var(--collection-block-gap);
   padding-right: 0;
   padding-left: 0;
   display: grid;
