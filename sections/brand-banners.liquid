@@ -59,16 +59,6 @@
   background: transparent;
   height: 80vh;
   min-height: 500px;
-  transition: grid-template-columns 0.45s ease;
-}
-
-.brand-banners__grid:has(.brand-banner--0:hover) {
-  grid-template-columns: 1.08fr 0.92fr;
-}
-
-.brand-banners__grid:has(.brand-banner--1:hover),
-.brand-banners__grid:has(.brand-banner--2:hover) {
-  grid-template-columns: 0.92fr 1.08fr;
 }
 
 /* Grande bannière gauche — s'étend sur 2 rangées */
@@ -107,16 +97,10 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
   display: block;
 }
 .brand-banner__img--placeholder {
   background: var(--color-gray-100);
-}
-
-.brand-banner:hover .brand-banner__img {
-  transform: scale(1.04);
-  opacity: 1;
 }
 
 .brand-banner__overlay {
@@ -189,10 +173,6 @@
     grid-template-columns: 1fr;
     grid-template-rows: auto;
     height: auto;
-  }
-
-  .brand-banners__grid:has(.brand-banner:hover) {
-    grid-template-columns: 1fr;
   }
 
   .brand-banner--0 {
