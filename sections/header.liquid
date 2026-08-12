@@ -263,7 +263,8 @@
 
 .site-header__inner {
   box-sizing: border-box;
-  width: calc(100vw - (var(--header-block-gap) * 2));
+  width: 100%;
+  max-width: 100%;
   margin-right: auto;
   margin-left: auto;
   padding: 0 var(--space-5);
@@ -316,7 +317,7 @@
   content: "";
   position: absolute;
   left: 0;
-  top: calc(50% + 11px);
+  top: calc(50% + 15px);
   width: var(--nav-indicator-width);
   height: 2px;
   background: var(--color-black);
@@ -672,7 +673,8 @@ body.search-open {
   }
 
   .site-header__inner {
-    width: calc(100vw - (var(--header-block-gap) * 2));
+    width: 100%;
+    max-width: 100%;
     display: grid;
     grid-template-columns: minmax(0, 118px) max-content;
     justify-content: space-between;
