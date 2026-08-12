@@ -645,15 +645,18 @@
 </section>
 
 {% stylesheet %}
+body.template-collection,
+body.template-collection main {
+  background-color: #f6f6f6;
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.08) 0 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+
 .collection-page {
   --collection-block-radius: 28px;
   --collection-block-gap: 12px;
   --collection-block-border: 1px solid var(--color-gray-200);
-  --collection-dotted-bg:
-    radial-gradient(circle, rgba(0, 0, 0, 0.08) 0 1px, transparent 1px);
-  background-color: #f6f6f6;
-  background-image: var(--collection-dotted-bg);
-  background-size: 12px 12px;
+  background: transparent;
   padding: var(--collection-block-gap) 0 var(--space-12);
 }
 
