@@ -45,14 +45,9 @@
 
 {% stylesheet %}
 .brand-banners {
-  width: auto;
-  margin: var(--surface-gap);
-  padding: var(--space-2);
-  background: var(--surface-card);
-  border: var(--surface-border);
-  border-radius: var(--surface-radius);
-  box-shadow: var(--surface-shadow);
-  overflow: hidden;
+  width: 100%;
+  padding-left: var(--surface-gap);
+  padding-right: var(--surface-gap);
 }
 
 /* Grille : colonne gauche 50% pleine hauteur, colonne droite 2 rangées */
@@ -61,7 +56,7 @@
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
   gap: var(--surface-gap);
-  background: var(--surface-card);
+  background: transparent;
   height: 80vh;
   min-height: 500px;
 }
