@@ -2,6 +2,62 @@
 
 /* Fonts */
 @font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('Manrope-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('Manrope-Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('Manrope-SemiBold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('Manrope-Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('Manrope-ExtraBold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('Oswald-Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('Oswald-SemiBold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('Oswald-Bold.ttf') format('truetype');
+}
+@font-face {
   font-family: 'Overused Grotesk';
   font-style: normal;
   font-weight: 300;
@@ -61,7 +117,9 @@ input, textarea, select { font: inherit; }
 
 /* Variables */
 :root {
-  --font-primary: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-primary: 'Manrope', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-body: var(--font-primary);
+  --font-display: 'Oswald', 'Arial Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
   --font-size-display:      48px;
   --font-size-h1:           32px;
@@ -116,7 +174,7 @@ input, textarea, select { font: inherit; }
 html { font-size: 100%; -webkit-text-size-adjust: 100%; }
 
 body {
-  font-family: var(--font-primary);
+  font-family: var(--font-body);
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-regular);
   line-height: 1.6;
@@ -130,8 +188,42 @@ body {
   body { padding-top: var(--header-height-mobile); }
 }
 
-h1 { font-size: var(--font-size-display); font-weight: var(--font-weight-bold); line-height: 1.0; letter-spacing: -1px; }
-h2 { font-size: var(--font-size-h1); font-weight: var(--font-weight-extrabold); line-height: 1.05; }
+h1 {
+  font-family: var(--font-display);
+  font-size: var(--font-size-display);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+h2 {
+  font-family: var(--font-display);
+  font-size: var(--font-size-h1);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+.hero__title,
+.collection-page__title,
+.page__title,
+.cart__title,
+.pinfo__title,
+.brand-story__title,
+.faq__title,
+.related__title,
+.google-reviews__title,
+.newsletter__title,
+.pmosaic__title,
+.concept-page__title,
+.contact-page__title,
+.cleaning-page__title,
+.boutique-page__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
 h3 { font-size: var(--font-size-h2); font-weight: var(--font-weight-bold); }
 h4 { font-size: var(--font-size-body); font-weight: var(--font-weight-semibold); }
 
