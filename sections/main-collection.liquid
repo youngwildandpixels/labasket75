@@ -645,18 +645,20 @@
 </section>
 
 {% stylesheet %}
+html:has(body.template-collection),
 body.template-collection,
-body.template-collection main {
-  background-color: #f6f6f6;
-  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.08) 0 1px, transparent 1px);
-  background-size: 12px 12px;
+body.template-collection #main-content,
+body.template-collection #main-content > .shopify-section,
+body.template-collection .collection-page {
+  background-color: #f6f6f6 !important;
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.08) 0 1px, transparent 1px) !important;
+  background-size: 12px 12px !important;
 }
 
 .collection-page {
   --collection-block-radius: 28px;
   --collection-block-gap: 12px;
   --collection-block-border: 1px solid var(--color-gray-200);
-  background: transparent;
   padding: var(--collection-block-gap) 0 var(--space-12);
 }
 
