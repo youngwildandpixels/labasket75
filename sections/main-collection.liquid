@@ -659,6 +659,7 @@ body.template-collection .collection-page {
   --collection-block-radius: 28px;
   --collection-block-gap: 12px;
   --collection-block-border: 1px solid var(--color-gray-200);
+  --collection-block-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
   padding: var(--collection-block-gap) 0 var(--space-12);
 }
 
@@ -670,6 +671,7 @@ body.template-collection .collection-page {
   background: var(--color-white);
   border: var(--collection-block-border);
   border-radius: var(--collection-block-radius);
+  box-shadow: var(--collection-block-shadow);
   padding: var(--space-5);
   padding-bottom: var(--space-5);
   margin-bottom: var(--collection-block-gap);
@@ -863,6 +865,7 @@ body.template-collection .collection-page {
   padding: var(--space-4);
   border: var(--collection-block-border);
   border-radius: var(--collection-block-radius);
+  box-shadow: var(--collection-block-shadow);
   height: calc(100vh - var(--site-header-height, var(--header-height)) - 48px);
   max-height: calc(100vh - var(--site-header-height, var(--header-height)) - 48px);
   overflow-y: auto;
@@ -1127,6 +1130,7 @@ body.template-collection .collection-page {
   background: var(--color-white);
   border: var(--collection-block-border);
   border-radius: var(--collection-block-radius);
+  box-shadow: var(--collection-block-shadow);
   overflow: hidden;
   padding: var(--space-5);
 }
