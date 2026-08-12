@@ -332,6 +332,7 @@
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-medium);
   color: var(--color-black);
+  border-radius: 8px;
   padding: var(--space-2) var(--space-3);
   min-width: 32px;
   text-align: center;
@@ -339,8 +340,11 @@
 }
 
 .collection-page__page-link--active {
-  background: var(--color-black);
-  color: var(--color-white);
+  background: transparent;
+  color: var(--color-black);
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
 }
 
 .collection-page__page-link--disabled {
