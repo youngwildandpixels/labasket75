@@ -465,11 +465,13 @@ body.cart-drawer-open {
   z-index: 1400;
   pointer-events: none;
   visibility: hidden;
+  transition: visibility 0s linear 0.32s;
 }
 
 .cart-drawer.is-open {
   pointer-events: auto;
   visibility: visible;
+  transition-delay: 0s;
 }
 
 .cart-drawer__overlay {
