@@ -676,6 +676,7 @@ body.template-collection::before {
 }
 
 .collection-page__head {
+  width: 100%;
   text-align: left;
   padding-bottom: var(--space-5);
 }
@@ -687,15 +688,17 @@ body.template-collection::before {
   gap: var(--space-2);
   align-items: center;
   justify-content: flex-start;
+  text-align: left;
   margin-bottom: var(--space-2);
 }
 .collection-page__breadcrumb a { color: var(--color-gray-500); }
 
 .collection-page__title {
-  font-size: 42px;
+  font-size: 34px;
   font-weight: var(--font-weight-bold);
   line-height: 1.0;
   letter-spacing: 0;
+  text-align: left;
   text-transform: uppercase;
   margin: 0;
 }
@@ -1289,7 +1292,7 @@ body.template-collection::before {
 }
 
 @media (max-width: 768px) {
-  .collection-page__title { font-size: 30px; letter-spacing: 0; }
+  .collection-page__title { font-size: 26px; letter-spacing: 0; }
   .collection-page__collections-wrap {
     margin-top: var(--space-4);
     margin-bottom: 0;
