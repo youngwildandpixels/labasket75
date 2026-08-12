@@ -12,9 +12,9 @@
 -%}
 
 <style>
-  body { padding-top: {{ header_height }}px; }
+  body { padding-top: {{ header_height | plus: 24 }}px; }
   @media (max-width: 768px) {
-    body { padding-top: 76px; }
+    body { padding-top: 100px; }
   }
 </style>
 
@@ -244,23 +244,36 @@
 
 {% stylesheet %}
 .site-header {
+  --header-block-gap: 12px;
+  --header-block-radius: 28px;
+  --header-block-border: 1px solid var(--color-gray-200);
+  --header-dotted-bg:
+    radial-gradient(circle, rgba(0, 0, 0, 0.08) 0 1px, transparent 1px),
+    var(--color-gray-100);
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 100;
-  background: var(--color-white);
-  border-bottom: 0.5px solid var(--color-gray-200);
+  box-sizing: border-box;
+  padding: var(--header-block-gap);
+  background: var(--header-dotted-bg);
+  background-size: 12px 12px, auto;
+  border-bottom: 0;
   min-height: var(--header-height);
-  height: var(--site-header-height, var(--header-height));
+  height: calc(var(--site-header-height, var(--header-height)) + 24px);
 }
 
 .site-header__inner {
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   column-gap: var(--space-8);
   align-items: center;
-  height: 100%;
+  height: var(--site-header-height, var(--header-height));
+  background: var(--color-white);
+  border: var(--header-block-border);
+  border-radius: var(--header-block-radius);
 }
 
 .site-logo {
@@ -333,13 +346,13 @@
 
 .site-mega {
   position: fixed;
-  top: var(--site-header-height, var(--header-height));
-  left: 0;
-  right: 0;
+  top: calc(var(--site-header-height, var(--header-height)) + 24px);
+  left: 12px;
+  right: 12px;
   z-index: 90;
   background: var(--color-white);
-  border-top: 0.5px solid var(--color-gray-200);
-  border-bottom: 0;
+  border: var(--header-block-border);
+  border-radius: var(--header-block-radius);
   box-shadow: none;
   opacity: 0;
   visibility: hidden;
@@ -653,7 +666,7 @@ body.search-open {
 
 @media (max-width: 768px) {
   .site-header {
-    height: 76px;
+    height: 100px;
   }
 
   .site-header__inner {
@@ -661,6 +674,7 @@ body.search-open {
     grid-template-columns: minmax(0, 118px) max-content;
     justify-content: space-between;
     column-gap: 12px;
+    height: 76px;
   }
 
   .site-logo img {
@@ -707,7 +721,7 @@ body.search-open {
 
   .mobile-menu {
     position: fixed;
-    top: 76px;
+    top: 100px;
     left: 0;
     right: 0;
     bottom: 0;
