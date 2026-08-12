@@ -1004,6 +1004,7 @@ body.template-collection::before {
   width: 16px;
   height: 16px;
   border: 1.5px solid var(--color-black);
+  border-radius: 50%;
   display: inline-block;
   position: relative;
 }
@@ -1043,10 +1044,25 @@ body.template-collection::before {
 }
 
 .collection-filters__choice input {
+  appearance: none;
+  -webkit-appearance: none;
   width: 16px;
   height: 16px;
   margin: 0;
-  accent-color: var(--color-black);
+  border: 1.5px solid var(--color-gray-300);
+  border-radius: 50%;
+  background: var(--color-white);
+  cursor: pointer;
+}
+
+.collection-filters__choice input:checked {
+  border-color: var(--color-black);
+  background: radial-gradient(circle at center, var(--color-white) 0 3px, var(--color-black) 3.5px);
+}
+
+.collection-filters__choice input:disabled {
+  border-color: var(--color-gray-200);
+  cursor: default;
 }
 
 .collection-filters__choice-count {
