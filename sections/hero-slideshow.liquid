@@ -187,20 +187,36 @@
 .hero__cta-wrap { margin-top: var(--space-2); }
 
 .hero__cta {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  background: var(--color-white);
-  color: var(--color-black);
-  border: 1.5px solid var(--color-white);
-  border-radius: 9999px;
+  background: transparent;
+  color: var(--color-white);
+  border: 0;
+  border-radius: 0;
   font-size: var(--font-size-small);
   font-weight: var(--font-weight-semibold);
   letter-spacing: 2px;
   text-transform: uppercase;
-  padding: 12px 32px;
-  transition: background 0.2s, color 0.2s;
+  padding: 8px 0;
+  transition: opacity 0.2s;
 }
-.hero__cta:hover { background: transparent; color: var(--color-white); opacity: 1; }
+.hero__cta::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2px;
+  height: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.24s ease;
+}
+.hero__cta:hover,
+.hero__cta:focus-visible { opacity: 1; }
+.hero__cta:hover::after,
+.hero__cta:focus-visible::after { transform: scaleX(1); }
 
 .hero__dots {
   position: absolute;

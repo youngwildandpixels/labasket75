@@ -78,20 +78,36 @@
 .newsletter__input:focus { border-color: var(--color-gray-500); }
 
 .newsletter__btn {
-  background: var(--color-white);
+  position: relative;
+  background: transparent;
   color: var(--color-black);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  padding: 12px 24px;
-  border-radius: 9999px;
+  padding: 8px 0;
+  border-radius: 0;
   white-space: nowrap;
   transition: opacity 0.15s;
   margin-left: var(--space-2);
   flex-shrink: 0;
 }
-.newsletter__btn:hover { opacity: 0.85; }
+.newsletter__btn::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2px;
+  height: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.24s ease;
+}
+.newsletter__btn:hover,
+.newsletter__btn:focus-visible { opacity: 1; }
+.newsletter__btn:hover::after,
+.newsletter__btn:focus-visible::after { transform: scaleX(1); }
 
 @media (max-width: 768px) {
   .newsletter__inner { flex-direction: column; align-items: stretch; gap: var(--space-6); }

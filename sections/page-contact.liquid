@@ -204,25 +204,39 @@
 }
 
 .contact-page__submit {
+  position: relative;
   justify-self: center;
-  min-width: 126px;
-  min-height: 56px;
-  border: 1.5px solid var(--color-black);
-  border-radius: 9999px;
-  background: var(--color-black);
-  color: var(--color-white);
+  min-width: 0;
+  min-height: 36px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-black);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0 var(--space-6);
+  padding: 8px 0;
   font-weight: var(--font-weight-medium);
 }
 
+.contact-page__submit::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2px;
+  height: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.24s ease;
+}
+
 .contact-page__submit:hover {
-  background: var(--color-white);
-  color: var(--color-black);
   opacity: 1;
 }
+.contact-page__submit:hover::after,
+.contact-page__submit:focus-visible::after { transform: scaleX(1); }
 
 .contact-page__success,
 .contact-page__errors {
