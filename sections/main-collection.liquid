@@ -670,13 +670,14 @@ body.template-collection::before {
   --collection-block-gap: 12px;
   --collection-block-border: 1px solid var(--color-gray-200);
   --collection-block-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
-  padding: var(--collection-block-gap) 0 var(--space-12);
+  display: grid;
+  gap: var(--collection-block-gap);
+  padding: var(--collection-block-gap) var(--collection-block-gap) var(--space-12);
 }
 
 .collection-page__head {
   width: auto;
-  margin-right: var(--collection-block-gap);
-  margin-left: var(--collection-block-gap);
+  margin: 0;
   text-align: center;
   background: var(--color-white);
   border: var(--collection-block-border);
@@ -684,7 +685,6 @@ body.template-collection::before {
   box-shadow: var(--collection-block-shadow);
   padding: var(--space-5);
   padding-bottom: var(--space-5);
-  margin-bottom: var(--collection-block-gap);
 }
 
 .collection-page__breadcrumb {
@@ -863,8 +863,7 @@ body.template-collection::before {
 
 .collection-page__body {
   width: auto;
-  margin-right: var(--collection-block-gap);
-  margin-left: var(--collection-block-gap);
+  margin: 0;
   padding-right: 0;
   padding-left: 0;
   display: grid;
@@ -1302,7 +1301,6 @@ body.template-collection::before {
   }
   .collection-page__head {
     padding: var(--space-4);
-    margin-bottom: var(--collection-block-gap);
   }
   .collection-page__content {
     padding: var(--space-4);
