@@ -130,8 +130,17 @@
 
 {% stylesheet %}
 .site-footer {
+  --footer-block-gap: 4px;
+  --footer-block-radius: 14px;
+  --footer-block-border: 1px solid var(--color-gray-200);
+  --footer-block-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
+  margin: var(--footer-block-gap);
   background: #303030;
+  border: var(--footer-block-border);
+  border-radius: var(--footer-block-radius);
+  box-shadow: var(--footer-block-shadow);
   color: var(--color-white);
+  overflow: hidden;
   padding: 76px 0 64px;
 }
 
