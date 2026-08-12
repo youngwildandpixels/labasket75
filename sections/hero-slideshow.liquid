@@ -68,7 +68,7 @@
     {%- endfor -%}
   </div>
 
-  {%- if section.blocks.size > 1 -%}
+  {%- if section.blocks.size > 0 -%}
     <div class="hero__dots" aria-label="Navigation slides">
       {%- for block in section.blocks -%}
         <button class="hero__dot{% if forloop.first %} hero__dot--active{% endif %}" data-index="{{ forloop.index0 }}" aria-label="Slide {{ forloop.index }}"></button>
@@ -243,24 +243,37 @@ body.template-index::before {
 
 .hero__dots {
   position: absolute;
-  bottom: var(--space-6);
+  bottom: var(--space-5);
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: var(--space-2);
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
   z-index: 2;
+  min-height: 24px;
+  padding: 8px 10px;
+  border: 1px solid rgba(255,255,255,0.32);
+  border-radius: 9999px;
+  background: rgba(0,0,0,0.22);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .hero__dot {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
+  border: 0;
   border-radius: 50%;
-  background: rgba(255,255,255,0.45);
-  transition: background 0.2s;
+  background: rgba(255,255,255,0.48);
+  transition: background 0.2s ease, transform 0.2s ease;
   padding: 0;
 }
 .hero__dot--active,
-.hero__dot:hover { background: var(--color-white); }
+.hero__dot:hover {
+  background: var(--color-white);
+  transform: scale(1.25);
+}
 
 @media (max-width: 768px) {
   .hero { min-height: 80vh; }
