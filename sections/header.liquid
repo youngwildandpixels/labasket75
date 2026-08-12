@@ -12,9 +12,9 @@
 -%}
 
 <style>
-  body { padding-top: {{ header_height | plus: 8 }}px; }
+  body { padding-top: {{ header_height | plus: 4 }}px; }
   @media (max-width: 768px) {
-    body { padding-top: 84px; }
+    body { padding-top: 80px; }
   }
 </style>
 
@@ -258,7 +258,7 @@
   background: transparent;
   border-bottom: 0;
   min-height: var(--header-height);
-  height: calc(var(--site-header-height, var(--header-height)) + 16px);
+  height: calc(var(--site-header-height, var(--header-height)) + 8px);
 }
 
 .site-header__inner {
@@ -669,7 +669,7 @@ body.search-open {
 
 @media (max-width: 768px) {
   .site-header {
-    height: 100px;
+    height: 84px;
   }
 
   .site-header__inner {
@@ -726,7 +726,7 @@ body.search-open {
 
   .mobile-menu {
     position: fixed;
-    top: 100px;
+    top: 84px;
     left: 0;
     right: 0;
     bottom: 0;
