@@ -157,20 +157,20 @@
   overflow: hidden;
   width: 100%;
   padding: 0;
-  background: var(--color-gray-100);
+  background: var(--color-white);
   border-radius: var(--control-radius);
 }
 
 /* Items — ligne horizontale, gap léger, pas de séparateur foncé */
 .slider-items {
   display: flex;
-  gap: 1px;
+  gap: 4px;
   transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform;
 }
 
 .slider-item {
-  flex: 0 0 calc((100% - 4px) / 4.5);
+  flex: 0 0 calc((100% - 16px) / 4.5);
   min-width: 0;
   background: var(--color-white);
 }
@@ -256,13 +256,13 @@
 }
 
 @media (max-width: 1024px) {
-  .slider-item { flex: 0 0 calc(33.333% - 3px); }
+  .slider-item { flex: 0 0 calc((100% - 8px) / 3); }
 }
 
 @media (max-width: 768px) {
   .featured-tabs { padding: var(--space-5); }
   /* 1 carte entière + moitié de la 2e ; 1 gap de 4px visible */
-  .slider-item { flex: 0 0 calc((100% - 1px) / 1.5); }
+  .slider-item { flex: 0 0 calc((100% - 4px) / 1.5); }
   .slider-arrow { width: 32px; height: 32px; }
   .slider-arrow--prev { left: var(--space-2); }
   .slider-arrow--next { right: var(--space-2); }
