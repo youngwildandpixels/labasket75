@@ -169,8 +169,8 @@ input, textarea, select { font: inherit; }
   --container-max:        1280px;
   --container-padding:    var(--space-10);
 
-  --surface-bg: #f6f6f6;
-  --surface-bg-pattern: radial-gradient(circle, rgba(0, 0, 0, 0.08) 0 1px, transparent 1px);
+  --surface-bg: #e8e8e8;
+  --surface-bg-pattern: radial-gradient(circle, rgba(0, 0, 0, 0.12) 0 1px, transparent 1px);
   --surface-bg-size: 12px 12px;
   --surface-card: var(--color-white);
   --surface-gap: 4px;
