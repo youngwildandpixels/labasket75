@@ -217,15 +217,17 @@ body.template-index::before {
   position: relative;
   display: inline-flex;
   align-items: center;
-  background: transparent;
+  background: transparent !important;
   color: var(--color-white);
-  border: 0;
-  border-radius: 0;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
   font-size: var(--font-size-small);
   font-weight: var(--font-weight-semibold);
   letter-spacing: 2px;
   text-transform: uppercase;
-  padding: 8px 0;
+  padding: 8px 0 !important;
+  text-decoration: none;
   transition: opacity 0.2s;
 }
 .hero__cta::after {
@@ -244,6 +246,11 @@ body.template-index::before {
 .hero__cta:focus-visible { opacity: 1; }
 .hero__cta:hover::after,
 .hero__cta:focus-visible::after { transform: scaleX(1); }
+
+@keyframes heroCtaUnderlineIn {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
 
 .hero__dots {
   position: absolute;
@@ -307,6 +314,16 @@ body.template-index::before {
 
   .hero__content--mv-top {
     padding-top: max(var(--space-6), 15vh);
+  }
+
+  .hero__cta::after {
+    transform: scaleX(1);
+    animation: heroCtaUnderlineIn 0.42s ease both;
+  }
+
+  .hero__cta:hover::after,
+  .hero__cta:focus-visible::after {
+    transform: scaleX(1);
   }
 }
 {% endstylesheet %}
