@@ -163,7 +163,7 @@
 /* Items — ligne horizontale, gap léger, pas de séparateur foncé */
 .slider-items {
   display: flex;
-  gap: 0;
+  gap: 1px;
   transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform;
 }
@@ -252,7 +252,7 @@
 @media (max-width: 768px) {
   .featured-tabs { padding: var(--space-4); }
   /* 1 carte entière + moitié de la 2e ; 1 gap de 4px visible */
-  .slider-item { flex: 0 0 calc(100% / 1.5); }
+  .slider-item { flex: 0 0 calc((100% - 1px) / 1.5); }
   .slider-arrow { width: 32px; height: 32px; }
   .slider-arrow--prev { left: var(--space-2); }
   .slider-arrow--next { right: var(--space-2); }
