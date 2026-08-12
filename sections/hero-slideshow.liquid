@@ -78,12 +78,35 @@
 </section>
 
 {% stylesheet %}
+html:has(body.template-index),
+body.template-index,
+body.template-index #main-content,
+body.template-index #main-content > .shopify-section {
+  background-color: var(--surface-bg) !important;
+  background-image: var(--surface-bg-pattern) !important;
+  background-size: var(--surface-bg-size) !important;
+}
+
+body.template-index::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--surface-bg);
+  background-image: var(--surface-bg-pattern);
+  background-size: var(--surface-bg-size);
+}
+
 .hero {
   position: relative;
-  width: 100%;
+  width: auto;
+  margin: var(--surface-gap);
   min-height: 80vh;
   overflow: hidden;
   background: var(--color-black);
+  border: var(--surface-border);
+  border-radius: var(--surface-radius);
+  box-shadow: var(--surface-shadow);
 }
 
 .hero__track { width: 100%; height: 100%; }
