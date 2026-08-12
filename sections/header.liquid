@@ -248,9 +248,6 @@
   --header-block-radius: 28px;
   --header-block-border: 1px solid var(--color-gray-200);
   --header-block-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
-  --header-dotted-bg:
-    radial-gradient(circle, rgba(0, 0, 0, 0.08) 0 1px, transparent 1px),
-    var(--color-gray-100);
   position: fixed;
   top: 0;
   left: 0;
@@ -258,8 +255,7 @@
   z-index: 100;
   box-sizing: border-box;
   padding: var(--header-block-gap);
-  background: var(--header-dotted-bg);
-  background-size: 12px 12px, auto;
+  background: transparent;
   border-bottom: 0;
   min-height: var(--header-height);
   height: calc(var(--site-header-height, var(--header-height)) + 24px);

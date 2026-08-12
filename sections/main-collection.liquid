@@ -655,6 +655,16 @@ body.template-collection .collection-page {
   background-size: 12px 12px !important;
 }
 
+body.template-collection::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: #f6f6f6;
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.08) 0 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+
 .collection-page {
   --collection-block-radius: 28px;
   --collection-block-gap: 12px;
