@@ -6,6 +6,90 @@ document.querySelectorAll('.accordion__trigger').forEach((trigger) => {
 });
 
 (() => {
+  const desktopQuery = window.matchMedia('(min-width: 1025px) and (hover: hover) and (pointer: fine)');
+  const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let lenis = null;
+  let frame = null;
+  let LenisClass = null;
+
+  const shouldRun = () => desktopQuery.matches && !reduceMotionQuery.matches;
+
+  const raf = (time) => {
+    if (!lenis) return;
+    lenis.raf(time);
+    frame = requestAnimationFrame(raf);
+  };
+
+  const syncLockedState = () => {
+    if (!lenis) return;
+    if (document.body.classList.contains('cart-drawer-open')) {
+      lenis.stop();
+    } else {
+      lenis.start();
+    }
+  };
+
+  const start = async () => {
+    if (lenis || !shouldRun()) return;
+
+    try {
+      if (!LenisClass) {
+        const module = await import('https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.mjs');
+        LenisClass = module.default;
+      }
+
+      if (!shouldRun()) return;
+
+      lenis = new LenisClass({
+        duration: 1.05,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        syncTouch: false,
+      });
+
+      document.documentElement.classList.add('has-lenis');
+      frame = requestAnimationFrame(raf);
+      syncLockedState();
+    } catch (error) {
+      lenis = null;
+    }
+  };
+
+  const stop = () => {
+    if (frame) {
+      cancelAnimationFrame(frame);
+      frame = null;
+    }
+
+    if (lenis) {
+      lenis.destroy();
+      lenis = null;
+    }
+
+    document.documentElement.classList.remove('has-lenis');
+  };
+
+  const refresh = () => {
+    if (shouldRun()) {
+      start();
+    } else {
+      stop();
+    }
+  };
+
+  const bodyObserver = new MutationObserver(syncLockedState);
+  bodyObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
+  desktopQuery.addEventListener('change', refresh);
+  reduceMotionQuery.addEventListener('change', refresh);
+  window.addEventListener('load', () => {
+    if (lenis) lenis.resize();
+  });
+
+  start();
+})();
+
+(() => {
   const drawer = document.querySelector('[data-cart-drawer]');
   if (!drawer) return;
 
