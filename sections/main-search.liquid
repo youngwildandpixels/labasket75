@@ -86,7 +86,7 @@
           <div class="collection-page__grid">
             {%- for product in search.results -%}
               <div class="collection-page__cell">
-                {%- render 'product-card', product: product, show_vendor: true, show_secondary_image: true, lazy: 'lazy' -%}
+                {%- render 'product-card', product: product, show_vendor: true, show_quick_add: true, show_secondary_image: true, lazy: 'lazy' -%}
               </div>
             {%- endfor -%}
           </div>
