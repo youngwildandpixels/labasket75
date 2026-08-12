@@ -409,12 +409,12 @@ a:hover { opacity: 0.6; }
 
 /* Homepage spacing */
 .template-index main > .shopify-section + .shopify-section {
-  margin-top: var(--space-10);
+  margin-top: var(--surface-gap);
 }
 
 @media (max-width: 768px) {
   .template-index main > .shopify-section + .shopify-section {
-    margin-top: var(--space-6);
+    margin-top: var(--surface-gap);
   }
 }
 
