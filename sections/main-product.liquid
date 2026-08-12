@@ -40,23 +40,23 @@
 -%}
 
 <section class="pmain" id="product-section-{{ section.id }}">
-  <nav class="breadcrumb container" aria-label="Fil d'Ariane">
-    <a href="{{ routes.root_url }}">Accueil</a>
-    {%- if first_col != blank -%}
-      <span class="breadcrumb__sep">›</span>
-      <a href="{{ first_col.url }}">{{ first_col.title }}</a>
-    {%- endif -%}
-    {%- if product.vendor != blank -%}
-      <span class="breadcrumb__sep">›</span>
-      <span>{{ product.vendor }}</span>
-    {%- endif -%}
-    <span class="breadcrumb__sep">›</span>
-    <span class="breadcrumb__current">{{ product.title }}</span>
-  </nav>
-
   <div class="pmain__layout container">
     {%- comment -%} ── GALLERY ── {%- endcomment -%}
     <div class="pgallery">
+      <nav class="breadcrumb" aria-label="Fil d'Ariane">
+        <a href="{{ routes.root_url }}">Accueil</a>
+        {%- if first_col != blank -%}
+          <span class="breadcrumb__sep">›</span>
+          <a href="{{ first_col.url }}">{{ first_col.title }}</a>
+        {%- endif -%}
+        {%- if product.vendor != blank -%}
+          <span class="breadcrumb__sep">›</span>
+          <span>{{ product.vendor }}</span>
+        {%- endif -%}
+        <span class="breadcrumb__sep">›</span>
+        <span class="breadcrumb__current">{{ product.title }}</span>
+      </nav>
+
       <div class="pgallery__main">
         {%- if product.compare_at_price > product.price -%}
           <span class="badge badge--promo pgallery__badge">PROMO</span>
@@ -348,17 +348,11 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  width: auto;
-  max-width: none;
-  margin: 0 var(--surface-gap) var(--surface-gap);
-  padding: var(--space-4) var(--space-10);
+  margin: 0;
+  padding: 0 0 var(--space-4);
   font-size: var(--font-size-small);
   color: var(--color-gray-500);
   flex-wrap: wrap;
-  background: var(--surface-card);
-  border: var(--surface-border);
-  border-radius: var(--surface-radius);
-  box-shadow: var(--surface-shadow);
 }
 .breadcrumb a:hover { opacity: 0.6; }
 .breadcrumb__sep { color: var(--color-gray-300); }
@@ -982,7 +976,7 @@
   }
 
   .breadcrumb {
-    padding: var(--space-3) var(--space-5);
+    padding-bottom: var(--space-3);
     font-size: var(--font-size-xs);
   }
 
