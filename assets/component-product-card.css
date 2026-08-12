@@ -76,7 +76,7 @@
   background: var(--color-white);
   color: var(--color-black);
   border: 1.5px solid var(--color-gray-200);
-  border-radius: 8px;
+  border-radius: var(--control-radius);
   transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease;
 }
 

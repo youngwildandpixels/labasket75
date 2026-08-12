@@ -168,6 +168,17 @@ input, textarea, select { font: inherit; }
   --header-height-mobile: 52px;
   --container-max:        1280px;
   --container-padding:    var(--space-10);
+
+  --surface-bg: #f6f6f6;
+  --surface-bg-pattern: radial-gradient(circle, rgba(0, 0, 0, 0.08) 0 1px, transparent 1px);
+  --surface-bg-size: 12px 12px;
+  --surface-card: var(--color-white);
+  --surface-gap: 4px;
+  --surface-radius: 14px;
+  --surface-border: 1px solid var(--color-gray-200);
+  --surface-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
+  --control-radius: 8px;
+  --filter-radius: 12px;
 }
 
 /* Base */
@@ -228,6 +239,87 @@ h3 { font-size: var(--font-size-h2); font-weight: var(--font-weight-bold); }
 h4 { font-size: var(--font-size-body); font-weight: var(--font-weight-semibold); }
 
 a:hover { opacity: 0.6; }
+
+/* Design system */
+.surface-page {
+  background-color: var(--surface-bg);
+  background-image: var(--surface-bg-pattern);
+  background-size: var(--surface-bg-size);
+}
+
+.surface-block {
+  background: var(--surface-card);
+  border: var(--surface-border);
+  border-radius: var(--surface-radius);
+  box-shadow: var(--surface-shadow);
+}
+
+.surface-block--no-shadow {
+  box-shadow: none;
+}
+
+.surface-grid {
+  display: grid;
+  gap: var(--surface-gap);
+}
+
+.control-field {
+  border: var(--surface-border);
+  border-radius: var(--control-radius);
+  background: var(--surface-card);
+}
+
+.control-check {
+  border-radius: 50%;
+}
+
+.link-underline-hover {
+  position: relative;
+  text-decoration: none;
+}
+
+.link-underline-hover::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -4px;
+  left: 0;
+  height: 1.5px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.2s ease;
+}
+
+.link-underline-hover:hover {
+  opacity: 1;
+}
+
+.link-underline-hover:hover::after,
+.link-underline-hover[aria-current="page"]::after,
+.link-underline-hover.is-active::after {
+  transform: scaleX(1);
+}
+
+.accordion-soft {
+  overflow: hidden;
+}
+
+.accordion-soft[open] > :not(summary) {
+  animation: accordionSoftReveal 0.24s ease both;
+  transform-origin: top;
+}
+
+@keyframes accordionSoftReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scaleY(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
 
 /* Container — full viewport, side padding only */
 .container {

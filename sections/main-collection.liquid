@@ -650,9 +650,9 @@ body.template-collection,
 body.template-collection #main-content,
 body.template-collection #main-content > .shopify-section,
 body.template-collection .collection-page {
-  background-color: #f6f6f6 !important;
-  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.08) 0 1px, transparent 1px) !important;
-  background-size: 12px 12px !important;
+  background-color: var(--surface-bg) !important;
+  background-image: var(--surface-bg-pattern) !important;
+  background-size: var(--surface-bg-size) !important;
 }
 
 body.template-collection::before {
@@ -660,16 +660,16 @@ body.template-collection::before {
   position: fixed;
   inset: 0;
   z-index: -1;
-  background-color: #f6f6f6;
-  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.08) 0 1px, transparent 1px);
-  background-size: 12px 12px;
+  background-color: var(--surface-bg);
+  background-image: var(--surface-bg-pattern);
+  background-size: var(--surface-bg-size);
 }
 
 .collection-page {
-  --collection-block-radius: 14px;
-  --collection-block-gap: 4px;
-  --collection-block-border: 1px solid var(--color-gray-200);
-  --collection-block-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
+  --collection-block-radius: var(--surface-radius);
+  --collection-block-gap: var(--surface-gap);
+  --collection-block-border: var(--surface-border);
+  --collection-block-shadow: var(--surface-shadow);
   display: grid;
   gap: var(--collection-block-gap);
   padding: var(--collection-block-gap) 0 0;
@@ -939,7 +939,7 @@ body.template-collection::before {
 .collection-filters__stock,
 .collection-filters__group {
   border: 1px solid var(--color-gray-200);
-  border-radius: 12px;
+  border-radius: var(--filter-radius);
   padding: 0 var(--space-4);
   overflow: hidden;
 }
@@ -976,19 +976,8 @@ body.template-collection::before {
   display: grid;
   gap: var(--space-2);
   padding: 0 0 var(--space-4);
-  animation: collectionFilterReveal 0.24s ease both;
+  animation: accordionSoftReveal 0.24s ease both;
   transform-origin: top;
-}
-
-@keyframes collectionFilterReveal {
-  from {
-    opacity: 0;
-    transform: translateY(-6px) scaleY(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scaleY(1);
-  }
 }
 
 .collection-filters__choice {
@@ -1101,7 +1090,7 @@ body.template-collection::before {
 .collection-filters__price input {
   width: 100%;
   border: 1px solid var(--color-gray-200);
-  border-radius: 8px;
+  border-radius: var(--control-radius);
   color: var(--color-black);
   font-size: var(--font-size-body);
   padding: var(--space-3);
@@ -1209,7 +1198,7 @@ body.template-collection::before {
   color: var(--color-black);
   background: var(--color-white);
   border: 1px solid var(--color-gray-200);
-  border-radius: 8px;
+  border-radius: var(--control-radius);
   padding: var(--space-2) var(--space-8) var(--space-2) var(--space-3);
   cursor: pointer;
   appearance: none;
@@ -1244,11 +1233,11 @@ body.template-collection::before {
 }
 
 .collection-page__cell:nth-child(4n + 1) .product-card__media {
-  border-radius: 8px 0 0 8px;
+  border-radius: var(--control-radius) 0 0 var(--control-radius);
 }
 
 .collection-page__cell:nth-child(4n) .product-card__media {
-  border-radius: 0 8px 8px 0;
+  border-radius: 0 var(--control-radius) var(--control-radius) 0;
 }
 
 .collection-page .product-card__img {
@@ -1269,7 +1258,7 @@ body.template-collection::before {
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-medium);
   color: var(--color-black);
-  border-radius: 8px;
+  border-radius: var(--control-radius);
   padding: var(--space-2) var(--space-3);
   min-width: 32px;
   text-align: center;
@@ -1318,10 +1307,10 @@ body.template-collection::before {
     border-radius: 0;
   }
   .collection-page__cell:nth-child(3n + 1) .product-card__media {
-    border-radius: 8px 0 0 8px;
+    border-radius: var(--control-radius) 0 0 var(--control-radius);
   }
   .collection-page__cell:nth-child(3n) .product-card__media {
-    border-radius: 0 8px 8px 0;
+    border-radius: 0 var(--control-radius) var(--control-radius) 0;
   }
 }
 
@@ -1486,10 +1475,10 @@ body.template-collection::before {
     border-radius: 0;
   }
   .collection-page__cell:nth-child(2n + 1) .product-card__media {
-    border-radius: 8px 0 0 8px;
+    border-radius: var(--control-radius) 0 0 var(--control-radius);
   }
   .collection-page__cell:nth-child(2n) .product-card__media {
-    border-radius: 0 8px 8px 0;
+    border-radius: 0 var(--control-radius) var(--control-radius) 0;
   }
   .collection-page__toolbar {
     display: none;
