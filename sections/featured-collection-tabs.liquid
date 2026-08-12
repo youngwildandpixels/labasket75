@@ -78,7 +78,7 @@
 {% stylesheet %}
 .featured-tabs {
   margin: var(--surface-gap);
-  padding: var(--space-5);
+  padding: var(--space-10);
   background: var(--surface-card);
   border: var(--surface-border);
   border-radius: var(--surface-radius);
@@ -158,6 +158,7 @@
   width: 100%;
   padding: 0;
   background: var(--color-white);
+  border-radius: var(--control-radius);
 }
 
 /* Items — ligne horizontale, gap léger, pas de séparateur foncé */
@@ -181,6 +182,15 @@
 
 .featured-tabs .product-card__media {
   aspect-ratio: 3 / 4;
+  overflow: hidden;
+}
+
+.slider-item:first-child .product-card__media {
+  border-radius: var(--control-radius) 0 0 var(--control-radius);
+}
+
+.slider-item:last-child .product-card__media {
+  border-radius: 0 var(--control-radius) var(--control-radius) 0;
 }
 
 .featured-tabs .product-card__img {
@@ -250,7 +260,7 @@
 }
 
 @media (max-width: 768px) {
-  .featured-tabs { padding: var(--space-4); }
+  .featured-tabs { padding: var(--space-5); }
   /* 1 carte entière + moitié de la 2e ; 1 gap de 4px visible */
   .slider-item { flex: 0 0 calc((100% - 1px) / 1.5); }
   .slider-arrow { width: 32px; height: 32px; }
