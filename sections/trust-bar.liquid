@@ -27,9 +27,13 @@
 
 {% stylesheet %}
 .trust-bar {
-  border-top: 0.5px solid var(--color-gray-200);
-  border-bottom: 0.5px solid var(--color-gray-200);
-  padding: var(--space-10) 0;
+  margin: var(--surface-gap);
+  padding: var(--space-10);
+  background: var(--surface-card);
+  border: var(--surface-border);
+  border-radius: var(--surface-radius);
+  box-shadow: var(--surface-shadow);
+  overflow: hidden;
 }
 
 .trust-bar__inner {
@@ -44,6 +48,9 @@
   align-items: center;
   text-align: center;
   gap: var(--space-2);
+  padding: var(--space-5);
+  background: var(--color-gray-100);
+  border-radius: var(--control-radius);
 }
 
 .trust-bar__icon { width: 28px; height: 28px; color: var(--color-black); }
@@ -63,6 +70,7 @@
 }
 
 @media (max-width: 768px) {
+  .trust-bar { padding: var(--space-5); }
   .trust-bar__inner { grid-template-columns: repeat(2, 1fr); }
 }
 {% endstylesheet %}
