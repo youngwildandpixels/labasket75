@@ -77,32 +77,61 @@
 
 {% stylesheet %}
 .featured-tabs {
-  padding: var(--space-10) 0 var(--space-8);
+  margin: var(--surface-gap);
+  padding: var(--space-5);
+  background: var(--surface-card);
+  border: var(--surface-border);
+  border-radius: var(--surface-radius);
+  box-shadow: var(--surface-shadow);
+  overflow: hidden;
 }
 
 /* Header tabs */
 .featured-tabs__head {
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-5);
+  padding: 0;
 }
 
 .featured-tabs__nav {
   display: flex;
-  justify-content: center;
-  gap: var(--space-6);
+  justify-content: flex-start;
+  gap: var(--space-5);
 }
 
 .ftab {
-  font-size: clamp(20px, 2.5vw, 28px);
+  position: relative;
+  font-size: 14px;
   font-weight: var(--font-weight-bold);
-  color: var(--color-gray-300);
+  color: var(--color-gray-500);
   background: none;
   border: none;
-  padding: 0;
+  padding: 0 0 var(--space-1);
   cursor: pointer;
   transition: color 0.15s;
-  letter-spacing: -0.5px;
+  letter-spacing: 0;
+  text-transform: uppercase;
 }
-.ftab--active { color: var(--color-black); }
+.ftab::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1.5px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.2s ease;
+}
+.ftab--active,
+.ftab:hover {
+  color: var(--color-black);
+  opacity: 1;
+}
+.ftab--active::after,
+.ftab:hover::after {
+  transform: scaleX(1);
+}
 
 /* Panel */
 .ftab-panel { display: block; }
@@ -113,8 +142,8 @@
   position: relative;
   display: flex;
   align-items: center;
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
+  width: 100%;
+  margin-left: 0;
 }
 
 /* Track — clip le défilement, 100vw sans padding */
@@ -122,24 +151,34 @@
   overflow: hidden;
   width: 100%;
   padding: 0;
+  background: var(--color-gray-200);
 }
 
 /* Items — ligne horizontale, gap léger, pas de séparateur foncé */
 .slider-items {
   display: flex;
-  gap: var(--space-1);
+  gap: 1px;
   transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform;
 }
 
 .slider-item {
-  /* 4 cartes entières + moitié de la 5e ; 4 gaps de 4px visibles */
-  flex: 0 0 calc((100% - 16px) / 4.5);
+  flex: 0 0 calc((100% - 4px) / 4.5);
   min-width: 0;
+  background: var(--color-white);
+}
+
+.featured-tabs .product-card,
+.featured-tabs .product-card__media {
+  background: var(--color-white);
 }
 
 .featured-tabs .product-card__media {
   aspect-ratio: 3 / 4;
+}
+
+.featured-tabs .product-card__img {
+  background: var(--color-gray-100);
 }
 
 .featured-tabs .product-card__img {
@@ -162,7 +201,7 @@
   width: 40px;
   height: 40px;
   background: var(--color-white);
-  border: 0.5px solid var(--color-gray-200);
+  border: var(--surface-border);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -170,7 +209,7 @@
   color: var(--color-black);
   cursor: pointer;
   transition: background 0.15s, opacity 0.15s;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: none;
 }
 .slider-arrow:hover { background: var(--color-black); color: var(--color-white); opacity: 1; }
 .slider-arrow:disabled { opacity: 0.25; cursor: default; }
@@ -205,13 +244,13 @@
 }
 
 @media (max-width: 768px) {
-  .featured-tabs { padding: var(--space-8) 0 var(--space-6); }
+  .featured-tabs { padding: var(--space-4); }
   /* 1 carte entière + moitié de la 2e ; 1 gap de 4px visible */
-  .slider-item { flex: 0 0 calc((100% - 4px) / 1.5); }
+  .slider-item { flex: 0 0 calc((100% - 1px) / 1.5); }
   .slider-arrow { width: 32px; height: 32px; }
   .slider-arrow--prev { left: var(--space-2); }
   .slider-arrow--next { right: var(--space-2); }
-  .ftab { font-size: 20px; }
+  .ftab { font-size: 13px; }
 }
 {% endstylesheet %}
 
