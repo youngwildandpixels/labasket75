@@ -264,7 +264,7 @@
 .site-header__inner {
   box-sizing: border-box;
   width: 100%;
-  max-width: 100%;
+  max-width: min(1120px, calc(100vw - 24px));
   margin-right: auto;
   margin-left: auto;
   padding: 0 var(--space-5);
@@ -273,10 +273,12 @@
   column-gap: var(--space-8);
   align-items: center;
   height: var(--site-header-height, var(--header-height));
-  background: var(--color-white);
+  background: rgba(255, 255, 255, 0.78);
   border: var(--header-block-border);
   border-radius: var(--header-block-radius);
   box-shadow: var(--header-block-shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
 .site-logo {
