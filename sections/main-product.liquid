@@ -163,10 +163,12 @@
       {%- endif -%}
 
       <div class="pinfo__units">
-        <button type="button" class="size-unit is-active" data-unit="EU" aria-pressed="true">EU</button>
-        <button type="button" class="size-unit" data-unit="US" aria-pressed="false">US M</button>
-        <button type="button" class="size-unit" data-unit="UK" aria-pressed="false">UK</button>
-        <button type="button" class="size-unit" data-unit="CM" aria-pressed="false">CM</button>
+        <div class="pinfo__unit-switch" role="group" aria-label="Unite de taille">
+          <button type="button" class="size-unit is-active" data-unit="EU" aria-pressed="true">EU</button>
+          <button type="button" class="size-unit" data-unit="US" aria-pressed="false">US M</button>
+          <button type="button" class="size-unit" data-unit="UK" aria-pressed="false">UK</button>
+          <button type="button" class="size-unit" data-unit="CM" aria-pressed="false">CM</button>
+        </div>
         {%- if is_sneaker -%}
           <button type="button" class="pinfo__size-guide" data-size-guide-open>Guide des tailles</button>
         {%- endif -%}
@@ -615,21 +617,44 @@
 .pinfo__units {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  justify-content: space-between;
+  gap: var(--space-3);
   margin-top: var(--space-4);
 }
 
+.pinfo__unit-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  width: fit-content;
+  padding: 3px;
+  background: var(--color-gray-100);
+  border: var(--surface-border);
+  border-radius: 9999px;
+}
+
 .size-unit {
+  min-height: 34px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 9999px;
+  background: transparent;
   font-size: var(--font-size-small);
-  font-weight: var(--font-weight-regular);
+  font-weight: var(--font-weight-bold);
   color: var(--color-gray-500);
   text-transform: uppercase;
   letter-spacing: 1px;
-  padding: 0;
+  transition: background 0.22s ease, color 0.22s ease, box-shadow 0.22s ease;
 }
 .size-unit.is-active {
+  background: var(--color-white);
   color: var(--color-black);
-  font-weight: var(--font-weight-bold);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.size-unit:hover,
+.size-unit:focus-visible {
+  color: var(--color-black);
 }
 
 .pinfo__size-guide {
@@ -1095,6 +1120,15 @@
   .pinfo__units {
     margin-top: var(--space-2);
     flex-wrap: wrap;
+  }
+
+  .pinfo__unit-switch {
+    width: 100%;
+  }
+
+  .size-unit {
+    flex: 1 1 0;
+    justify-content: center;
   }
 
   .pinfo__size-guide {
