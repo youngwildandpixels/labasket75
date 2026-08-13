@@ -244,7 +244,7 @@
 
 {% stylesheet %}
 .site-header {
-  --header-block-gap: var(--surface-gap);
+  --header-block-gap: 10px;
   --header-block-radius: 12px;
   --header-block-border: var(--surface-border);
   --header-block-shadow: none;
@@ -258,7 +258,7 @@
   background: transparent;
   border-bottom: 0;
   min-height: var(--header-height);
-  height: calc(var(--site-header-height, var(--header-height)) + 8px);
+  height: calc(var(--site-header-height, var(--header-height)) + var(--header-block-gap) + var(--surface-gap));
 }
 
 .site-header__inner {
