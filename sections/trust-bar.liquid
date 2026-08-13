@@ -10,6 +10,9 @@
     <div class="trust-bar__content">
       <p class="trust-bar__eyebrow">{{ section.settings.eyebrow | default: 'La Basket 75' }}</p>
       <h2 class="trust-bar__heading">{{ section.settings.heading | default: 'Acheter avec confiance' }}</h2>
+      {%- if section.settings.description != blank -%}
+        <p class="trust-bar__description">{{ section.settings.description }}</p>
+      {%- endif -%}
     </div>
 
     <div class="trust-bar__pills">
@@ -175,6 +178,16 @@
   white-space: pre-line;
 }
 
+.trust-bar__description {
+  max-width: 440px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.74);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.45;
+  white-space: pre-line;
+}
+
 .trust-bar__pills {
   display: flex;
   flex-direction: column;
@@ -183,7 +196,7 @@
   align-self: center;
   justify-self: end;
   gap: var(--surface-gap);
-  width: min(430px, 100%);
+  width: min(360px, 100%);
 }
 
 .trust-bar__item {
@@ -191,11 +204,11 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  column-gap: var(--space-3);
-  min-height: 58px;
+  column-gap: var(--space-2);
+  min-height: 46px;
   width: 100%;
   flex: 0 0 auto;
-  padding: var(--space-3) var(--space-4);
+  padding: 7px var(--space-3);
   background: rgba(255, 255, 255, 0.26);
   border: 1px solid rgba(255, 255, 255, 0.38);
   border-radius: 9999px;
@@ -216,8 +229,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 28px;
+  height: 28px;
   color: var(--color-black);
   background: rgba(255, 255, 255, 0.28);
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -225,13 +238,13 @@
 }
 
 .trust-bar__icon svg {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
 }
 
 .trust-bar__title {
-  margin: 0 0 3px;
-  font-size: var(--font-size-body);
+  margin: 0 0 2px;
+  font-size: var(--font-size-small);
   font-weight: var(--font-weight-semibold);
   color: rgba(0, 0, 0, 0.9);
   line-height: 1.15;
@@ -240,7 +253,7 @@
 
 .trust-bar__subtitle {
   margin: 0;
-  font-size: var(--font-size-small);
+  font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
   color: rgba(0, 0, 0, 0.68);
   line-height: 1.35;
@@ -282,13 +295,13 @@
 
   .trust-bar__item {
     flex-basis: 100%;
-    min-height: 58px;
-    padding: var(--space-3);
+    min-height: 46px;
+    padding: 7px var(--space-3);
   }
 
   .trust-bar__icon {
-    width: 34px;
-    height: 34px;
+    width: 28px;
+    height: 28px;
   }
 
   .trust-bar__title {
@@ -305,6 +318,7 @@
     { "type": "image_picker", "id": "background_image", "label": "Image de fond" },
     { "type": "text", "id": "eyebrow", "label": "Petit texte", "default": "La Basket 75" },
     { "type": "textarea", "id": "heading", "label": "Texte display", "default": "Acheter avec confiance" },
+    { "type": "textarea", "id": "description", "label": "Paragraphe", "default": "Des produits vérifiés, une expédition claire et une équipe disponible avant comme après l'achat." },
     {
       "type": "select",
       "id": "text_position",
