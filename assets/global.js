@@ -22,7 +22,10 @@ document.querySelectorAll('.accordion__trigger').forEach((trigger) => {
 
   const syncLockedState = () => {
     if (!lenis) return;
-    if (document.body.classList.contains('cart-drawer-open')) {
+    if (
+      document.body.classList.contains('cart-drawer-open') ||
+      document.body.classList.contains('quick-add-modal-open')
+    ) {
       lenis.stop();
     } else {
       lenis.start();
@@ -96,6 +99,9 @@ document.querySelectorAll('.accordion__trigger').forEach((trigger) => {
     const panel = form.querySelector('[data-quick-add-panel]');
     if (button) button.setAttribute('aria-expanded', 'false');
     if (panel) panel.setAttribute('aria-hidden', 'true');
+    if (!document.querySelector('[data-product-card-quick-add].is-open')) {
+      document.body.classList.remove('quick-add-modal-open');
+    }
   };
 
   document.addEventListener('click', (event) => {
@@ -123,6 +129,7 @@ document.querySelectorAll('.accordion__trigger').forEach((trigger) => {
     const panel = form.querySelector('[data-quick-add-panel]');
     toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     if (panel) panel.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+    document.body.classList.toggle('quick-add-modal-open', isOpen);
   });
 
   document.addEventListener('keydown', (event) => {
@@ -316,7 +323,17 @@ document.querySelectorAll('.accordion__trigger').forEach((trigger) => {
         if (!response.ok) throw new Error('Cart add failed');
         return response.json();
       })
-      .then(() => openCart())
+      .then(() => {
+        document.querySelectorAll('[data-product-card-quick-add].is-open').forEach((quickAddForm) => {
+          quickAddForm.classList.remove('is-open');
+          const button = quickAddForm.querySelector('[data-quick-add-toggle]');
+          const panel = quickAddForm.querySelector('[data-quick-add-panel]');
+          if (button) button.setAttribute('aria-expanded', 'false');
+          if (panel) panel.setAttribute('aria-hidden', 'true');
+        });
+        document.body.classList.remove('quick-add-modal-open');
+        openCart();
+      })
       .catch(() => { form.submit(); })
       .finally(() => {
         if (submitter) submitter.disabled = false;

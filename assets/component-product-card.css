@@ -63,13 +63,11 @@
   top: var(--space-3);
   z-index: 2;
   opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: opacity 0.2s ease;
 }
 
 .product-card__quick-add.is-open {
   opacity: 1;
-  transform: translateY(0);
 }
 
 .product-card__quick-add-btn {
@@ -100,27 +98,36 @@
 .product-card__quick-modal {
   position: fixed;
   inset: 0;
-  z-index: 1200;
+  z-index: 1300;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-5);
+  padding: max(var(--space-5), env(safe-area-inset-top)) max(var(--space-5), env(safe-area-inset-right)) max(var(--space-5), env(safe-area-inset-bottom)) max(var(--space-5), env(safe-area-inset-left));
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.28s ease, visibility 0s linear 0.28s;
 }
 
 .product-card__quick-add.is-open .product-card__quick-modal {
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
+  transition-delay: 0s;
 }
 
 .product-card__quick-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.34);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(232, 232, 232, 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  opacity: 0;
+  transition: opacity 0.28s ease;
+}
+
+.product-card__quick-add.is-open .product-card__quick-backdrop {
+  opacity: 1;
 }
 
 .product-card__quick-dialog {
@@ -134,11 +141,13 @@
   border: var(--surface-border);
   border-radius: var(--surface-radius);
   box-shadow: var(--surface-shadow);
-  transform: translateY(10px) scale(0.98);
-  transition: transform 0.2s ease;
+  opacity: 0;
+  transform: translateY(18px) scale(0.96);
+  transition: opacity 0.28s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .product-card__quick-add.is-open .product-card__quick-dialog {
+  opacity: 1;
   transform: translateY(0) scale(1);
 }
 
@@ -236,7 +245,6 @@
 .product-card:hover .product-card__quick-add,
 .product-card__quick-add:focus-within {
   opacity: 1;
-  transform: translateY(0);
 }
 
 .product-card__info {
@@ -284,8 +292,7 @@
 
 @media (max-width: 768px) {
   .product-card__quick-modal {
-    align-items: flex-end;
-    padding: var(--surface-gap);
+    padding: var(--space-3);
   }
 
   .product-card__quick-dialog {

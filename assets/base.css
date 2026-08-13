@@ -381,7 +381,8 @@ html.lenis.lenis-smooth {
 }
 
 /* Cart drawer */
-body.cart-drawer-open {
+body.cart-drawer-open,
+body.quick-add-modal-open {
   overflow: hidden;
 }
 
