@@ -191,7 +191,7 @@
                 {%- endif -%}
             {%- endcase -%}
           {%- endfor -%}
-          <details class="collection-filters__group">
+          <details class="collection-filters__group" open>
             <summary class="collection-filters__summary">
               <span>Trier par</span>
               <svg class="collection-filters__chevron" width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
@@ -286,7 +286,6 @@
 
           {%- liquid
             assign has_vendor_filter = false
-            assign has_color_filter = false
           -%}
 
           {%- for filter in collection.filters -%}
@@ -302,7 +301,6 @@
                   assign has_vendor_filter = true
                 elsif filter_handle contains 'color' or filter_handle contains 'couleur'
                   assign filter_label = 'Couleurs'
-                  assign has_color_filter = true
                 elsif filter.type == 'price_range'
                   assign filter_label = 'Prix'
                 endif
@@ -326,32 +324,34 @@
                   </div>
 
                 {%- when 'list' -%}
-                  <details class="collection-filters__group">
-                    <summary class="collection-filters__summary">
-                      <span>{{ filter_label }}</span>
-                      <svg class="collection-filters__chevron" width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
-                        <path d="M3 6l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                    </summary>
-                    <div class="collection-filters__values">
-                      {%- for filter_value in filter.values -%}
-                        <label class="collection-filters__choice{% if filter_value.count == 0 and filter_value.active == false %} is-disabled{% endif %}">
-                          <input
-                            type="checkbox"
-                            name="{{ filter_value.param_name }}"
-                            value="{{ filter_value.value }}"
-                            {% if filter_value.active %}checked{% endif %}
-                            {% if filter_value.count == 0 and filter_value.active == false %}disabled{% endif %}
-                          >
-                          <span>{{ filter_value.label }}</span>
-                          <span class="collection-filters__choice-count">{{ filter_value.count }}</span>
-                        </label>
-                      {%- endfor -%}
-                    </div>
-                  </details>
+                  {%- unless filter_label == 'Couleurs' -%}
+                    <details class="collection-filters__group" open>
+                      <summary class="collection-filters__summary">
+                        <span>{{ filter_label }}</span>
+                        <svg class="collection-filters__chevron" width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+                          <path d="M3 6l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </summary>
+                      <div class="collection-filters__values">
+                        {%- for filter_value in filter.values -%}
+                          <label class="collection-filters__choice{% if filter_value.count == 0 and filter_value.active == false %} is-disabled{% endif %}">
+                            <input
+                              type="checkbox"
+                              name="{{ filter_value.param_name }}"
+                              value="{{ filter_value.value }}"
+                              {% if filter_value.active %}checked{% endif %}
+                              {% if filter_value.count == 0 and filter_value.active == false %}disabled{% endif %}
+                            >
+                            <span>{{ filter_value.label }}</span>
+                            <span class="collection-filters__choice-count">{{ filter_value.count }}</span>
+                          </label>
+                        {%- endfor -%}
+                      </div>
+                    </details>
+                  {%- endunless -%}
 
                 {%- when 'price_range' -%}
-                  <details class="collection-filters__group">
+                  <details class="collection-filters__group" open>
                     <summary class="collection-filters__summary">
                       <span>{{ filter_label }}</span>
                       <svg class="collection-filters__chevron" width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
@@ -387,7 +387,7 @@
           {%- endfor -%}
 
           {%- unless has_vendor_filter -%}
-              <details class="collection-filters__group">
+              <details class="collection-filters__group" open>
                 <summary class="collection-filters__summary">
                   <span>Marques</span>
                   <svg class="collection-filters__chevron" width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
@@ -424,52 +424,6 @@
               </details>
           {%- endunless -%}
 
-          {%- unless has_color_filter -%}
-              {%- liquid
-                assign color_option_name = blank
-                assign color_param_name = blank
-                assign rendered_colors = '|'
-              -%}
-              {%- for product in collection.products -%}
-                {%- for option in product.options_with_values -%}
-                  {%- assign option_handle = option.name | handleize -%}
-                  {%- if color_option_name == blank -%}
-                    {%- if option_handle contains 'couleur' or option_handle contains 'color' -%}
-                      {%- assign color_option_name = option.name -%}
-                      {%- assign color_param_name = 'filter.v.option.' | append: option_handle -%}
-                    {%- endif -%}
-                  {%- endif -%}
-                {%- endfor -%}
-              {%- endfor -%}
-              <details class="collection-filters__group">
-                <summary class="collection-filters__summary">
-                  <span>Couleurs</span>
-                  <svg class="collection-filters__chevron" width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
-                    <path d="M3 6l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </summary>
-                <div class="collection-filters__values">
-                  {%- if color_option_name != blank -%}
-                    {%- for product in collection.products -%}
-                      {%- for option in product.options_with_values -%}
-                        {%- if option.name == color_option_name -%}
-                          {%- for color_value in option.values -%}
-                            {%- assign color_key = '|' | append: color_value | append: '|' -%}
-                            {%- unless rendered_colors contains color_key -%}
-                              <label class="collection-filters__choice">
-                                <input type="checkbox" name="{{ color_param_name }}" value="{{ color_value | escape }}">
-                                <span>{{ color_value }}</span>
-                              </label>
-                              {%- assign rendered_colors = rendered_colors | append: color_value | append: '|' -%}
-                            {%- endunless -%}
-                          {%- endfor -%}
-                        {%- endif -%}
-                      {%- endfor -%}
-                    {%- endfor -%}
-                  {%- endif -%}
-                </div>
-              </details>
-          {%- endunless -%}
         </form>
 
         <div class="collection-filters__mobile-actions">
@@ -942,6 +896,7 @@ body.template-collection::before {
   border-radius: var(--filter-radius);
   padding: 0 var(--space-4);
   overflow: hidden;
+  background: var(--color-gray-100);
 }
 
 .collection-filters__stock-label,
