@@ -922,14 +922,28 @@
   min-height: 44px;
   padding: 8px 0;
   font-weight: var(--font-weight-semibold);
+  border-radius: var(--control-radius);
+}
+.pinfo__btn.btn--primary {
+  background: var(--color-black);
+  color: var(--color-white);
+  border: 1px solid var(--color-black);
+}
+.pinfo__btn.btn--primary:hover,
+.pinfo__btn.btn--primary:focus-visible {
+  background: var(--color-black);
+  color: var(--color-white);
+  opacity: 0.82;
 }
 .pinfo__btn--pickup {
   background: transparent;
-  color: var(--color-gray-500);
-  border: 0;
+  color: var(--color-black);
+  border: var(--surface-border);
 }
 .pinfo__btn--pickup:hover {
   background: transparent;
+  color: var(--color-black);
+  border-color: var(--color-gray-400);
   opacity: 1;
 }
 .pinfo__btn[disabled] {
