@@ -73,7 +73,64 @@
     },
     "trust": {
       "type": "trust-bar",
-      "settings": {}
+      "blocks": {
+        "item_1": {
+          "type": "item",
+          "settings": {
+            "icon": "store",
+            "title": "Click & Collect",
+            "subtitle": "Disponible en boutique"
+          }
+        },
+        "item_2": {
+          "type": "item",
+          "settings": {
+            "icon": "badge",
+            "title": "100% Authentiques",
+            "subtitle": "Produits garantis originaux"
+          }
+        },
+        "item_3": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Livraison rapide",
+            "subtitle": "24\/48h en France"
+          }
+        },
+        "item_4": {
+          "type": "item",
+          "settings": {
+            "icon": "headphones",
+            "title": "SAV réactif",
+            "subtitle": "Une question ? On répond"
+          }
+        }
+      },
+      "block_order": [
+        "item_1",
+        "item_2",
+        "item_3",
+        "item_4"
+      ],
+      "settings": {
+        "background_image": "shopify:\/\/shop_images\/reassurance.webp",
+        "eyebrow": "Acheter avec confiance",
+        "heading": "Acheter avec\nconfiance",
+        "description": "Des produits vérifiés, une expédition claire et une équipe disponible avant comme après l'achat.",
+        "overlay_color": "#000000",
+        "overlay_direction": "90deg",
+        "overlay_opacity": 50,
+        "overlay_mid_stop": 35,
+        "overlay_fade_stop": 50,
+        "mobile_overlay_enabled": true,
+        "mobile_overlay_color": "#000000",
+        "mobile_overlay_direction": "0deg",
+        "mobile_overlay_opacity": 65,
+        "mobile_overlay_mid_stop": 40,
+        "mobile_overlay_fade_stop": 65,
+        "text_position": "top-left"
+      }
     }
   },
   "order": [

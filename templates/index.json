@@ -130,7 +130,24 @@
         "item_3",
         "item_4"
       ],
-      "settings": {}
+      "settings": {
+        "background_image": "shopify:\/\/shop_images\/reassurance.webp",
+        "eyebrow": "Acheter avec confiance",
+        "heading": "Acheter avec\nconfiance",
+        "description": "Des produits vérifiés, une expédition claire et une équipe disponible avant comme après l'achat.",
+        "overlay_color": "#000000",
+        "overlay_direction": "90deg",
+        "overlay_opacity": 50,
+        "overlay_mid_stop": 35,
+        "overlay_fade_stop": 50,
+        "mobile_overlay_enabled": true,
+        "mobile_overlay_color": "#000000",
+        "mobile_overlay_direction": "0deg",
+        "mobile_overlay_opacity": 65,
+        "mobile_overlay_mid_stop": 40,
+        "mobile_overlay_fade_stop": 65,
+        "text_position": "top-left"
+      }
     },
     "newsletter": {
       "type": "newsletter",
