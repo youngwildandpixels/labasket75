@@ -386,6 +386,31 @@ body.quick-add-modal-open {
   overflow: hidden;
 }
 
+body.quick-add-modal-open::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1280;
+  background: rgba(232, 232, 232, 0.52);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  animation: quickAddPageBlurIn 0.28s ease both;
+  pointer-events: none;
+}
+
+@keyframes quickAddPageBlurIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0);
+    -webkit-backdrop-filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+}
+
 .cart-drawer {
   position: fixed;
   inset: 0;

@@ -93,12 +93,57 @@ document.querySelectorAll('.accordion__trigger').forEach((trigger) => {
 })();
 
 (() => {
+  let quickAddUid = 0;
+
+  const ensureQuickAddFormId = (form) => {
+    if (!form.id) {
+      quickAddUid += 1;
+      form.id = `quick-add-form-${Date.now()}-${quickAddUid}`;
+    }
+    return form.id;
+  };
+
+  const openQuickAdd = (form) => {
+    const button = form.querySelector('[data-quick-add-toggle]');
+    const panel = form.querySelector('[data-quick-add-panel]');
+    const formId = ensureQuickAddFormId(form);
+
+    form.classList.add('is-open');
+    if (button) button.setAttribute('aria-expanded', 'true');
+
+    if (panel) {
+      form.__quickAddPanel = panel;
+      if (!form.__quickAddPlaceholder) {
+        form.__quickAddPlaceholder = document.createComment('quick-add-modal');
+      }
+      if (panel.parentNode !== document.body) {
+        panel.parentNode.insertBefore(form.__quickAddPlaceholder, panel);
+        document.body.appendChild(panel);
+      }
+      panel.__quickAddForm = form;
+      panel.querySelectorAll('button[type="submit"]').forEach((submitButton) => {
+        submitButton.setAttribute('form', formId);
+      });
+      panel.classList.add('is-open');
+      panel.setAttribute('aria-hidden', 'false');
+    }
+
+    document.body.classList.add('quick-add-modal-open');
+  };
+
   const closeQuickAdd = (form) => {
     form.classList.remove('is-open');
     const button = form.querySelector('[data-quick-add-toggle]');
-    const panel = form.querySelector('[data-quick-add-panel]');
+    const panel = form.__quickAddPanel || form.querySelector('[data-quick-add-panel]');
     if (button) button.setAttribute('aria-expanded', 'false');
-    if (panel) panel.setAttribute('aria-hidden', 'true');
+    if (panel) {
+      panel.classList.remove('is-open');
+      panel.setAttribute('aria-hidden', 'true');
+      if (form.__quickAddPlaceholder && form.__quickAddPlaceholder.parentNode) {
+        form.__quickAddPlaceholder.parentNode.insertBefore(panel, form.__quickAddPlaceholder);
+        form.__quickAddPlaceholder.remove();
+      }
+    }
     if (!document.querySelector('[data-product-card-quick-add].is-open')) {
       document.body.classList.remove('quick-add-modal-open');
     }
@@ -108,15 +153,17 @@ document.querySelectorAll('.accordion__trigger').forEach((trigger) => {
     const toggle = event.target.closest('[data-quick-add-toggle]');
     const close = event.target.closest('[data-quick-add-close]');
     const activeQuickAdd = event.target.closest('[data-product-card-quick-add]');
+    const activePanel = event.target.closest('[data-quick-add-panel]');
+    const activeForm = activeQuickAdd || (activePanel && activePanel.__quickAddForm);
 
     document.querySelectorAll('[data-product-card-quick-add].is-open').forEach((form) => {
-      if (form !== activeQuickAdd) {
+      if (form !== activeForm) {
         closeQuickAdd(form);
       }
     });
 
-    if (close && activeQuickAdd) {
-      closeQuickAdd(activeQuickAdd);
+    if (close) {
+      if (activeForm) closeQuickAdd(activeForm);
       return;
     }
 
@@ -125,11 +172,11 @@ document.querySelectorAll('.accordion__trigger').forEach((trigger) => {
     const form = toggle.closest('[data-product-card-quick-add]');
     if (!form) return;
 
-    const isOpen = form.classList.toggle('is-open');
-    const panel = form.querySelector('[data-quick-add-panel]');
-    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    if (panel) panel.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
-    document.body.classList.toggle('quick-add-modal-open', isOpen);
+    if (form.classList.contains('is-open')) {
+      closeQuickAdd(form);
+    } else {
+      openQuickAdd(form);
+    }
   });
 
   document.addEventListener('keydown', (event) => {
@@ -325,13 +372,8 @@ document.querySelectorAll('.accordion__trigger').forEach((trigger) => {
       })
       .then(() => {
         document.querySelectorAll('[data-product-card-quick-add].is-open').forEach((quickAddForm) => {
-          quickAddForm.classList.remove('is-open');
-          const button = quickAddForm.querySelector('[data-quick-add-toggle]');
-          const panel = quickAddForm.querySelector('[data-quick-add-panel]');
-          if (button) button.setAttribute('aria-expanded', 'false');
-          if (panel) panel.setAttribute('aria-hidden', 'true');
+          closeQuickAdd(quickAddForm);
         });
-        document.body.classList.remove('quick-add-modal-open');
         openCart();
       })
       .catch(() => { form.submit(); })
