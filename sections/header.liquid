@@ -12,9 +12,9 @@
 -%}
 
 <style>
-  body { padding-top: {{ header_height | plus: 4 }}px; }
+  body { padding-top: {{ header_height | plus: 32 }}px; }
   @media (max-width: 768px) {
-    body { padding-top: 80px; }
+    body { padding-top: 98px; }
   }
 </style>
 
@@ -259,6 +259,12 @@
   border-bottom: 0;
   min-height: var(--header-height);
   height: calc(var(--site-header-height, var(--header-height)) + var(--header-block-gap) + var(--surface-gap));
+  transition: transform 0.28s ease;
+  will-change: transform;
+}
+
+.site-header.is-hidden {
+  transform: translateY(calc(-100% - var(--surface-gap)));
 }
 
 .site-header__inner {
@@ -899,6 +905,47 @@ body.search-open {
     var q = input.value.trim();
     debounce = setTimeout(function () { fetchResults(q); }, 200);
   });
+})();
+</script>
+
+<script>
+(function () {
+  var header = document.querySelector('.site-header');
+  if (!header) return;
+
+  var lastY = window.scrollY || 0;
+  var ticking = false;
+  var threshold = 120;
+  var delta = 8;
+
+  function shouldStayVisible() {
+    return document.body.classList.contains('menu-open')
+      || document.body.classList.contains('search-open')
+      || document.body.classList.contains('cart-drawer-open');
+  }
+
+  function updateHeader() {
+    var currentY = window.scrollY || 0;
+    var diff = currentY - lastY;
+
+    if (shouldStayVisible() || currentY <= threshold) {
+      header.classList.remove('is-hidden');
+    } else if (diff > delta) {
+      header.classList.add('is-hidden');
+    } else if (diff < -delta) {
+      header.classList.remove('is-hidden');
+    }
+
+    lastY = currentY;
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', function () {
+    if (!ticking) {
+      window.requestAnimationFrame(updateHeader);
+      ticking = true;
+    }
+  }, { passive: true });
 })();
 </script>
 
