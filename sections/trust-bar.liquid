@@ -1,7 +1,7 @@
 {%- comment -%} Trust Bar — 4 icônes de confiance {%- endcomment -%}
 
 <section
-  class="trust-bar"
+  class="trust-bar trust-bar--text-{{ section.settings.text_position | default: 'top-left' }}"
   {% if section.settings.background_image != blank %}
     style="--trust-bar-bg: url('{{ section.settings.background_image | image_url: width: 2200 }}');"
   {% endif %}
@@ -82,7 +82,7 @@
 .trust-bar {
   position: relative;
   margin: var(--surface-gap);
-  min-height: clamp(360px, 42vw, 560px);
+  min-height: clamp(270px, 31.5vw, 420px);
   padding: var(--space-10);
   background-color: #1f1f1f;
   background-image: var(--trust-bar-bg);
@@ -107,9 +107,9 @@
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(360px, 0.8fr);
-  align-content: start;
-  align-items: start;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 430px);
+  align-content: stretch;
+  align-items: stretch;
   justify-content: space-between;
   gap: var(--space-6);
   width: 100%;
@@ -123,6 +123,35 @@
   width: min(620px, 100%);
   text-align: left;
   color: var(--color-white);
+}
+
+.trust-bar--text-top-left .trust-bar__content,
+.trust-bar--text-center-left .trust-bar__content,
+.trust-bar--text-bottom-left .trust-bar__content {
+  justify-self: start;
+  text-align: left;
+}
+
+.trust-bar--text-top-right .trust-bar__content,
+.trust-bar--text-center-right .trust-bar__content,
+.trust-bar--text-bottom-right .trust-bar__content {
+  justify-self: end;
+  text-align: right;
+}
+
+.trust-bar--text-top-left .trust-bar__content,
+.trust-bar--text-top-right .trust-bar__content {
+  align-self: start;
+}
+
+.trust-bar--text-center-left .trust-bar__content,
+.trust-bar--text-center-right .trust-bar__content {
+  align-self: center;
+}
+
+.trust-bar--text-bottom-left .trust-bar__content,
+.trust-bar--text-bottom-right .trust-bar__content {
+  align-self: end;
 }
 
 .trust-bar__eyebrow {
@@ -146,12 +175,13 @@
 
 .trust-bar__pills {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  flex-wrap: nowrap;
   justify-content: flex-end;
   align-self: center;
   justify-self: end;
   gap: var(--surface-gap);
-  width: min(760px, 100%);
+  width: min(430px, 100%);
 }
 
 .trust-bar__item {
@@ -161,7 +191,8 @@
   align-items: center;
   column-gap: var(--space-3);
   min-height: 58px;
-  flex: 0 1 calc(50% - var(--surface-gap));
+  width: 100%;
+  flex: 0 0 auto;
   padding: var(--space-3) var(--space-4);
   background: rgba(255, 255, 255, 0.72);
   border: 1px solid rgba(255, 255, 255, 0.28);
@@ -204,14 +235,15 @@
 
 .trust-bar__subtitle {
   margin: 0;
-  font-size: var(--font-size-xs);
-  color: var(--color-gray-500);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-gray-700);
   line-height: 1.35;
 }
 
 @media (max-width: 768px) {
   .trust-bar {
-    min-height: 520px;
+    min-height: 390px;
     padding: var(--space-5);
     background-position: center;
   }
@@ -228,6 +260,7 @@
   }
 
   .trust-bar__content {
+    justify-self: start;
     text-align: left;
   }
 
@@ -265,7 +298,21 @@
   "settings": [
     { "type": "image_picker", "id": "background_image", "label": "Image de fond" },
     { "type": "text", "id": "eyebrow", "label": "Petit texte", "default": "La Basket 75" },
-    { "type": "textarea", "id": "heading", "label": "Texte display", "default": "Acheter avec confiance" }
+    { "type": "textarea", "id": "heading", "label": "Texte display", "default": "Acheter avec confiance" },
+    {
+      "type": "select",
+      "id": "text_position",
+      "label": "Disposition du texte",
+      "options": [
+        { "value": "top-left", "label": "Haut gauche" },
+        { "value": "center-left", "label": "Centre gauche" },
+        { "value": "bottom-left", "label": "Bas gauche" },
+        { "value": "top-right", "label": "Haut droite" },
+        { "value": "center-right", "label": "Centre droite" },
+        { "value": "bottom-right", "label": "Bas droite" }
+      ],
+      "default": "top-left"
+    }
   ],
   "blocks": [
     {
