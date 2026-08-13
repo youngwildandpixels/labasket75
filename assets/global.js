@@ -5,6 +5,14 @@ document.querySelectorAll('.accordion__trigger').forEach((trigger) => {
   });
 });
 
+document.querySelectorAll('main *').forEach((element) => {
+  if (element.childNodes.length !== 1) return;
+  const child = element.childNodes[0];
+  if (child.nodeType === Node.TEXT_NODE && child.nodeValue.trim() === '&nbsp;') {
+    element.remove();
+  }
+});
+
 (() => {
   const desktopQuery = window.matchMedia('(min-width: 1025px) and (hover: hover) and (pointer: fine)');
   const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');

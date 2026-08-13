@@ -7,7 +7,7 @@
 
     {%- if page.content != blank -%}
       <div class="page__content rte">
-        {{ page.content }}
+        {{ page.content | replace: '&amp;nbsp;', ' ' | replace: '&nbsp;', ' ' }}
       </div>
     {%- endif -%}
   </div>
