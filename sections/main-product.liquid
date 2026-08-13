@@ -268,6 +268,7 @@
 
           {%- for block in section.blocks -%}
             {%- if block.type == 'accordion' -%}
+              {%- assign accordion_title_downcase = block.settings.title | downcase -%}
               <details class="acc" {{ block.shopify_attributes }}>
                 <summary class="acc__summary">
                   <span>{{ block.settings.title }}</span>
@@ -277,7 +278,18 @@
                     </svg>
                   </span>
                 </summary>
-                <div class="acc__content">{{ block.settings.content }}</div>
+                <div class="acc__content rte">
+                  {%- if accordion_title_downcase contains 'livraison' -%}
+                    {%- if is_partner_sourced -%}
+                      <p>Cette paire est approvisionnée via notre réseau de revendeurs partenaires. Livraison estimée sous 5 à 12 jours ouvrés.</p>
+                    {%- else -%}
+                      <p>Cette paire est déjà disponible en boutique. Livraison estimée sous 24/48h ouvrées.</p>
+                    {%- endif -%}
+                    <p>Les retours restent possibles selon nos conditions de retour.</p>
+                  {%- else -%}
+                    {{ block.settings.content }}
+                  {%- endif -%}
+                </div>
               </details>
             {%- endif -%}
           {%- endfor -%}
