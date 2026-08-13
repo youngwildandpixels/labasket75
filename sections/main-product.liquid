@@ -382,6 +382,29 @@
 </section>
 
 {% stylesheet %}
+html:has(body.template-product),
+body.template-product,
+body.template-product #main-content,
+body.template-product #main-content > .shopify-section {
+  background-color: var(--surface-bg) !important;
+  background-image: var(--surface-bg-pattern) !important;
+  background-size: var(--surface-bg-size) !important;
+  background-attachment: fixed !important;
+  background-position: top left !important;
+}
+
+body.template-product::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--surface-bg);
+  background-image: var(--surface-bg-pattern);
+  background-size: var(--surface-bg-size);
+  background-attachment: fixed;
+  background-position: top left;
+}
+
 .pmain {
   background-color: var(--surface-bg);
   background-image: var(--surface-bg-pattern);
