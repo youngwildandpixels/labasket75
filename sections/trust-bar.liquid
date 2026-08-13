@@ -1,7 +1,18 @@
 {%- comment -%} Trust Bar — 4 icônes de confiance {%- endcomment -%}
 
-<section class="trust-bar">
-  <div class="trust-bar__inner container">
+<section
+  class="trust-bar"
+  {% if section.settings.background_image != blank %}
+    style="--trust-bar-bg: url('{{ section.settings.background_image | image_url: width: 2200 }}');"
+  {% endif %}
+>
+  <div class="trust-bar__inner">
+    <div class="trust-bar__content">
+      <p class="trust-bar__eyebrow">{{ section.settings.eyebrow | default: 'La Basket 75' }}</p>
+      <h2 class="trust-bar__heading">{{ section.settings.heading | default: 'Acheter avec confiance' }}</h2>
+    </div>
+
+    <div class="trust-bar__pills">
     {%- if section.blocks.size > 0 -%}
       {%- for block in section.blocks -%}
         <div class="trust-bar__item" {{ block.shopify_attributes }}>
@@ -63,26 +74,80 @@
         </div>
       </div>
     {%- endif -%}
+    </div>
   </div>
 </section>
 
 {% stylesheet %}
 .trust-bar {
+  position: relative;
   margin: var(--surface-gap);
-  padding: var(--space-3);
-  background: var(--surface-card);
+  min-height: clamp(360px, 42vw, 560px);
+  padding: var(--space-10);
+  background-color: #1f1f1f;
+  background-image: var(--trust-bar-bg);
+  background-size: cover;
+  background-position: center;
   border: var(--surface-border);
   border-radius: var(--surface-radius);
   box-shadow: var(--surface-shadow);
   overflow: hidden;
 }
 
+.trust-bar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(270deg, rgba(0, 0, 0, 0.84) 0%, rgba(0, 0, 0, 0.68) 36%, rgba(0, 0, 0, 0.2) 74%, rgba(0, 0, 0, 0) 100%);
+  pointer-events: none;
+}
+
 .trust-bar__inner {
+  position: relative;
+  z-index: 1;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--surface-gap);
-  max-width: none;
+  align-content: center;
+  justify-items: end;
+  gap: var(--space-6);
+  width: 100%;
+  min-height: inherit;
   padding: 0;
+}
+
+.trust-bar__content {
+  display: grid;
+  gap: var(--space-3);
+  width: min(620px, 100%);
+  text-align: right;
+  color: var(--color-white);
+}
+
+.trust-bar__eyebrow {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.trust-bar__heading {
+  margin: 0;
+  color: var(--color-white);
+  font-size: clamp(38px, 6vw, 78px);
+  font-weight: var(--font-weight-bold);
+  line-height: 0.95;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.trust-bar__pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--surface-gap);
+  width: min(760px, 100%);
 }
 
 .trust-bar__item {
@@ -91,17 +156,20 @@
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   column-gap: var(--space-3);
-  min-height: 78px;
-  padding: var(--space-4);
-  background: var(--color-gray-100);
-  border: 1px solid transparent;
-  border-radius: var(--control-radius);
+  min-height: 58px;
+  flex: 0 1 calc(50% - var(--surface-gap));
+  padding: var(--space-3) var(--space-4);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 9999px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
 }
 
 .trust-bar__item:hover {
   background: var(--color-white);
-  border-color: var(--color-gray-200);
+  border-color: rgba(255, 255, 255, 0.72);
   transform: translateY(-1px);
 }
 
@@ -109,17 +177,17 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
   color: var(--color-black);
-  background: var(--color-white);
-  border: var(--surface-border);
+  background: rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 9999px;
 }
 
 .trust-bar__icon svg {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
 }
 
 .trust-bar__title {
@@ -139,15 +207,36 @@
 
 @media (max-width: 768px) {
   .trust-bar {
-    padding: var(--surface-gap);
+    min-height: 520px;
+    padding: var(--space-5);
+    background-position: center;
+  }
+
+  .trust-bar::before {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.86) 0%, rgba(0, 0, 0, 0.62) 48%, rgba(0, 0, 0, 0.08) 100%);
   }
 
   .trust-bar__inner {
-    grid-template-columns: 1fr;
+    align-content: end;
+    justify-items: stretch;
+    gap: var(--space-5);
+  }
+
+  .trust-bar__content {
+    text-align: left;
+  }
+
+  .trust-bar__heading {
+    font-size: clamp(34px, 11vw, 52px);
+  }
+
+  .trust-bar__pills {
+    justify-content: flex-start;
   }
 
   .trust-bar__item {
-    min-height: 66px;
+    flex-basis: 100%;
+    min-height: 58px;
     padding: var(--space-3);
   }
 
@@ -166,6 +255,11 @@
 {
   "name": "Trust Bar",
   "tag": "section",
+  "settings": [
+    { "type": "image_picker", "id": "background_image", "label": "Image de fond" },
+    { "type": "text", "id": "eyebrow", "label": "Petit texte", "default": "La Basket 75" },
+    { "type": "textarea", "id": "heading", "label": "Texte display", "default": "Acheter avec confiance" }
+  ],
   "blocks": [
     {
       "type": "item",
