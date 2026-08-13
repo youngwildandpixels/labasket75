@@ -2,6 +2,34 @@
 
 /* Fonts */
 @font-face {
+  font-family: 'Instrument Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('InstrumentSans-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('InstrumentSans-Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('InstrumentSans-SemiBold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('InstrumentSans-Bold.ttf') format('truetype');
+}
+@font-face {
   font-family: 'Manrope';
   font-style: normal;
   font-weight: 400;
@@ -117,7 +145,7 @@ input, textarea, select { font: inherit; }
 
 /* Variables */
 :root {
-  --font-primary: 'Manrope', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-primary: 'Instrument Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --font-body: var(--font-primary);
   --font-display: 'Oswald', 'Arial Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
@@ -193,6 +221,10 @@ body {
   background: var(--color-white);
   -webkit-font-smoothing: antialiased;
   padding-top: var(--header-height);
+}
+
+p {
+  font-family: var(--font-body);
 }
 
 @media (max-width: 768px) {
