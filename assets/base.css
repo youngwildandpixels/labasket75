@@ -605,9 +605,7 @@ body.cart-drawer-open {
   letter-spacing: -0.5px;
 }
 
-.cart-drawer__empty a,
-.cart-drawer__checkout,
-.cart-drawer__view {
+.cart-drawer__empty a {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -622,9 +620,7 @@ body.cart-drawer-open {
   text-decoration: none;
 }
 
-.cart-drawer__empty a::after,
-.cart-drawer__checkout::after,
-.cart-drawer__view::after {
+.cart-drawer__empty a::after {
   content: "";
   position: absolute;
   left: 0;
@@ -638,11 +634,7 @@ body.cart-drawer-open {
 }
 
 .cart-drawer__empty a:hover::after,
-.cart-drawer__checkout:hover::after,
-.cart-drawer__view:hover::after,
-.cart-drawer__empty a:focus-visible::after,
-.cart-drawer__checkout:focus-visible::after,
-.cart-drawer__view:focus-visible::after {
+.cart-drawer__empty a:focus-visible::after {
   transform: scaleX(1);
 }
 
@@ -759,21 +751,50 @@ body.cart-drawer-open {
 
 .cart-drawer__checkout,
 .cart-drawer__view {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   min-height: 50px;
+  padding: 8px var(--space-4);
+  border-radius: var(--control-radius);
   font-size: 14px;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 1px;
   text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, opacity 0.18s ease, transform 0.18s ease;
 }
 
 .cart-drawer__checkout {
   margin-bottom: 10px;
-  background: transparent;
-  color: var(--color-black);
+  background: var(--color-black);
+  border: 1px solid var(--color-black);
+  color: var(--color-white);
+}
+
+.cart-drawer__checkout:hover,
+.cart-drawer__checkout:focus-visible {
+  background: var(--color-black);
+  color: var(--color-white);
+  opacity: 0.82;
+  transform: scale(0.985);
 }
 
 .cart-drawer__view {
   background: transparent;
+  border: var(--surface-border);
+  color: var(--color-black);
+}
+
+.cart-drawer__view:hover,
+.cart-drawer__view:focus-visible {
+  background: transparent;
+  border-color: var(--color-gray-400);
+  color: var(--color-black);
+  opacity: 1;
+  transform: scale(0.985);
 }
 
 @media (max-width: 768px) {
