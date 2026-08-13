@@ -90,17 +90,29 @@ document.querySelectorAll('.accordion__trigger').forEach((trigger) => {
 })();
 
 (() => {
+  const closeQuickAdd = (form) => {
+    form.classList.remove('is-open');
+    const button = form.querySelector('[data-quick-add-toggle]');
+    const panel = form.querySelector('[data-quick-add-panel]');
+    if (button) button.setAttribute('aria-expanded', 'false');
+    if (panel) panel.setAttribute('aria-hidden', 'true');
+  };
+
   document.addEventListener('click', (event) => {
     const toggle = event.target.closest('[data-quick-add-toggle]');
+    const close = event.target.closest('[data-quick-add-close]');
     const activeQuickAdd = event.target.closest('[data-product-card-quick-add]');
 
     document.querySelectorAll('[data-product-card-quick-add].is-open').forEach((form) => {
       if (form !== activeQuickAdd) {
-        form.classList.remove('is-open');
-        const button = form.querySelector('[data-quick-add-toggle]');
-        if (button) button.setAttribute('aria-expanded', 'false');
+        closeQuickAdd(form);
       }
     });
+
+    if (close && activeQuickAdd) {
+      closeQuickAdd(activeQuickAdd);
+      return;
+    }
 
     if (!toggle) return;
 
@@ -108,16 +120,16 @@ document.querySelectorAll('.accordion__trigger').forEach((trigger) => {
     if (!form) return;
 
     const isOpen = form.classList.toggle('is-open');
+    const panel = form.querySelector('[data-quick-add-panel]');
     toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    if (panel) panel.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
   });
 
   document.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') return;
 
     document.querySelectorAll('[data-product-card-quick-add].is-open').forEach((form) => {
-      form.classList.remove('is-open');
-      const button = form.querySelector('[data-quick-add-toggle]');
-      if (button) button.setAttribute('aria-expanded', 'false');
+      closeQuickAdd(form);
     });
   });
 })();
@@ -290,11 +302,15 @@ document.querySelectorAll('.accordion__trigger').forEach((trigger) => {
     event.preventDefault();
     const submitter = event.submitter;
     if (submitter) submitter.disabled = true;
+    const formData = new FormData(form);
+    if (submitter && submitter.name) {
+      formData.append(submitter.name, submitter.value);
+    }
 
     fetch(form.action, {
       method: 'POST',
       headers: { Accept: 'application/json' },
-      body: new FormData(form),
+      body: formData,
     })
       .then((response) => {
         if (!response.ok) throw new Error('Cart add failed');

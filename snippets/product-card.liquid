@@ -98,30 +98,50 @@
         </svg>
       </button>
       {%- unless product.has_only_default_variant -%}
-        <div class="product-card__quick-panel" data-quick-add-panel>
-          <p class="product-card__quick-title">Choisir une taille</p>
-          <div class="product-card__quick-sizes">
-            {%- for variant in product.variants -%}
-              {%- liquid
-                assign variant_size_label = variant.title
-                if size_option_position == 1
-                  assign variant_size_label = variant.option1
-                elsif size_option_position == 2
-                  assign variant_size_label = variant.option2
-                elsif size_option_position == 3
-                  assign variant_size_label = variant.option3
-                endif
-              -%}
-              <button
-                type="submit"
-                name="id"
-                value="{{ variant.id }}"
-                class="product-card__quick-size"
-                {% unless variant.available %}disabled{% endunless %}
-              >
-                {{ variant_size_label }}
-              </button>
-            {%- endfor -%}
+        <div class="product-card__quick-modal" data-quick-add-panel aria-hidden="true">
+          <button type="button" class="product-card__quick-backdrop" data-quick-add-close aria-label="Fermer"></button>
+          <div class="product-card__quick-dialog" role="dialog" aria-modal="true" aria-label="Choisir une taille">
+            <button type="button" class="product-card__quick-close" data-quick-add-close aria-label="Fermer">
+              <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true">
+                <path d="M4 4l10 10M14 4L4 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <div class="product-card__quick-head">
+              {%- if product.vendor != blank -%}
+                <p class="product-card__quick-vendor">{{ product.vendor }}</p>
+              {%- endif -%}
+              <p class="product-card__quick-title">{{ product.title }}</p>
+              <span class="product-card__quick-subtitle">Choisir une taille</span>
+            </div>
+            <div class="product-card__quick-sizes">
+              {%- for variant in product.variants -%}
+                {%- liquid
+                  assign variant_size_label = variant.title
+                  if size_option_position == 1
+                    assign variant_size_label = variant.option1
+                  elsif size_option_position == 2
+                    assign variant_size_label = variant.option2
+                  elsif size_option_position == 3
+                    assign variant_size_label = variant.option3
+                  endif
+                -%}
+                <button
+                  type="submit"
+                  name="id"
+                  value="{{ variant.id }}"
+                  class="product-card__quick-size"
+                  {% unless variant.available %}disabled{% endunless %}
+                >
+                  <span class="product-card__quick-size-label">{{ variant_size_label }}</span>
+                  <span class="product-card__quick-size-prices">
+                    {%- if variant.compare_at_price > variant.price -%}
+                      <span class="product-card__quick-size-compare">{{ variant.compare_at_price | money_without_trailing_zeros }}</span>
+                    {%- endif -%}
+                    <span>{{ variant.price | money_without_trailing_zeros }}</span>
+                  </span>
+                </button>
+              {%- endfor -%}
+            </div>
           </div>
         </div>
       {%- endunless -%}
