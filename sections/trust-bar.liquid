@@ -4,6 +4,23 @@
   assign overlay_mid_opacity = overlay_opacity | times: 0.66 | round
   assign overlay_soft_opacity = overlay_opacity | times: 0.3 | round
   assign overlay_end_opacity = overlay_opacity | times: 0.16 | round
+  assign mobile_overlay_color = section.settings.overlay_color | default: '#000000'
+  assign mobile_overlay_direction = section.settings.overlay_direction | default: '270deg'
+  assign mobile_overlay_opacity = overlay_opacity
+  assign mobile_overlay_mid_stop = section.settings.overlay_mid_stop | default: 40
+  assign mobile_overlay_fade_stop = section.settings.overlay_fade_stop | default: 65
+
+  if section.settings.mobile_overlay_enabled
+    assign mobile_overlay_color = section.settings.mobile_overlay_color | default: mobile_overlay_color
+    assign mobile_overlay_direction = section.settings.mobile_overlay_direction | default: mobile_overlay_direction
+    assign mobile_overlay_opacity = section.settings.mobile_overlay_opacity | default: mobile_overlay_opacity
+    assign mobile_overlay_mid_stop = section.settings.mobile_overlay_mid_stop | default: mobile_overlay_mid_stop
+    assign mobile_overlay_fade_stop = section.settings.mobile_overlay_fade_stop | default: mobile_overlay_fade_stop
+  endif
+
+  assign mobile_overlay_mid_opacity = mobile_overlay_opacity | times: 0.66 | round
+  assign mobile_overlay_soft_opacity = mobile_overlay_opacity | times: 0.3 | round
+  assign mobile_overlay_end_opacity = mobile_overlay_opacity | times: 0.16 | round
 -%}
 
 <section
@@ -18,6 +35,14 @@
     --trust-bar-overlay-end: {{ overlay_end_opacity }}%;
     --trust-bar-overlay-mid-stop: {{ section.settings.overlay_mid_stop | default: 38 }}%;
     --trust-bar-overlay-fade-stop: {{ section.settings.overlay_fade_stop | default: 66 }}%;
+    --trust-bar-mobile-overlay-color: {{ mobile_overlay_color }};
+    --trust-bar-mobile-overlay-angle: {{ mobile_overlay_direction }};
+    --trust-bar-mobile-overlay-strong: {{ mobile_overlay_opacity }}%;
+    --trust-bar-mobile-overlay-mid: {{ mobile_overlay_mid_opacity }}%;
+    --trust-bar-mobile-overlay-soft: {{ mobile_overlay_soft_opacity }}%;
+    --trust-bar-mobile-overlay-end: {{ mobile_overlay_end_opacity }}%;
+    --trust-bar-mobile-overlay-mid-stop: {{ mobile_overlay_mid_stop }}%;
+    --trust-bar-mobile-overlay-fade-stop: {{ mobile_overlay_fade_stop }}%;
   "
 >
   <div class="trust-bar__inner">
@@ -282,6 +307,14 @@
 
 @media (max-width: 768px) {
   .trust-bar {
+    --trust-bar-overlay-color: var(--trust-bar-mobile-overlay-color);
+    --trust-bar-overlay-angle: var(--trust-bar-mobile-overlay-angle);
+    --trust-bar-overlay-strong: var(--trust-bar-mobile-overlay-strong);
+    --trust-bar-overlay-mid: var(--trust-bar-mobile-overlay-mid);
+    --trust-bar-overlay-soft: var(--trust-bar-mobile-overlay-soft);
+    --trust-bar-overlay-end: var(--trust-bar-mobile-overlay-end);
+    --trust-bar-overlay-mid-stop: var(--trust-bar-mobile-overlay-mid-stop);
+    --trust-bar-overlay-fade-stop: var(--trust-bar-mobile-overlay-fade-stop);
     min-height: 468px;
     padding: var(--space-5);
     background-position: center;
@@ -355,6 +388,27 @@
     { "type": "range", "id": "overlay_opacity", "label": "Intensité du dégradé (%)", "min": 0, "max": 100, "step": 5, "default": 70 },
     { "type": "range", "id": "overlay_mid_stop", "label": "Début de diffusion (%)", "min": 10, "max": 80, "step": 5, "default": 40 },
     { "type": "range", "id": "overlay_fade_stop", "label": "Fin de diffusion (%)", "min": 20, "max": 95, "step": 5, "default": 65 },
+    { "type": "checkbox", "id": "mobile_overlay_enabled", "label": "Utiliser un overlay différent sur mobile", "default": false },
+    { "type": "color", "id": "mobile_overlay_color", "label": "Mobile — Couleur du dégradé", "default": "#000000" },
+    {
+      "type": "select",
+      "id": "mobile_overlay_direction",
+      "label": "Mobile — Direction du dégradé",
+      "options": [
+        { "value": "270deg", "label": "Droite vers gauche" },
+        { "value": "90deg", "label": "Gauche vers droite" },
+        { "value": "180deg", "label": "Bas vers haut" },
+        { "value": "0deg", "label": "Haut vers bas" },
+        { "value": "225deg", "label": "Bas droite vers haut gauche" },
+        { "value": "315deg", "label": "Haut droite vers bas gauche" },
+        { "value": "135deg", "label": "Bas gauche vers haut droite" },
+        { "value": "45deg", "label": "Haut gauche vers bas droite" }
+      ],
+      "default": "270deg"
+    },
+    { "type": "range", "id": "mobile_overlay_opacity", "label": "Mobile — Intensité du dégradé (%)", "min": 0, "max": 100, "step": 5, "default": 70 },
+    { "type": "range", "id": "mobile_overlay_mid_stop", "label": "Mobile — Début de diffusion (%)", "min": 10, "max": 80, "step": 5, "default": 40 },
+    { "type": "range", "id": "mobile_overlay_fade_stop", "label": "Mobile — Fin de diffusion (%)", "min": 20, "max": 95, "step": 5, "default": 65 },
     {
       "type": "select",
       "id": "text_position",
