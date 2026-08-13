@@ -1,10 +1,24 @@
 {%- comment -%} Trust Bar — 4 icônes de confiance {%- endcomment -%}
+{%- liquid
+  assign overlay_opacity = section.settings.overlay_opacity | default: 72
+  assign overlay_mid_opacity = overlay_opacity | times: 0.66 | round
+  assign overlay_soft_opacity = overlay_opacity | times: 0.3 | round
+  assign overlay_end_opacity = overlay_opacity | times: 0.16 | round
+-%}
 
 <section
   class="trust-bar trust-bar--text-{{ section.settings.text_position | default: 'top-left' }}"
-  {% if section.settings.background_image != blank %}
-    style="--trust-bar-bg: url('{{ section.settings.background_image | image_url: width: 2200 }}');"
-  {% endif %}
+  style="
+    {% if section.settings.background_image != blank %}--trust-bar-bg: url('{{ section.settings.background_image | image_url: width: 2200 }}');{% endif %}
+    --trust-bar-overlay-color: {{ section.settings.overlay_color | default: '#000000' }};
+    --trust-bar-overlay-angle: {{ section.settings.overlay_direction | default: '270deg' }};
+    --trust-bar-overlay-strong: {{ overlay_opacity }}%;
+    --trust-bar-overlay-mid: {{ overlay_mid_opacity }}%;
+    --trust-bar-overlay-soft: {{ overlay_soft_opacity }}%;
+    --trust-bar-overlay-end: {{ overlay_end_opacity }}%;
+    --trust-bar-overlay-mid-stop: {{ section.settings.overlay_mid_stop | default: 38 }}%;
+    --trust-bar-overlay-fade-stop: {{ section.settings.overlay_fade_stop | default: 66 }}%;
+  "
 >
   <div class="trust-bar__inner">
     <div class="trust-bar__content">
@@ -102,7 +116,13 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: linear-gradient(270deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.48) 38%, rgba(0, 0, 0, 0.22) 66%, rgba(0, 0, 0, 0.12) 100%);
+  background: linear-gradient(
+    var(--trust-bar-overlay-angle),
+    color-mix(in srgb, var(--trust-bar-overlay-color) var(--trust-bar-overlay-strong), transparent) 0%,
+    color-mix(in srgb, var(--trust-bar-overlay-color) var(--trust-bar-overlay-mid), transparent) var(--trust-bar-overlay-mid-stop),
+    color-mix(in srgb, var(--trust-bar-overlay-color) var(--trust-bar-overlay-soft), transparent) var(--trust-bar-overlay-fade-stop),
+    color-mix(in srgb, var(--trust-bar-overlay-color) var(--trust-bar-overlay-end), transparent) 100%
+  );
   pointer-events: none;
 }
 
@@ -267,10 +287,6 @@
     background-position: center;
   }
 
-  .trust-bar::before {
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.86) 0%, rgba(0, 0, 0, 0.62) 48%, rgba(0, 0, 0, 0.08) 100%);
-  }
-
   .trust-bar__inner {
     grid-template-columns: 1fr;
     align-content: space-between;
@@ -319,6 +335,26 @@
     { "type": "text", "id": "eyebrow", "label": "Petit texte", "default": "La Basket 75" },
     { "type": "textarea", "id": "heading", "label": "Texte display", "default": "Acheter avec confiance" },
     { "type": "textarea", "id": "description", "label": "Paragraphe", "default": "Des produits vérifiés, une expédition claire et une équipe disponible avant comme après l'achat." },
+    { "type": "color", "id": "overlay_color", "label": "Couleur du dégradé", "default": "#000000" },
+    {
+      "type": "select",
+      "id": "overlay_direction",
+      "label": "Direction du dégradé",
+      "options": [
+        { "value": "270deg", "label": "Droite vers gauche" },
+        { "value": "90deg", "label": "Gauche vers droite" },
+        { "value": "180deg", "label": "Bas vers haut" },
+        { "value": "0deg", "label": "Haut vers bas" },
+        { "value": "225deg", "label": "Bas droite vers haut gauche" },
+        { "value": "315deg", "label": "Haut droite vers bas gauche" },
+        { "value": "135deg", "label": "Bas gauche vers haut droite" },
+        { "value": "45deg", "label": "Haut gauche vers bas droite" }
+      ],
+      "default": "270deg"
+    },
+    { "type": "range", "id": "overlay_opacity", "label": "Intensité du dégradé (%)", "min": 0, "max": 100, "step": 5, "default": 72 },
+    { "type": "range", "id": "overlay_mid_stop", "label": "Début de diffusion (%)", "min": 10, "max": 80, "step": 5, "default": 40 },
+    { "type": "range", "id": "overlay_fade_stop", "label": "Fin de diffusion (%)", "min": 20, "max": 95, "step": 5, "default": 65 },
     {
       "type": "select",
       "id": "text_position",
