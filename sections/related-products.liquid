@@ -44,7 +44,13 @@
 
 {% stylesheet %}
 .related {
-  padding: var(--space-16) 0 var(--space-12);
+  margin: var(--surface-gap);
+  padding: clamp(var(--space-8), 5vw, var(--space-16)) 0 var(--space-12);
+  background: var(--surface-card);
+  border: var(--surface-border);
+  border-radius: var(--surface-radius);
+  box-shadow: var(--surface-shadow);
+  overflow: hidden;
 }
 
 .related__head {
@@ -157,7 +163,7 @@
 }
 
 @media (max-width: 768px) {
-  .related { padding: var(--space-8) 0; }
+  .related { padding: var(--space-7) 0; }
   .related__head {
     align-items: flex-end;
     margin-bottom: var(--space-5);
