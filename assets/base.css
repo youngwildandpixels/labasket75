@@ -29,112 +29,6 @@
   font-display: swap;
   src: url('InstrumentSans-Bold.ttf') format('truetype');
 }
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('Manrope-Regular.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('Manrope-Medium.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('Manrope-SemiBold.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('Manrope-Bold.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 800;
-  font-display: swap;
-  src: url('Manrope-ExtraBold.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Oswald';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('Oswald-Medium.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Oswald';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('Oswald-SemiBold.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Oswald';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('Oswald-Bold.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Overused Grotesk';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url('OverusedGrotesk-Light.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Overused Grotesk';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('OverusedGrotesk-Book.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Overused Grotesk';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('OverusedGrotesk-Medium.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Overused Grotesk';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('OverusedGrotesk-SemiBold.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Overused Grotesk';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('OverusedGrotesk-Bold.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Overused Grotesk';
-  font-style: normal;
-  font-weight: 800;
-  font-display: swap;
-  src: url('OverusedGrotesk-ExtraBold.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Overused Grotesk';
-  font-style: normal;
-  font-weight: 900;
-  font-display: swap;
-  src: url('OverusedGrotesk-Black.woff2') format('woff2');
-}
-
 /* Reset */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 img, video, svg { display: block; max-width: 100%; }
@@ -145,9 +39,9 @@ input, textarea, select { font: inherit; }
 
 /* Variables */
 :root {
-  --font-primary: 'Instrument Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-primary: 'Instrument Sans', sans-serif;
   --font-body: var(--font-primary);
-  --font-display: 'Oswald', 'Arial Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-display: var(--font-primary);
 
   --font-size-display:      48px;
   --font-size-h1:           32px;

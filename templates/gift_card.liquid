@@ -13,7 +13,7 @@
     <p style="margin: var(--space-6) 0; font-size: var(--font-size-h2); font-weight: var(--font-weight-bold);">
       {{ gift_card.initial_value | money }}
     </p>
-    <p style="font-family: monospace; font-size: 24px; letter-spacing: 4px; margin: var(--space-6) 0;">
+    <p style="font-family: var(--font-primary); font-size: 24px; letter-spacing: 4px; margin: var(--space-6) 0;">
       {{ gift_card.code | format_code }}
     </p>
     {%- if gift_card.enabled == false or gift_card.expired -%}
