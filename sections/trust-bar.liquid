@@ -1,6 +1,6 @@
 {%- comment -%} Trust Bar — 4 icônes de confiance {%- endcomment -%}
 {%- liquid
-  assign overlay_opacity = section.settings.overlay_opacity | default: 72
+  assign overlay_opacity = section.settings.overlay_opacity | default: 70
   assign overlay_mid_opacity = overlay_opacity | times: 0.66 | round
   assign overlay_soft_opacity = overlay_opacity | times: 0.3 | round
   assign overlay_end_opacity = overlay_opacity | times: 0.16 | round
@@ -352,7 +352,7 @@
       ],
       "default": "270deg"
     },
-    { "type": "range", "id": "overlay_opacity", "label": "Intensité du dégradé (%)", "min": 0, "max": 100, "step": 5, "default": 72 },
+    { "type": "range", "id": "overlay_opacity", "label": "Intensité du dégradé (%)", "min": 0, "max": 100, "step": 5, "default": 70 },
     { "type": "range", "id": "overlay_mid_stop", "label": "Début de diffusion (%)", "min": 10, "max": 80, "step": 5, "default": 40 },
     { "type": "range", "id": "overlay_fade_stop", "label": "Fin de diffusion (%)", "min": 20, "max": 95, "step": 5, "default": 65 },
     {
