@@ -248,6 +248,40 @@
           </button>
         </div>
 
+        <ul class="pinfo__reassurance" aria-label="Réassurances">
+          <li class="pinfo__reassurance-item">
+            <span class="pinfo__reassurance-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3l7 3v5c0 4.5-2.8 8.4-7 10-4.2-1.6-7-5.5-7-10V6l7-3z"/>
+                <path d="M9 12l2 2 4-4"/>
+              </svg>
+            </span>
+            <span>Produit authentique</span>
+          </li>
+          <li class="pinfo__reassurance-item">
+            <span class="pinfo__reassurance-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 12a8 8 0 0116 0v5a2 2 0 01-2 2h-2"/>
+                <path d="M6 15H5a2 2 0 01-2-2v-1a2 2 0 012-2h1v5z"/>
+                <path d="M18 10h1a2 2 0 012 2v1a2 2 0 01-2 2h-1v-5z"/>
+                <path d="M13 19h3"/>
+              </svg>
+            </span>
+            <span>SAV réactif</span>
+          </li>
+          <li class="pinfo__reassurance-item">
+            <span class="pinfo__reassurance-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 7h16"/>
+                <path d="M7 7V5a2 2 0 012-2h6a2 2 0 012 2v2"/>
+                <path d="M6 7l1 13h10l1-13"/>
+                <path d="M9 12h6"/>
+              </svg>
+            </span>
+            <span>Retours sous 14 jours</span>
+          </li>
+        </ul>
+
       {%- endform -%}
 
       {%- if section.blocks.size > 0 or product.description != blank -%}
@@ -996,6 +1030,40 @@
   transform: none;
 }
 
+.pinfo__reassurance {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.pinfo__reassurance-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: var(--space-3);
+  background: var(--color-gray-100);
+  border: var(--surface-border);
+  border-radius: var(--control-radius);
+  color: var(--color-black);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.pinfo__reassurance-icon {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--color-black);
+}
+
+.pinfo__reassurance-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
 /* Accordéons */
 .pinfo__accordions {
   display: flex;
@@ -1217,6 +1285,15 @@
     margin: 0;
     min-height: 54px;
     transform: translateY(calc((var(--space-6) + 54px + env(safe-area-inset-bottom)) * -1));
+  }
+
+  .pinfo__reassurance {
+    grid-template-columns: 1fr;
+    margin-top: var(--space-2);
+  }
+
+  .pinfo__reassurance-item {
+    padding: var(--space-3) var(--space-4);
   }
 
   .size-guide-modal {
