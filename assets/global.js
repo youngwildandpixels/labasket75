@@ -90,6 +90,39 @@ document.querySelectorAll('.accordion__trigger').forEach((trigger) => {
 })();
 
 (() => {
+  document.addEventListener('click', (event) => {
+    const toggle = event.target.closest('[data-quick-add-toggle]');
+    const activeQuickAdd = event.target.closest('[data-product-card-quick-add]');
+
+    document.querySelectorAll('[data-product-card-quick-add].is-open').forEach((form) => {
+      if (form !== activeQuickAdd) {
+        form.classList.remove('is-open');
+        const button = form.querySelector('[data-quick-add-toggle]');
+        if (button) button.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    if (!toggle) return;
+
+    const form = toggle.closest('[data-product-card-quick-add]');
+    if (!form) return;
+
+    const isOpen = form.classList.toggle('is-open');
+    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+
+    document.querySelectorAll('[data-product-card-quick-add].is-open').forEach((form) => {
+      form.classList.remove('is-open');
+      const button = form.querySelector('[data-quick-add-toggle]');
+      if (button) button.setAttribute('aria-expanded', 'false');
+    });
+  });
+})();
+
+(() => {
   const drawer = document.querySelector('[data-cart-drawer]');
   if (!drawer) return;
 
