@@ -191,6 +191,7 @@ body.template-index::before {
   flex-direction: column;
   gap: var(--space-4);
   max-width: 640px;
+  transform: translateY(7vh);
 }
 
 .hero__content--h-left   .hero__text-block { align-items: flex-start; text-align: left; }
@@ -294,7 +295,10 @@ body.template-index::before {
   .hero { min-height: 80vh; }
   .hero__content { padding: var(--space-6); }
   .hero__title { font-size: clamp(24px, 8vw, 40px); }
-  .hero__text-block { max-width: 100%; }
+  .hero__text-block {
+    max-width: 100%;
+    transform: translateY(4vh);
+  }
   .hero__overlay { opacity: var(--hero-overlay-mobile-opacity); }
 
   .hero__overlay--m-none { background: transparent; }
