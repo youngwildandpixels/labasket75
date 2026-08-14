@@ -762,4 +762,22 @@ body.quick-add-modal-open::after {
     min-height: 52px;
     padding: 0 30px;
   }
+
+  .postal-estimate-form {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+  }
+
+  .postal-estimate-form input[placeholder*="code postal" i],
+  .postal-estimate-form button,
+  .postal-estimate-form a {
+    width: 100% !important;
+  }
+
+  .postal-estimate-form input[placeholder*="code postal" i] {
+    min-height: 52px;
+    text-align: center;
+  }
 }

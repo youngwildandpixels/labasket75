@@ -5,6 +5,28 @@ document.querySelectorAll('.accordion__trigger').forEach((trigger) => {
   });
 });
 
+(() => {
+  const markPostalEstimateForms = () => {
+    document.querySelectorAll('input[placeholder*="code postal" i]').forEach((input) => {
+      const scope = input.closest('form') || input.parentElement;
+      if (!scope) return;
+
+      const action = Array.from(scope.querySelectorAll('button, a')).find((element) =>
+        /estimation/i.test(element.textContent || '')
+      );
+
+      if (action) {
+        scope.classList.add('postal-estimate-form');
+      }
+    });
+  };
+
+  markPostalEstimateForms();
+
+  const observer = new MutationObserver(markPostalEstimateForms);
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+})();
+
 document.querySelectorAll('main *').forEach((element) => {
   if (element.childNodes.length !== 1) return;
   const child = element.childNodes[0];
