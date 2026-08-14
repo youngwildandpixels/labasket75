@@ -760,7 +760,7 @@ body.search-open {
 
   .mobile-menu {
     position: fixed;
-    top: 84px;
+    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
@@ -770,7 +770,9 @@ body.search-open {
     justify-content: space-between;
     background: var(--color-white);
     border-top: 0.5px solid var(--color-gray-200);
-    padding: 42px var(--space-6) var(--space-8);
+    padding: 86px var(--space-6) var(--space-8);
+    min-height: 100dvh;
+    overflow-y: auto;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
