@@ -348,6 +348,7 @@
               <tr>
                 <th scope="col">EU</th>
                 <th scope="col">US M</th>
+                <th scope="col">US W</th>
                 <th scope="col">UK</th>
                 <th scope="col">CM</th>
               </tr>
@@ -1817,6 +1818,14 @@ body.template-product::before {
     return String(value || '').replace(',', '.');
   }
 
+  function getGuideValue(key, unit) {
+    if (unit === 'USW') {
+      return formatGuideValue(addSizeAmount(getConvertedSize(key, 'US'), 1.5));
+    }
+
+    return formatGuideValue(getConvertedSize(key, unit));
+  }
+
   function shouldShowGuideSize(key) {
     var numericKey = Number(key);
     if (!Number.isFinite(numericKey)) return false;
@@ -1832,9 +1841,9 @@ body.template-product::before {
       .sort(function (a, b) { return Number(a) - Number(b); })
       .forEach(function (key) {
         var row = document.createElement('tr');
-        ['EU', 'US', 'UK', 'CM'].forEach(function (unit) {
+        ['EU', 'US', 'USW', 'UK', 'CM'].forEach(function (unit) {
           var cell = document.createElement('td');
-          cell.textContent = formatGuideValue(getConvertedSize(key, unit));
+          cell.textContent = getGuideValue(key, unit);
           row.appendChild(cell);
         });
         sizeGuideBody.appendChild(row);
