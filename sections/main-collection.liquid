@@ -864,7 +864,7 @@ body.template-collection::before {
   width: 100%;
   min-height: 42px;
   border: 1.5px solid var(--color-black);
-  border-radius: 0;
+  border-radius: 12px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1165,8 +1165,7 @@ body.template-collection::before {
 .collection-page__grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  background: var(--color-gray-200);
+  gap: var(--space-1);
 }
 
 .collection-page__cell {
@@ -1185,14 +1184,7 @@ body.template-collection::before {
 
 .collection-page .product-card__media {
   aspect-ratio: 3 / 4;
-}
-
-.collection-page__cell:nth-child(4n + 1) .product-card__media {
-  border-radius: var(--control-radius) 0 0 var(--control-radius);
-}
-
-.collection-page__cell:nth-child(4n) .product-card__media {
-  border-radius: 0 var(--control-radius) var(--control-radius) 0;
+  border-radius: var(--control-radius);
 }
 
 .collection-page .product-card__img {
@@ -1258,15 +1250,6 @@ body.template-collection::before {
     gap: var(--collection-block-gap);
   }
   .collection-page__grid { grid-template-columns: repeat(3, 1fr); }
-  .collection-page__cell .product-card__media {
-    border-radius: 0;
-  }
-  .collection-page__cell:nth-child(3n + 1) .product-card__media {
-    border-radius: var(--control-radius) 0 0 var(--control-radius);
-  }
-  .collection-page__cell:nth-child(3n) .product-card__media {
-    border-radius: 0 var(--control-radius) var(--control-radius) 0;
-  }
 }
 
 @media (max-width: 768px) {
@@ -1399,6 +1382,9 @@ body.template-collection::before {
     color: var(--color-black);
     background: var(--color-white);
   }
+  .collection-filters__reset--inline {
+    border-radius: 12px;
+  }
   .collection-filters__apply {
     border: 2px solid var(--color-black);
     color: var(--color-white);
@@ -1426,15 +1412,6 @@ body.template-collection::before {
     cursor: pointer;
   }
   .collection-page__grid  { grid-template-columns: repeat(2, 1fr); }
-  .collection-page__cell .product-card__media {
-    border-radius: 0;
-  }
-  .collection-page__cell:nth-child(2n + 1) .product-card__media {
-    border-radius: var(--control-radius) 0 0 var(--control-radius);
-  }
-  .collection-page__cell:nth-child(2n) .product-card__media {
-    border-radius: 0 var(--control-radius) var(--control-radius) 0;
-  }
   .collection-page__toolbar {
     display: none;
   }

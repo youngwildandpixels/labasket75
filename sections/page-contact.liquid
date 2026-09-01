@@ -1,4 +1,4 @@
-{%- comment -%} Page Contact — formulaire et informations boutique {%- endcomment -%}
+{%- comment -%} Page Contact - formulaire de contact {%- endcomment -%}
 
 <section class="contact-page" id="contact-page-{{ section.id }}">
   <div class="contact-page__inner container">
@@ -58,30 +58,6 @@
           <button type="submit" class="contact-page__submit">Envoyer</button>
         {%- endform -%}
       </div>
-
-      <aside class="contact-page__info">
-        <div class="contact-page__info-block">
-          <span>Boutique</span>
-          <p>{{ section.settings.address }}</p>
-          {%- if section.settings.map_link != blank -%}
-            <a href="{{ section.settings.map_link }}" target="_blank" rel="noopener">Ouvrir l'itinéraire</a>
-          {%- endif -%}
-        </div>
-        <div class="contact-page__info-block">
-          <span>Horaires</span>
-          <p>{{ section.settings.hours }}</p>
-        </div>
-        <div class="contact-page__info-block">
-          <span>Email</span>
-          <p><a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a></p>
-        </div>
-        {%- if section.settings.instagram_label != blank -%}
-          <div class="contact-page__info-block">
-            <span>Instagram</span>
-            <p><a href="{{ section.settings.instagram_link }}" target="_blank" rel="noopener">{{ section.settings.instagram_label }}</a></p>
-          </div>
-        {%- endif -%}
-      </aside>
     </div>
   </div>
 </section>
@@ -97,7 +73,6 @@
   max-width: 1180px;
 }
 
-.contact-page__info-block span,
 .contact-page__fields span {
   color: var(--color-black);
   font-size: 15px;
@@ -152,10 +127,8 @@
 }
 
 .contact-page__grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 300px);
-  gap: var(--space-12);
-  align-items: start;
+  max-width: 880px;
+  margin: 0 auto;
 }
 
 .contact-page__form-panel {
@@ -245,42 +218,11 @@
   padding: var(--space-4);
 }
 
-.contact-page__info {
-  display: grid;
-  border: 1.5px solid var(--color-black);
-  border-radius: 18px;
-  overflow: hidden;
-}
-
-.contact-page__info-block {
-  padding: var(--space-5);
-  border-bottom: 1px solid var(--color-gray-200);
-}
-
-.contact-page__info-block:last-child {
-  border-bottom: 0;
-}
-
-.contact-page__info-block p {
-  color: var(--color-gray-700);
-  font-size: 15px;
-  line-height: 1.55;
-  margin: 0;
-  white-space: pre-line;
-}
-
-.contact-page__info-block a {
-  color: var(--color-black);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
 @media (max-width: 900px) {
   .contact-page {
     padding: var(--space-10) 0 var(--space-12);
   }
 
-  .contact-page__grid,
   .contact-page__fields {
     grid-template-columns: 1fr;
   }
@@ -319,11 +261,6 @@
       "default": "<p>Renseignez le formulaire ci-dessous pour nous envoyer un message !</p>"
     },
     { "type": "text", "id": "success_message", "label": "Message de confirmation", "default": "Merci, ton message a bien été envoyé." },
-    { "type": "textarea", "id": "address", "label": "Adresse", "default": "14 Rue Saint-Esprit\nClermont-Ferrand" },
-    { "type": "textarea", "id": "hours", "label": "Horaires", "default": "Lundi 14h-19h\nMardi au samedi 11h-19h" },
-    { "type": "text", "id": "email", "label": "Email", "default": "contact@kozysneakers.fr" },
-    { "type": "url", "id": "map_link", "label": "Lien Google Maps" },
-    { "type": "text", "id": "instagram_label", "label": "Libellé Instagram", "default": "@kozysneakers" },
     { "type": "url", "id": "instagram_link", "label": "Lien Instagram" },
     { "type": "url", "id": "facebook_link", "label": "Lien Facebook" },
     { "type": "url", "id": "tiktok_link", "label": "Lien TikTok" }
