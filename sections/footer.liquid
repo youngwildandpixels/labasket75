@@ -1,4 +1,6 @@
 {%- comment -%} Footer — colonnes éditables + barre basse {%- endcomment -%}
+{%- assign carrier_blocks = section.blocks | where: 'type', 'carrier' -%}
+{%- assign menu_blocks = section.blocks | where: 'type', 'menu' -%}
 <footer class="site-footer" role="contentinfo">
   <div class="site-footer__inner container">
     <div class="site-footer__top">
@@ -24,22 +26,20 @@
         </p>
       </div>
 
-      {%- if section.blocks.size > 0 -%}
-        {%- for block in section.blocks limit: 4 -%}
-          {%- if block.type == 'menu' -%}
-            <div class="footer-col" {{ block.shopify_attributes }}>
-              {%- if block.settings.heading != blank -%}
-                <p class="footer-title">{{ block.settings.heading }}</p>
-              {%- endif -%}
-              {%- if block.settings.menu != blank and block.settings.menu.links.size > 0 -%}
-                <ul class="footer-list">
-                  {%- for link in block.settings.menu.links -%}
-                    <li><a href="{{ link.url }}" class="footer-link">{{ link.title }}</a></li>
-                  {%- endfor -%}
-                </ul>
-              {%- endif -%}
-            </div>
-          {%- endif -%}
+      {%- if menu_blocks.size > 0 -%}
+        {%- for block in menu_blocks limit: 4 -%}
+          <div class="footer-col" {{ block.shopify_attributes }}>
+            {%- if block.settings.heading != blank -%}
+              <p class="footer-title">{{ block.settings.heading }}</p>
+            {%- endif -%}
+            {%- if block.settings.menu != blank and block.settings.menu.links.size > 0 -%}
+              <ul class="footer-list">
+                {%- for link in block.settings.menu.links -%}
+                  <li><a href="{{ link.url }}" class="footer-link">{{ link.title }}</a></li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </div>
         {%- endfor -%}
       {%- else -%}
         <div class="footer-col">
@@ -118,10 +118,22 @@
 
       <div class="footer-badges">
         <p class="footer-title">Transporteurs</p>
-        <div class="footer-badges__row" aria-label="Transporteurs">
-          <span class="footer-badge footer-badge--dhl">DHL</span>
-          <span class="footer-badge footer-badge--ship">Chrono</span>
-        </div>
+        {%- if carrier_blocks.size > 0 -%}
+          <div class="footer-badges__row" aria-label="Transporteurs">
+            {%- for block in carrier_blocks -%}
+              <span
+                class="footer-badge"
+                style="background:{{ block.settings.bg_color }};color:{{ block.settings.text_color }};{% if block.settings.italic %}font-style:italic;{% endif %}"
+                {{ block.shopify_attributes }}
+              >{{ block.settings.label }}</span>
+            {%- endfor -%}
+          </div>
+        {%- else -%}
+          <div class="footer-badges__row" aria-label="Transporteurs">
+            <span class="footer-badge footer-badge--dhl">DHL</span>
+            <span class="footer-badge footer-badge--ship">Chrono</span>
+          </div>
+        {%- endif -%}
       </div>
 
       <div class="footer-locale">
@@ -442,6 +454,36 @@
           "label": "Menu"
         }
       ]
+    },
+    {
+      "type": "carrier",
+      "name": "Transporteur",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Nom affiché",
+          "default": "Transporteur"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Couleur de fond",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Couleur du texte",
+          "default": "#000000"
+        },
+        {
+          "type": "checkbox",
+          "id": "italic",
+          "label": "Texte en italique",
+          "default": false
+        }
+      ]
     }
   ],
   "presets": [
@@ -450,7 +492,9 @@
       "blocks": [
         { "type": "menu", "settings": { "heading": "En savoir plus" } },
         { "type": "menu", "settings": { "heading": "Nos services" } },
-        { "type": "menu", "settings": { "heading": "Nos collections" } }
+        { "type": "menu", "settings": { "heading": "Nos collections" } },
+        { "type": "carrier", "settings": { "label": "DHL", "bg_color": "#FFCC00", "text_color": "#D40511", "italic": true } },
+        { "type": "carrier", "settings": { "label": "Chrono", "bg_color": "#FFFFFF", "text_color": "#2361AD", "italic": false } }
       ]
     }
   ]

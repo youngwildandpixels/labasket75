@@ -32,11 +32,31 @@
             "heading": "Collections",
             "menu": "main-menu"
           }
+        },
+        "dhl": {
+          "type": "carrier",
+          "settings": {
+            "label": "DHL",
+            "bg_color": "#FFCC00",
+            "text_color": "#D40511",
+            "italic": true
+          }
+        },
+        "chrono": {
+          "type": "carrier",
+          "settings": {
+            "label": "Chrono",
+            "bg_color": "#FFFFFF",
+            "text_color": "#2361AD",
+            "italic": false
+          }
         }
       },
       "block_order": [
         "information",
-        "collections"
+        "collections",
+        "dhl",
+        "chrono"
       ]
     }
   },
