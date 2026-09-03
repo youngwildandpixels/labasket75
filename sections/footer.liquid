@@ -103,11 +103,17 @@
 
       <div class="footer-badges">
         <p class="footer-title">Moyens de paiement</p>
-        <div class="footer-badges__row" aria-label="Moyens de paiement">
-          <span class="footer-badge footer-badge--visa">VISA</span>
-          <span class="footer-badge footer-badge--mc">MC</span>
-          <span class="footer-badge footer-badge--amex">AMEX</span>
-        </div>
+        {%- if shop.enabled_payment_types.size > 0 -%}
+          <div class="footer-badges__row footer-payment-icons" aria-label="Moyens de paiement">
+            {%- for type in shop.enabled_payment_types -%}
+              {{ type | payment_type_svg_tag: class: 'footer-payment-icons__svg' }}
+            {%- endfor -%}
+          </div>
+        {%- else -%}
+          <div class="footer-badges__row" aria-label="Moyens de paiement">
+            <span class="footer-badge">CB</span>
+          </div>
+        {%- endif -%}
       </div>
 
       <div class="footer-badges">
@@ -287,11 +293,20 @@
   line-height: 1;
 }
 
-.footer-badge--visa { color: #164da1; font-size: 14px; }
-.footer-badge--mc { color: #e0442f; }
-.footer-badge--amex { color: #2286bd; }
 .footer-badge--dhl { background: #ffcc00; color: #d40511; font-style: italic; font-size: 14px; }
 .footer-badge--ship { color: #2361ad; }
+
+.footer-payment-icons {
+  flex-wrap: wrap;
+}
+
+.footer-payment-icons__svg {
+  display: inline-flex;
+  height: 30px;
+  width: auto;
+  border-radius: 3px;
+  background: var(--color-white);
+}
 
 .footer-locale {
   display: flex;
