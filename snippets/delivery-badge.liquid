@@ -4,11 +4,13 @@
 
   @param {product} product - Product used to determine availability and tags.
   @param {string} [class] - Optional extra CSS class.
+  @param {string} [label] - Optional badge label.
 {% enddoc %}
 
 {%- liquid
   assign badge_product = product
   assign show_badge = false
+  assign badge_label = label | default: 'Livraison 24-48h'
 
   if badge_product.available
     if badge_product.tags contains 'livraison-24-48h'
@@ -29,6 +31,6 @@
 {%- if show_badge -%}
   <span class="{{ badge_class }}">
     <span class="delivery-badge__dot" aria-hidden="true"></span>
-    Livraison 24-48h
+    {{ badge_label }}
   </span>
 {%- endif -%}

@@ -793,6 +793,34 @@ body.quick-add-modal-open::after {
   margin-top: var(--space-3);
 }
 
+.delivery-badge--media {
+  min-height: 28px;
+  padding: 6px 10px;
+  border-color: rgba(0, 0, 0, 0.14);
+  background: var(--color-white);
+  color: var(--color-black);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  font-size: var(--font-size-badge);
+  letter-spacing: 0.8px;
+}
+
+.delivery-badge--media .delivery-badge__dot {
+  display: none;
+}
+
+.product-card__media-delivery-badge,
+.pgallery__delivery-badge {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  z-index: 2;
+}
+
+.pgallery__delivery-badge {
+  top: var(--space-6);
+  right: var(--space-6);
+}
+
 @media (max-width: 768px) {
   .cart-drawer__panel {
     left: var(--surface-gap);

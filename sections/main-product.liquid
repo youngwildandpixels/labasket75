@@ -71,6 +71,7 @@
         {%- if product.compare_at_price > product.price -%}
           <span class="badge badge--promo pgallery__badge">PROMO</span>
         {%- endif -%}
+        {%- render 'delivery-badge', product: product, label: '24/48H', class: 'delivery-badge--media pgallery__delivery-badge' -%}
 
         {%- if product.featured_image != blank -%}
           <img
