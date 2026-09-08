@@ -63,7 +63,9 @@
             {% if brand_is_current %}aria-current="page"{% endif %}
           >
             <span class="collection-filters__fake-checkbox" aria-hidden="true"></span>
-            <span>{{ brand_link.title | escape }}</span>
+            <span>
+              {%- render 'brand-mark', brand: brand_link.title, class: 'collection-filters__brand-mark' -%}
+            </span>
           </a>
         {%- endfor -%}
         {%- break -%}
@@ -413,7 +415,9 @@
                           -%}
                           <a class="collection-filters__choice collection-filters__choice--link{% if vendor_is_current %} is-active{% endif %}" href="{{ vendor_collection_url }}"{% if vendor_is_current %} aria-current="page"{% endif %}>
                             <span class="collection-filters__fake-checkbox" aria-hidden="true"></span>
-                            <span>{{ product.vendor }}</span>
+                            <span>
+                              {%- render 'brand-mark', brand: product.vendor, class: 'collection-filters__brand-mark' -%}
+                            </span>
                           </a>
                           {%- assign rendered_vendors = rendered_vendors | append: product.vendor | append: '|' -%}
                         {%- endunless -%}

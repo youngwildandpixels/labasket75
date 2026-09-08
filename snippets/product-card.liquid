@@ -52,7 +52,9 @@
     </div>
     <div class="product-card__info">
       {%- if show_vendor and product.vendor != blank -%}
-        <p class="product-card__brand">{{ product.vendor }}</p>
+        <p class="product-card__brand">
+          {%- render 'brand-mark', brand: product.vendor, class: 'product-card__brand-mark' -%}
+        </p>
       {%- endif -%}
       <p class="product-card__name">{{ product.title }}</p>
       <div class="product-card__prices">
@@ -108,7 +110,9 @@
             </button>
             <div class="product-card__quick-head">
               {%- if product.vendor != blank -%}
-                <p class="product-card__quick-vendor">{{ product.vendor }}</p>
+                <p class="product-card__quick-vendor">
+                  {%- render 'brand-mark', brand: product.vendor, class: 'product-card__brand-mark' -%}
+                </p>
               {%- endif -%}
               <p class="product-card__quick-title">{{ product.title }}</p>
               <span class="product-card__quick-subtitle">Choisir une taille</span>

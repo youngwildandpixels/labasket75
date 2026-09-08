@@ -717,6 +717,47 @@ body.quick-add-modal-open::after {
   transform: scale(0.985);
 }
 
+.brand-mark {
+  --brand-mark-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.brand-mark__logo {
+  width: var(--brand-mark-size);
+  height: var(--brand-mark-size);
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+.brand-mark__label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.site-mega__heading .brand-mark {
+  --brand-mark-size: 20px;
+}
+
+.site-mega__link .brand-mark,
+.collection-filters__choice .brand-mark {
+  --brand-mark-size: 15px;
+}
+
+.product-card__brand .brand-mark,
+.product-card__quick-vendor .brand-mark {
+  --brand-mark-size: 14px;
+}
+
+.pinfo__vendor .brand-mark {
+  --brand-mark-size: 18px;
+}
+
 @media (max-width: 768px) {
   .cart-drawer__panel {
     left: var(--surface-gap);

@@ -69,7 +69,9 @@
                     {%- for child_link in link.links -%}
                       <div class="site-mega__column">
                         {%- if child_link.links != blank -%}
-                          <a href="{{ child_link.url }}" class="site-mega__heading">{{ child_link.title }}</a>
+                          <a href="{{ child_link.url }}" class="site-mega__heading">
+                            {%- render 'brand-mark', brand: child_link.title, class: 'site-mega__brand-mark' -%}
+                          </a>
                           <ul class="site-mega__list">
                             {%- assign shown_grandchild_links = 0 -%}
                             {%- for grandchild_link in child_link.links -%}
@@ -84,7 +86,9 @@
                           </ul>
                           <a href="{{ child_link.url }}" class="site-mega__all">Voir tout</a>
                         {%- else -%}
-                          <a href="{{ child_link.url }}" class="site-mega__link">{{ child_link.title }}</a>
+                          <a href="{{ child_link.url }}" class="site-mega__link">
+                            {%- render 'brand-mark', brand: child_link.title, class: 'site-mega__brand-mark' -%}
+                          </a>
                         {%- endif -%}
                       </div>
                     {%- endfor -%}
