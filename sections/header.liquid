@@ -12,13 +12,31 @@
 -%}
 
 <style>
-  body { padding-top: {{ header_height | plus: 32 }}px; }
+  body { padding-top: {{ header_height | plus: 56 }}px; }
   @media (max-width: 768px) {
-    body { padding-top: 82px; }
+    body { padding-top: 106px; }
   }
 </style>
 
 <header class="site-header" role="banner" style="--site-logo-width: {{ logo_width }}px; --site-header-height: {{ header_height }}px;">
+  <div class="site-trust-strip" aria-label="Réassurances">
+    <div class="site-trust-strip__track">
+      <span class="site-trust-strip__item">
+        <strong>100% authentiques</strong>
+        <span>Produits garantis originaux</span>
+      </span>
+      <span class="site-trust-strip__separator" aria-hidden="true"></span>
+      <span class="site-trust-strip__item">
+        <strong>{{ section.settings.trust_shipping_title | default: 'Expédition suivie' }}</strong>
+        <span>{{ section.settings.trust_shipping_text | default: 'Un suivi disponible dès l’envoi de votre commande.' }}</span>
+      </span>
+      <span class="site-trust-strip__separator" aria-hidden="true"></span>
+      <span class="site-trust-strip__item">
+        <strong>Paiement sécurisé</strong>
+        <span>Carte bancaire & Apple Pay</span>
+      </span>
+    </div>
+  </div>
   <div class="site-header__inner container">
     <a href="{{ routes.root_url }}" class="site-logo" aria-label="{{ shop.name }}">
       {%- if section.settings.logo != blank -%}
@@ -254,6 +272,7 @@
 
 {% stylesheet %}
 .site-header {
+  --site-trust-strip-height: 24px;
   --header-block-gap: 14px;
   --header-block-radius: 12px;
   --header-block-border: var(--surface-border);
@@ -264,17 +283,70 @@
   right: 0;
   z-index: 100;
   box-sizing: border-box;
-  padding: var(--header-block-gap);
+  padding: calc(var(--site-trust-strip-height) + var(--header-block-gap)) var(--header-block-gap) var(--header-block-gap);
   background: transparent;
   border-bottom: 0;
   min-height: var(--header-height);
-  height: calc(var(--site-header-height, var(--header-height)) + var(--header-block-gap) + var(--surface-gap));
+  height: calc(var(--site-trust-strip-height) + var(--site-header-height, var(--header-height)) + var(--header-block-gap) + var(--surface-gap));
   transition: transform 0.28s ease;
   will-change: transform;
 }
 
 .site-header.is-hidden {
   transform: translateY(calc(-100% - var(--surface-gap)));
+}
+
+.site-trust-strip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--site-trust-strip-height);
+  overflow: hidden;
+  color: var(--color-white);
+  background: rgba(0, 0, 0, 0.9);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.site-trust-strip__track {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 3vw, 44px);
+  width: 100%;
+  min-width: 0;
+  padding: 0 var(--space-5);
+  white-space: nowrap;
+}
+
+.site-trust-strip__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.site-trust-strip__item strong {
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+}
+
+.site-trust-strip__item span {
+  color: rgba(255, 255, 255, 0.68);
+  font-weight: var(--font-weight-medium);
+}
+
+.site-trust-strip__separator {
+  width: 3px;
+  height: 3px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .site-header__inner {
@@ -367,7 +439,7 @@
 
 .site-mega {
   position: fixed;
-  top: calc(var(--site-header-height, var(--header-height)) + 14px);
+  top: calc(var(--site-trust-strip-height) + var(--site-header-height, var(--header-height)) + 14px);
   left: 12px;
   right: 12px;
   z-index: 90;
@@ -740,7 +812,17 @@ body.search-open {
 
 @media (max-width: 768px) {
   .site-header {
-    height: 68px;
+    height: 92px;
+  }
+
+  .site-trust-strip__track {
+    gap: 0;
+    padding: 0 var(--space-4);
+  }
+
+  .site-trust-strip__item:not(:first-child),
+  .site-trust-strip__separator {
+    display: none;
   }
 
   .site-header__inner {
@@ -807,7 +889,7 @@ body.search-open {
     justify-content: space-between;
     background: var(--color-white);
     border-top: 0.5px solid var(--color-gray-200);
-    padding: 86px var(--space-6) var(--space-8);
+    padding: 110px var(--space-6) var(--space-8);
     min-height: 100dvh;
     overflow-y: auto;
     opacity: 0;
@@ -1171,6 +1253,22 @@ body.search-open {
       "id": "menu",
       "label": "Menu principal",
       "default": "main-menu"
+    },
+    {
+      "type": "header",
+      "content": "Bandeau de réassurance"
+    },
+    {
+      "type": "text",
+      "id": "trust_shipping_title",
+      "label": "Titre expédition",
+      "default": "Expédition suivie"
+    },
+    {
+      "type": "text",
+      "id": "trust_shipping_text",
+      "label": "Texte expédition",
+      "default": "Un suivi disponible dès l’envoi de votre commande."
     },
     {
       "type": "header",
