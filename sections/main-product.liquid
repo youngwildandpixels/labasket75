@@ -222,10 +222,12 @@
           <p class="pinfo__stock">Plus que {{ current.inventory_quantity }} produit{% if current.inventory_quantity > 1 %}s{% endif %} en stock</p>
         {%- endif -%}
 
+        {%- render 'delivery-badge', product: product, class: 'pinfo__delivery-badge' -%}
+
         <ul class="pinfo__shipping" aria-label="Delai de livraison">
           <li class="pinfo__shipping-option{% unless is_partner_sourced %} is-active{% else %} is-muted{% endunless %}">
             <span class="ship-dot{% unless is_partner_sourced %} ship-dot--filled{% endunless %}"></span>
-            Livraison 24/48h
+            Livraison 24-48h
           </li>
           <li
             class="pinfo__shipping-option{% if is_partner_sourced %} is-active has-tooltip{% else %} is-muted{% endif %}"
