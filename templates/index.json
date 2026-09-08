@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
@@ -6,14 +15,20 @@
         "slide_1": {
           "type": "slide",
           "settings": {
-            "image": "shopify:\/\/shop_images\/Campagne_ADS_2.webp",
+            "image": "shopify://shop_images/home_labasket.png",
+            "image_mobile": "shopify://shop_images/ome_mobile.webp",
             "label": "Nouvelle collection",
-            "title": "DÉCOUVREZ LA SÉLECTION",
-            "cta_link": "\/collections\/all",
+            "title": "La Travis du moment",
+            "cta_link": "shopify://products/air-jordan-1-retro-low-og-sp-travis-scott-sail-tropical-pink",
             "cta_label": "DÉCOUVRIR",
             "vertical_position": "top",
-            "horizontal_align": "left",
-            "overlay_opacity": 30
+            "horizontal_align": "center",
+            "mobile_vertical_position": "center",
+            "mobile_horizontal_align": "center",
+            "overlay_style": "gradient-top",
+            "overlay_opacity": 30,
+            "mobile_overlay_style": "gradient-top",
+            "mobile_overlay_opacity": 30
           }
         }
       },
@@ -28,10 +43,10 @@
       "type": "featured-collection-tabs",
       "settings": {
         "tab_1_label": "Bestsellers",
-        "collection_1": "sneakers",
+        "collection_1": "bestsellers",
         "tab_2_label": "Nouveautés",
-        "collection_2": "sneakers",
-        "products_to_show": 4
+        "collection_2": "nouveautes",
+        "products_to_show": 12
       }
     },
     "brand_banners": {
@@ -40,25 +55,28 @@
         "brand_1": {
           "type": "brand",
           "settings": {
-            "brand_name": "Salomon",
+            "image": "shopify://shop_images/nike_mind_home_2.webp",
+            "brand_name": "Nike",
             "cta_label": "Découvrir",
-            "link": ""
+            "link": "shopify://collections/nike"
           }
         },
         "brand_2": {
           "type": "brand",
           "settings": {
-            "brand_name": "Birkenstock",
+            "image": "shopify://shop_images/adidas_home.webp",
+            "brand_name": "Adidas",
             "cta_label": "Découvrir",
-            "link": ""
+            "link": "shopify://collections/adidas"
           }
         },
         "brand_3": {
           "type": "brand",
           "settings": {
-            "brand_name": "Nike",
+            "image": "shopify://shop_images/nb_home.webp",
+            "brand_name": "New Balance",
             "cta_label": "Découvrir",
-            "link": ""
+            "link": "shopify://collections/new-balance"
           }
         }
       },
@@ -69,36 +87,19 @@
       ],
       "settings": {}
     },
-    "brand_story": {
-      "type": "brand-story",
+    "featured_collection_tabs_fAcbhz": {
+      "type": "featured-collection-tabs",
       "settings": {
-        "label": "Notre histoire",
-        "title": "The Last Step",
-        "text": "<p>Depuis 2010, The Last Step sélectionne les meilleures sneakers pour vous.<\/p>",
-        "cta_label": "En savoir plus",
-        "cta_link": "\/pages\/about"
-      }
-    },
-    "product_mosaic_igerER": {
-      "type": "product-mosaic",
-      "name": "Product Mosaic",
-      "settings": {
-        "heading": "SLIDES",
-        "collection": "sneakers",
-        "products_to_show": 24
+        "tab_1_label": "Travis Scott",
+        "collection_1": "travis-scott",
+        "tab_2_label": "",
+        "collection_2": "",
+        "products_to_show": 12
       }
     },
     "trust_bar": {
       "type": "trust-bar",
       "blocks": {
-        "item_1": {
-          "type": "item",
-          "settings": {
-            "icon": "store",
-            "title": "Click & Collect",
-            "subtitle": "Disponible en boutique"
-          }
-        },
         "item_2": {
           "type": "item",
           "settings": {
@@ -111,8 +112,16 @@
           "type": "item",
           "settings": {
             "icon": "truck",
-            "title": "Livraison rapide",
-            "subtitle": "24\/48h en France"
+            "title": "Votre commande voyage vite",
+            "subtitle": "24 à 48 h en France, jusqu’à 6 jours ouvrés à l’international."
+          }
+        },
+        "item_VcTaVe": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Directement à votre porte",
+            "subtitle": "Commandez en ligne, on vous livre chez vous via coursier"
           }
         },
         "item_4": {
@@ -125,19 +134,19 @@
         }
       },
       "block_order": [
-        "item_1",
         "item_2",
         "item_3",
+        "item_VcTaVe",
         "item_4"
       ],
       "settings": {
-        "background_image": "shopify:\/\/shop_images\/reassurance.webp",
+        "background_image": "shopify://shop_images/rea_home.webp",
         "eyebrow": "Acheter avec confiance",
         "heading": "Acheter avec\nconfiance",
         "description": "Des produits vérifiés, une expédition claire et une équipe disponible avant comme après l'achat.",
         "overlay_color": "#000000",
         "overlay_direction": "90deg",
-        "overlay_opacity": 50,
+        "overlay_opacity": 10,
         "overlay_mid_stop": 35,
         "overlay_fade_stop": 50,
         "mobile_overlay_enabled": true,
@@ -148,24 +157,13 @@
         "mobile_overlay_fade_stop": 65,
         "text_position": "top-left"
       }
-    },
-    "newsletter": {
-      "type": "newsletter",
-      "settings": {
-        "title": "Restez informé",
-        "subtitle": "Nouveautés, offres exclusives, actualités sneakers.",
-        "placeholder": "Votre adresse email",
-        "button_label": "S'inscrire"
-      }
     }
   },
   "order": [
     "hero",
     "featured_tabs",
     "brand_banners",
-    "brand_story",
-    "product_mosaic_igerER",
-    "trust_bar",
-    "newsletter"
+    "featured_collection_tabs_fAcbhz",
+    "trust_bar"
   ]
 }
