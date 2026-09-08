@@ -451,7 +451,7 @@
   visibility: hidden;
   pointer-events: none;
   transform: translateY(-8px);
-  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0.18s;
 }
 
 .site-mega::before {
@@ -459,16 +459,18 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: -18px;
-  height: 18px;
+  top: -34px;
+  height: 34px;
 }
 
 .site-nav__item--has-mega:hover .site-mega,
-.site-nav__item--has-mega:focus-within .site-mega {
+.site-nav__item--has-mega:focus-within .site-mega,
+.site-nav__item--has-mega.is-mega-open .site-mega {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
   transform: translateY(0);
+  transition-delay: 0s;
 }
 
 .site-mega__inner {
@@ -1198,6 +1200,47 @@ body.search-open {
   window.addEventListener('resize', function () { moveIndicator(activeLink()); });
 
   requestAnimationFrame(function () { moveIndicator(activeLink()); });
+})();
+</script>
+
+<script>
+(function () {
+  var megaItems = Array.prototype.slice.call(document.querySelectorAll('.site-nav__item--has-mega'));
+  if (!megaItems.length) return;
+
+  megaItems.forEach(function (item) {
+    var mega = item.querySelector('.site-mega');
+    var closeTimer;
+
+    function openMega() {
+      window.clearTimeout(closeTimer);
+      megaItems.forEach(function (otherItem) {
+        if (otherItem !== item) otherItem.classList.remove('is-mega-open');
+      });
+      item.classList.add('is-mega-open');
+    }
+
+    function closeMega() {
+      closeTimer = window.setTimeout(function () {
+        item.classList.remove('is-mega-open');
+      }, 450);
+    }
+
+    item.addEventListener('mouseenter', openMega);
+    item.addEventListener('mouseleave', closeMega);
+    if (mega) {
+      mega.addEventListener('mouseenter', openMega);
+      mega.addEventListener('mouseleave', closeMega);
+    }
+    item.addEventListener('focusin', openMega);
+    item.addEventListener('focusout', function () {
+      window.setTimeout(function () {
+        if (!item.contains(document.activeElement)) {
+          item.classList.remove('is-mega-open');
+        }
+      }, 0);
+    });
+  });
 })();
 </script>
 
