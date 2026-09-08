@@ -161,8 +161,8 @@
   },
   "order": [
     "hero",
-    "featured_tabs",
     "brand_banners",
+    "featured_tabs",
     "featured_collection_tabs_fAcbhz",
     "trust_bar"
   ]
