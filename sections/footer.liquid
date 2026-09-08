@@ -1,5 +1,4 @@
 {%- comment -%} Footer — colonnes éditables + barre basse {%- endcomment -%}
-{%- assign carrier_blocks = section.blocks | where: 'type', 'carrier' -%}
 {%- assign menu_blocks = section.blocks | where: 'type', 'menu' -%}
 <footer class="site-footer" role="contentinfo">
   <div class="site-footer__inner container">
@@ -117,23 +116,12 @@
       </div>
 
       <div class="footer-badges">
-        <p class="footer-title">Transporteurs</p>
-        {%- if carrier_blocks.size > 0 -%}
-          <div class="footer-badges__row" aria-label="Transporteurs">
-            {%- for block in carrier_blocks -%}
-              <span
-                class="footer-badge"
-                style="background:{{ block.settings.bg_color }};color:{{ block.settings.text_color }};{% if block.settings.italic %}font-style:italic;{% endif %}"
-                {{ block.shopify_attributes }}
-              >{{ block.settings.label }}</span>
-            {%- endfor -%}
-          </div>
-        {%- else -%}
-          <div class="footer-badges__row" aria-label="Transporteurs">
-            <span class="footer-badge footer-badge--dhl">DHL</span>
-            <span class="footer-badge footer-badge--ship">Chrono</span>
-          </div>
-        {%- endif -%}
+        <p class="footer-title">Modes de livraison</p>
+        <div class="footer-badges__row footer-shipping-icons" aria-label="Modes de livraison">
+          <img src="{{ 'logo-colissimo.svg' | asset_url }}" alt="Colissimo" class="footer-shipping-logo footer-shipping-logo--colissimo" loading="lazy" width="78" height="30">
+          <img src="{{ 'logo-mondial-relay.svg' | asset_url }}" alt="Mondial Relay" class="footer-shipping-logo footer-shipping-logo--mondial" loading="lazy" width="86" height="30">
+          <img src="{{ 'logo-chronopost.svg' | asset_url }}" alt="Chronopost" class="footer-shipping-logo footer-shipping-logo--chrono" loading="lazy" width="86" height="30">
+        </div>
       </div>
 
       <div class="footer-locale">
@@ -317,6 +305,20 @@
   height: 30px;
   width: auto;
   border-radius: 3px;
+}
+
+.footer-shipping-icons {
+  flex-wrap: wrap;
+}
+
+.footer-shipping-logo {
+  display: inline-flex;
+  width: auto;
+  height: 30px;
+  max-width: 94px;
+  object-fit: contain;
+  padding: 5px 7px;
+  border-radius: 3px;
   background: var(--color-white);
 }
 
@@ -493,7 +495,6 @@
         { "type": "menu", "settings": { "heading": "En savoir plus" } },
         { "type": "menu", "settings": { "heading": "Nos services" } },
         { "type": "menu", "settings": { "heading": "Nos collections" } },
-        { "type": "carrier", "settings": { "label": "DHL", "bg_color": "#FFCC00", "text_color": "#D40511", "italic": true } },
         { "type": "carrier", "settings": { "label": "Chrono", "bg_color": "#FFFFFF", "text_color": "#2361AD", "italic": false } }
       ]
     }
