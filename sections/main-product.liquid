@@ -26,6 +26,16 @@
   if product.tags contains 'stockx-sync' or product.tags contains 'scraper' or product.tags contains 'livraison-5-12' or product.tags contains 'revendeur-partenaire'
     assign is_partner_sourced = true
   endif
+  assign is_fast_delivery = false
+  if current.available
+    if product.tags contains 'livraison-24-48h'
+      assign is_fast_delivery = true
+    elsif product.tags contains 'livraison-24-48'
+      assign is_fast_delivery = true
+    elsif product.tags contains '24-48h'
+      assign is_fast_delivery = true
+    endif
+  endif
   assign pickup_available = false
   if current.available and is_partner_sourced == false
     assign pickup_available = true
@@ -222,20 +232,18 @@
           <p class="pinfo__stock">Plus que {{ current.inventory_quantity }} produit{% if current.inventory_quantity > 1 %}s{% endif %} en stock</p>
         {%- endif -%}
 
-        {%- render 'delivery-badge', product: product, class: 'pinfo__delivery-badge' -%}
-
         <ul class="pinfo__shipping" aria-label="Delai de livraison">
-          <li class="pinfo__shipping-option{% unless is_partner_sourced %} is-active{% else %} is-muted{% endunless %}">
-            <span class="ship-dot{% unless is_partner_sourced %} ship-dot--filled{% endunless %}"></span>
+          <li class="pinfo__shipping-option{% if is_fast_delivery or is_partner_sourced == false %} is-active{% else %} is-muted{% endif %}">
+            <span class="ship-dot{% if is_fast_delivery or is_partner_sourced == false %} ship-dot--filled{% endif %}"></span>
             Livraison 24-48h
           </li>
           <li
-            class="pinfo__shipping-option{% if is_partner_sourced %} is-active has-tooltip{% else %} is-muted{% endif %}"
-            {% if is_partner_sourced %}tabindex="0" aria-describedby="shipping-tooltip-{{ section.id }}"{% endif %}
+            class="pinfo__shipping-option{% if is_partner_sourced and is_fast_delivery == false %} is-active has-tooltip{% else %} is-muted{% endif %}"
+            {% if is_partner_sourced and is_fast_delivery == false %}tabindex="0" aria-describedby="shipping-tooltip-{{ section.id }}"{% endif %}
           >
-            <span class="ship-dot{% if is_partner_sourced %} ship-dot--filled{% endif %}"></span>
+            <span class="ship-dot{% if is_partner_sourced and is_fast_delivery == false %} ship-dot--filled{% endif %}"></span>
             Livraison 5 à 12 jours
-            {%- if is_partner_sourced -%}
+            {%- if is_partner_sourced and is_fast_delivery == false -%}
               <span class="pinfo__shipping-tooltip" id="shipping-tooltip-{{ section.id }}" role="tooltip">
                 Approvisionné via notre réseau de revendeurs partenaires. Jours ouvrés uniquement.
               </span>
