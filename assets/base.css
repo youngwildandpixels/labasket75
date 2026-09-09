@@ -197,6 +197,15 @@ html.lenis.lenis-smooth {
   background-color: var(--surface-bg);
   background-image: var(--surface-bg-pattern);
   background-size: var(--surface-bg-size);
+  background-attachment: fixed;
+  background-position: top left;
+}
+
+/* Keep the dotted canvas anchored to the viewport while page content scrolls. */
+.pmain,
+.collection-page {
+  background-attachment: fixed;
+  background-position: top left;
 }
 
 .surface-block {
@@ -760,29 +769,36 @@ body.quick-add-modal-open::after {
 
 .delivery-badge {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  min-height: 26px;
+  gap: 3px;
   width: fit-content;
-  max-width: 100%;
-  padding: 5px 9px;
-  border: 1px solid rgba(20, 120, 72, 0.22);
+  max-width: calc(100% - 16px);
+  padding: 6px 8px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
   border-radius: var(--control-radius);
-  background: rgba(20, 120, 72, 0.08);
-  color: #147848;
+  background: var(--color-white);
+  color: var(--color-black);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   line-height: 1.1;
-  text-transform: uppercase;
+  text-align: center;
 }
 
-.delivery-badge__dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: currentColor;
-  flex: 0 0 auto;
+.delivery-badge__heading {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+.delivery-badge__heading svg { flex: 0 0 auto; }
+.delivery-badge__detail {
+  font-size: 9px;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .product-card__delivery-badge {
@@ -795,17 +811,13 @@ body.quick-add-modal-open::after {
 
 .delivery-badge--media {
   min-height: 28px;
-  padding: 6px 10px;
+  padding: 6px 8px;
   border-color: rgba(0, 0, 0, 0.14);
   background: var(--color-white);
   color: var(--color-black);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   font-size: var(--font-size-badge);
   letter-spacing: 0.8px;
-}
-
-.delivery-badge--media .delivery-badge__dot {
-  display: none;
 }
 
 .product-card__media-delivery-badge,

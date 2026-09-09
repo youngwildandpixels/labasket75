@@ -1,3 +1,13 @@
+{%- liquid
+  assign seo_brand_name = 'LAbasket75'
+  assign seo_page_title = page_title
+  assign seo_page_description = page_description
+
+  if request.page_type == 'index'
+    assign seo_page_title = 'LAbasket75 | Sneakers authentiques et modèles recherchés'
+    assign seo_page_description = 'Découvrez LAbasket75 : sneakers authentiques, modèles recherchés et tailles disponibles, avec paiement sécurisé et expédition soignée.'
+  endif
+-%}
 <!doctype html>
 <html lang="{{ request.locale.iso_code }}">
 <head>
@@ -6,24 +16,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="theme-color" content="#000000">
   <link rel="canonical" href="{{ canonical_url }}">
-  {%- if settings.favicon != blank -%}
-    <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
-  {%- else -%}
-    <link rel="icon" type="image/jpeg" href="{{ 'favicon_Kozy.jpg' | asset_url }}">
-  {%- endif -%}
+  <link rel="icon" type="image/svg+xml" href="{{ 'favicon.svg' | asset_url }}">
 
   <title>
-    {{ page_title }}
+    {{ seo_page_title }}
     {%- if current_tags %} &ndash; {{ current_tags | join: ', ' }}{% endif -%}
     {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
-    {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    {%- unless seo_page_title contains seo_brand_name %} &ndash; {{ seo_brand_name }}{% endunless -%}
   </title>
 
-  {%- if page_description -%}
-    <meta name="description" content="{{ page_description | escape }}">
+  {%- if seo_page_description -%}
+    <meta name="description" content="{{ seo_page_description | escape }}">
   {%- endif -%}
 
-  {%- render 'meta-tags' -%}
+  {%- render 'meta-tags', seo_page_title: seo_page_title, seo_page_description: seo_page_description, seo_brand_name: seo_brand_name -%}
 
   {{ 'base.css' | asset_url | stylesheet_tag }}
   {{ 'component-product-card.css' | asset_url | stylesheet_tag }}

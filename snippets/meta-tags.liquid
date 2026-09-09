@@ -1,4 +1,10 @@
-{%- comment -%} SEO meta tags {%- endcomment -%}
+{% doc %}
+  Renders Open Graph metadata for the current storefront page.
+
+  @param {string} seo_page_title - Resolved SEO title for the current page.
+  @param {string} seo_page_description - Resolved SEO description for the current page.
+  @param {string} seo_brand_name - Storefront brand name.
+{% enddoc %}
 {%- if template.name == 'product' -%}
   <meta property="og:type" content="product">
   <meta property="og:title" content="{{ product.title | escape }}">
@@ -15,13 +21,13 @@
   {%- endif -%}
 {%- else -%}
   <meta property="og:type" content="website">
-  <meta property="og:title" content="{{ page_title | escape }}">
+  <meta property="og:title" content="{{ seo_page_title | escape }}">
   {%- if settings.share_image -%}
     <meta property="og:image" content="{{ settings.share_image | image_url: width: 1200 }}">
   {%- endif -%}
 {%- endif -%}
 <meta property="og:url" content="{{ canonical_url }}">
-<meta property="og:site_name" content="{{ shop.name }}">
-{%- if page_description -%}
-  <meta property="og:description" content="{{ page_description | escape }}">
+<meta property="og:site_name" content="{{ seo_brand_name | escape }}">
+{%- if seo_page_description -%}
+  <meta property="og:description" content="{{ seo_page_description | escape }}">
 {%- endif -%}

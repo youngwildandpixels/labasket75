@@ -1,4 +1,5 @@
 {%- comment -%} Page FAQ — questions fréquentes dédiées {%- endcomment -%}
+{%- if page.handle == 'f-a-q' -%}
 
 <section class="page-faq" id="page-faq-{{ section.id }}">
   <div class="page-faq__inner container">
@@ -34,6 +35,7 @@
     </div>
   </div>
 </section>
+{%- endif -%}
 
 {% stylesheet %}
 .page-faq {

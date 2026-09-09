@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Kozy">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="La Basket 75">
   <rect width="64" height="64" rx="14" fill="#000"/>
-  <path fill="#fff" d="M17 13h10v21.1L43.6 13H56L38.1 35.1 57.2 51H43.5L27 37.1V51H17z"/>
+  <text x="32" y="29" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="800" text-anchor="middle" letter-spacing="-1">LB</text>
+  <text x="32" y="47" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="800" text-anchor="middle">75</text>
 </svg>

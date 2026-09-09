@@ -14,7 +14,7 @@
           "type": "accordion",
           "settings": {
             "title": "Livraison et retours",
-            "content": "<p>Livraison standard 24\/48h en France métropolitaine. Retours gratuits sous 14 jours.<\/p>"
+            "content": "<p>Expédition sous 24\/48 h en France métropolitaine. Retours gratuits sous 14 jours.<\/p>"
           }
         }
       },
@@ -52,7 +52,7 @@
           "type": "qa",
           "settings": {
             "question": "Quels modes de livraison utilisez-vous ?",
-            "answer": "<p>Nous proposons la livraison express 24\/48h, la livraison standard et le retrait en boutique gratuit.<\/p>"
+            "answer": "<p>Nous proposons l’expédition express sous 24\/48 h, la livraison standard et le retrait en boutique gratuit.<\/p>"
           }
         },
         "q4": {
@@ -94,8 +94,8 @@
           "type": "item",
           "settings": {
             "icon": "truck",
-            "title": "Livraison rapide",
-            "subtitle": "24\/48h en France"
+            "title": "Expédition rapide",
+            "subtitle": "Sous 24\/48 h"
           }
         },
         "item_4": {

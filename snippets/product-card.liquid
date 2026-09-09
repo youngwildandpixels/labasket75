@@ -23,7 +23,7 @@
       {%- if has_sale -%}
         <span class="badge badge--promo">PROMO</span>
       {%- endif -%}
-      {%- render 'delivery-badge', product: product, label: '24/48H', class: 'delivery-badge--media product-card__media-delivery-badge' -%}
+      {%- render 'delivery-badge', product: product, class: 'delivery-badge--media product-card__media-delivery-badge' -%}
       {%- if product.featured_image != blank -%}
         <img
           src="{{ product.featured_image | image_url: width: 600 }}"
@@ -68,7 +68,6 @@
           </span>
         {%- endif -%}
       </div>
-      {%- render 'delivery-badge', product: product, class: 'product-card__delivery-badge' -%}
     </div>
   </a>
   {%- if show_quick_add -%}

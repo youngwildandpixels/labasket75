@@ -11,34 +11,15 @@
   if product_type_downcase == 'sneakers'
     assign is_sneaker = true
   endif
-  assign fulfillment_type = product.metafields.custom.fulfillment_type.value | default: product.metafields.custom.fulfillment_type
   assign style_id = product.metafields.custom.style_id.value | default: product.metafields.custom.style_id
   if style_id == blank and product.description contains 'Style ID'
     assign style_id_parts = product.description | split: 'Style ID'
     assign style_id_after_label = style_id_parts[1] | strip_html | replace: ':', '' | strip
     assign style_id = style_id_after_label | split: ' ' | first
   endif
-  assign fulfillment_type_downcase = fulfillment_type | downcase
-  assign is_partner_sourced = false
-  if fulfillment_type_downcase == 'scraper' or fulfillment_type_downcase == 'partner' or fulfillment_type_downcase == 'revendeur'
-    assign is_partner_sourced = true
-  endif
-  if product.tags contains 'stockx-sync' or product.tags contains 'scraper' or product.tags contains 'livraison-5-12' or product.tags contains 'revendeur-partenaire'
-    assign is_partner_sourced = true
-  endif
   assign is_fast_delivery = false
-  if current.available
-    if product.tags contains 'livraison-24-48h'
-      assign is_fast_delivery = true
-    elsif product.tags contains 'livraison-24-48'
-      assign is_fast_delivery = true
-    elsif product.tags contains '24-48h'
-      assign is_fast_delivery = true
-    endif
-  endif
-  assign pickup_available = false
-  if current.available and is_partner_sourced == false
-    assign pickup_available = true
+  if current.metafields.custom.delivery_24_48h.value == true
+    assign is_fast_delivery = true
   endif
   assign size_option_position = 0
   for option in product.options_with_values
@@ -71,7 +52,6 @@
         {%- if product.compare_at_price > product.price -%}
           <span class="badge badge--promo pgallery__badge">PROMO</span>
         {%- endif -%}
-        {%- render 'delivery-badge', product: product, label: '24/48H', class: 'delivery-badge--media pgallery__delivery-badge' -%}
 
         {%- if product.featured_image != blank -%}
           <img
@@ -163,20 +143,24 @@
 
     {%- comment -%} ── INFO ── {%- endcomment -%}
     <div class="pinfo">
-      {%- if product.vendor != blank -%}
-        <p class="pinfo__vendor">
-          {%- render 'brand-mark', brand: product.vendor, class: 'pinfo__brand-mark' -%}
-        </p>
+      {%- if product.vendor != blank or style_id != blank -%}
+        <div class="pinfo__meta">
+          {%- if product.vendor != blank -%}
+            <p class="pinfo__vendor">
+              {%- render 'brand-mark', brand: product.vendor, class: 'pinfo__brand-mark' -%}
+            </p>
+          {%- endif -%}
+          {%- if style_id != blank -%}
+            <p class="pinfo__sku">SKU : {{ style_id }}</p>
+          {%- endif -%}
+        </div>
       {%- endif -%}
 
       <h1 class="pinfo__title">{{ product.title }}</h1>
 
-      {%- if style_id != blank -%}
-        <p class="pinfo__sku">SKU : {{ style_id }}</p>
-      {%- endif -%}
-
       <div class="pinfo__units">
         <div class="pinfo__unit-switch" role="group" aria-label="Unite de taille">
+          <span class="pinfo__unit-thumb" aria-hidden="true"></span>
           <button type="button" class="size-unit is-active" data-unit="EU" aria-pressed="true">EU</button>
           <button type="button" class="size-unit" data-unit="US" aria-pressed="false">US M</button>
           <button type="button" class="size-unit" data-unit="UK" aria-pressed="false">UK</button>
@@ -211,12 +195,23 @@
                   type="radio"
                   name="variant-radio"
                   value="{{ variant.id }}"
+                  data-fast-delivery="{% if variant.metafields.custom.delivery_24_48h.value == true %}true{% else %}false{% endif %}"
+                  data-variant-price="{{ variant.price | money_without_trailing_zeros | escape }}"
                   {% unless variant.available %}disabled{% endunless %}
                   {% if variant.id == current.id %}checked{% endif %}
                   data-variant-radio
                   class="visually-hidden"
                 >
-                <span class="size-cell__dot{% if variant.available %} size-cell__dot--available{% endif %}" aria-hidden="true"></span>
+                {%- if variant.metafields.custom.delivery_24_48h.value == true -%}
+                  <span class="size-cell__express" title="{{ 'products.product.fast_delivery' | t | escape }}">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+                      <path d="M13.5 2 4 14h7l-1 8L20 10h-7l.5-8Z"/>
+                    </svg>
+                    <span class="visually-hidden">{{ 'products.product.fast_delivery' | t }}</span>
+                  </span>
+                {%- else -%}
+                  <span class="size-cell__dot{% if variant.available %} size-cell__dot--available{% endif %}" aria-hidden="true"></span>
+                {%- endif -%}
                 <span class="size-cell__size" data-size-source="{{ variant_size_label | escape }}">{{ variant_size_label }}</span>
                 <span class="size-cell__prices">
                   {%- if variant.compare_at_price > variant.price -%}
@@ -233,36 +228,26 @@
           <p class="pinfo__stock">Plus que {{ current.inventory_quantity }} produit{% if current.inventory_quantity > 1 %}s{% endif %} en stock</p>
         {%- endif -%}
 
-        <ul class="pinfo__shipping" aria-label="Delai de livraison">
-          <li class="pinfo__shipping-option{% if is_fast_delivery or is_partner_sourced == false %} is-active{% else %} is-muted{% endif %}">
-            <span class="ship-dot{% if is_fast_delivery or is_partner_sourced == false %} ship-dot--filled{% endif %}"></span>
-            Livraison 24-48h
+        <ul class="pinfo__shipping" aria-label="Délai de livraison" aria-live="polite" aria-atomic="true">
+          <li data-shipping-fast class="pinfo__shipping-option{% if is_fast_delivery %} is-active{% else %} is-muted{% endif %}"{% if is_fast_delivery %} aria-current="true"{% endif %}>
+            <span class="ship-dot{% if is_fast_delivery %} ship-dot--filled{% endif %}"></span>
+            Expédition 24–48 h
           </li>
           <li
-            class="pinfo__shipping-option{% if is_partner_sourced and is_fast_delivery == false %} is-active has-tooltip{% else %} is-muted{% endif %}"
-            {% if is_partner_sourced and is_fast_delivery == false %}tabindex="0" aria-describedby="shipping-tooltip-{{ section.id }}"{% endif %}
+            data-shipping-standard
+            class="pinfo__shipping-option{% unless is_fast_delivery %} is-active has-tooltip{% else %} is-muted{% endunless %}"
+            {% unless is_fast_delivery %}aria-current="true" tabindex="0" aria-describedby="shipping-tooltip-{{ section.id }}"{% endunless %}
           >
-            <span class="ship-dot{% if is_partner_sourced and is_fast_delivery == false %} ship-dot--filled{% endif %}"></span>
+            <span class="ship-dot{% unless is_fast_delivery %} ship-dot--filled{% endunless %}"></span>
             Livraison 5 à 12 jours
-            {%- if is_partner_sourced and is_fast_delivery == false -%}
-              <span class="pinfo__shipping-tooltip" id="shipping-tooltip-{{ section.id }}" role="tooltip">
-                Approvisionné via notre réseau de revendeurs partenaires. Jours ouvrés uniquement.
-              </span>
-            {%- endif -%}
+            <span class="pinfo__shipping-tooltip" id="shipping-tooltip-{{ section.id }}" role="tooltip"{% if is_fast_delivery %} hidden{% endif %}>
+              Approvisionné via notre réseau de revendeurs partenaires. Jours ouvrés uniquement.
+            </span>
           </li>
         </ul>
 
-        <div class="pinfo__buttons{% if pickup_available %} has-mobile-pickup{% endif %}">
-          <button type="submit" name="add" class="btn btn--primary pinfo__btn"{% unless current.available %} disabled{% endunless %}>
-            {%- if current.available -%}Ajouter au panier{%- else -%}Rupture de stock{%- endif -%}
-          </button>
-          <button type="submit" name="properties[Mode]" value="Retrait en boutique" class="btn pinfo__btn pinfo__btn--pickup"{% unless pickup_available %} disabled{% endunless %}>
-            {%- if pickup_available -%}Retirer en boutique{%- else -%}Retrait indisponible{%- endif -%}
-          </button>
-        </div>
-
-        <ul class="pinfo__reassurance" aria-label="Réassurances">
-          <li class="pinfo__reassurance-item">
+        <div class="pinfo__reassurance" data-reassurance-carousel aria-live="polite">
+          <div class="pinfo__reassurance-item is-active" data-reassurance-item>
             <span class="pinfo__reassurance-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 3l7 3v5c0 4.5-2.8 8.4-7 10-4.2-1.6-7-5.5-7-10V6l7-3z"/>
@@ -270,8 +255,8 @@
               </svg>
             </span>
             <span>Produit authentique</span>
-          </li>
-          <li class="pinfo__reassurance-item">
+          </div>
+          <div class="pinfo__reassurance-item" data-reassurance-item>
             <span class="pinfo__reassurance-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M4 12a8 8 0 0116 0v5a2 2 0 01-2 2h-2"/>
@@ -281,8 +266,8 @@
               </svg>
             </span>
             <span>SAV réactif</span>
-          </li>
-          <li class="pinfo__reassurance-item">
+          </div>
+          <div class="pinfo__reassurance-item" data-reassurance-item>
             <span class="pinfo__reassurance-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M4 7h16"/>
@@ -292,8 +277,33 @@
               </svg>
             </span>
             <span>Retours sous 14 jours</span>
-          </li>
-        </ul>
+          </div>
+          <div class="pinfo__reassurance-dots" aria-hidden="true">
+            <span class="pinfo__reassurance-dot is-active" data-reassurance-dot></span>
+            <span class="pinfo__reassurance-dot" data-reassurance-dot></span>
+            <span class="pinfo__reassurance-dot" data-reassurance-dot></span>
+          </div>
+        </div>
+
+        <div class="pinfo__buttons">
+          <button type="submit" name="add" class="btn btn--primary pinfo__btn"{% unless current.available %} disabled{% endunless %}>
+            <span>{%- if current.available -%}Ajouter au panier{%- else -%}Rupture de stock{%- endif -%}</span>
+            {%- if current.available -%}
+              <span class="pinfo__btn-price" data-selected-variant-price>{{ current.price | money_without_trailing_zeros }}</span>
+            {%- endif -%}
+          </button>
+        </div>
+
+        {%- if shop.enabled_payment_types.size > 0 -%}
+          <div class="pinfo__payment-methods">
+            <p class="pinfo__payment-label">Paiement sécurisé</p>
+            <div class="pinfo__payments" aria-label="Moyens de paiement">
+              {%- for type in shop.enabled_payment_types -%}
+                {{ type | payment_type_svg_tag: class: 'pinfo__payment-icon' }}
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endif -%}
 
       {%- endform -%}
 
@@ -327,11 +337,8 @@
                 </summary>
                 <div class="acc__content rte">
                   {%- if accordion_title_downcase contains 'livraison' -%}
-                    {%- if is_partner_sourced -%}
-                      <p>Cette paire est approvisionnée via notre réseau de revendeurs partenaires. Livraison estimée sous 5 à 12 jours ouvrés.</p>
-                    {%- else -%}
-                      <p>Cette paire est déjà disponible en boutique. Livraison estimée sous 24/48h ouvrées.</p>
-                    {%- endif -%}
+                    <p data-delivery-description-fast{% unless is_fast_delivery %} hidden{% endunless %}>Expédition estimée sous 24 à 48 h ouvrées pour cette taille.</p>
+                    <p data-delivery-description-standard{% if is_fast_delivery %} hidden{% endif %}>Cette taille est approvisionnée via notre réseau de revendeurs partenaires. Livraison estimée sous 5 à 12 jours ouvrés.</p>
                     <p>Les retours restent possibles selon nos conditions de retour.</p>
                   {%- else -%}
                     {{ block.settings.content }}
@@ -448,7 +455,7 @@ body.template-product::before {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(380px, 0.72fr);
   gap: var(--surface-gap);
-  align-items: flex-start;
+  align-items: stretch;
   width: auto;
   max-width: none;
   margin: 0 var(--surface-gap);
@@ -480,6 +487,7 @@ body.template-product::before {
   border-radius: var(--surface-radius);
   box-shadow: var(--surface-shadow);
   overflow: hidden;
+  align-self: stretch;
 }
 
 .pgallery__main {
@@ -489,6 +497,19 @@ body.template-product::before {
   background: var(--color-gray-100);
   border-radius: var(--control-radius);
   overflow: hidden;
+}
+
+@media (min-width: 1025px) {
+  .pgallery {
+    max-height: calc(100vh - var(--header-height) - (var(--surface-gap) * 2));
+  }
+
+  .pgallery__main {
+    flex: 1 1 auto;
+    aspect-ratio: auto;
+    min-height: min(640px, calc(100vh - var(--site-header-height, var(--header-height)) - 150px));
+    max-height: 100%;
+  }
 }
 
 .pgallery__badge {
@@ -674,12 +695,21 @@ body.template-product::before {
   box-shadow: var(--surface-shadow);
 }
 
+.pinfo__meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
 .pinfo__vendor {
+  margin: 0;
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-medium);
   letter-spacing: 0;
   text-transform: uppercase;
   color: var(--color-black);
+  min-width: 0;
 }
 
 .pinfo__title {
@@ -692,9 +722,12 @@ body.template-product::before {
 }
 
 .pinfo__sku {
+  margin: 0;
   font-size: var(--font-size-small);
   color: var(--color-gray-500);
   letter-spacing: 1px;
+  text-align: right;
+  white-space: nowrap;
 }
 
 /* Unit toggle */
@@ -707,6 +740,7 @@ body.template-product::before {
 }
 
 .pinfo__unit-switch {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 0;
@@ -717,7 +751,24 @@ body.template-product::before {
   border-radius: 9999px;
 }
 
+.pinfo__unit-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  z-index: 0;
+  width: var(--unit-thumb-width, 0px);
+  height: calc(100% - 6px);
+  border-radius: 9999px;
+  background: var(--color-white);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  transform: translateX(var(--unit-thumb-x, 0px));
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), width 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
 .size-unit {
+  position: relative;
+  z-index: 1;
   min-height: 34px;
   padding: 0 13px;
   border: 0;
@@ -728,12 +779,10 @@ body.template-product::before {
   color: var(--color-gray-500);
   text-transform: uppercase;
   letter-spacing: 1px;
-  transition: background 0.22s ease, color 0.22s ease, box-shadow 0.22s ease;
+  transition: color 0.22s ease;
 }
 .size-unit.is-active {
-  background: var(--color-white);
   color: var(--color-black);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
 .size-unit:hover,
@@ -750,6 +799,12 @@ body.template-product::before {
   font-size: var(--font-size-small);
   padding: 0;
   text-decoration: underline;
+}
+
+@media (min-width: 769px) {
+  .pinfo__units {
+    align-items: flex-end;
+  }
 }
 
 .size-guide-modal {
@@ -910,6 +965,20 @@ body.template-product::before {
 .size-cell__dot--available { background: var(--color-black); }
 .size-cell.is-selected .size-cell__dot--available { background: var(--color-white); }
 
+.size-cell__express {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: inherit;
+  line-height: 1;
+}
+.size-cell__express svg { display: block; }
+
 .size-cell__size {
   font-weight: var(--font-weight-bold);
   font-size: 18px;
@@ -1022,17 +1091,24 @@ body.template-product::before {
 /* Buy buttons */
 .pinfo__buttons {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: var(--space-3);
   margin-top: var(--space-4);
 }
 .pinfo__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
   width: 100%;
   min-height: 44px;
-  padding: 8px 0;
+  padding: 8px var(--space-5);
   font-weight: var(--font-weight-semibold);
   border-radius: var(--control-radius);
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, opacity 0.18s ease, transform 0.18s ease;
+}
+.pinfo__btn-price {
+  opacity: 0.78;
 }
 .pinfo__btn::after {
   display: none;
@@ -1049,59 +1125,107 @@ body.template-product::before {
   opacity: 0.82;
   transform: scale(0.985);
 }
-.pinfo__btn--pickup {
-  background: transparent;
-  color: var(--color-black);
-  border: var(--surface-border);
-}
-.pinfo__btn--pickup:hover {
-  background: transparent;
-  color: var(--color-black);
-  border-color: var(--color-gray-400);
-  opacity: 1;
-  transform: scale(0.985);
-}
 .pinfo__btn[disabled] {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
 }
 
-.pinfo__reassurance {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-2);
+.pinfo__payment-methods {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  max-width: 100%;
   margin-top: var(--space-3);
 }
 
-.pinfo__reassurance-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  min-width: 0;
-  min-height: 34px;
-  padding: 7px var(--space-3);
-  background: rgba(0, 0, 0, 0.035);
-  border: 1px solid var(--color-gray-200);
-  border-radius: 9999px;
-  color: var(--color-gray-700);
-  font-size: var(--font-size-xs);
+.pinfo__payment-label {
+  margin: 0;
+  color: var(--color-gray-500);
+  font-size: 11px;
   font-weight: var(--font-weight-medium);
-  line-height: 1.25;
+  line-height: 1;
   text-align: center;
 }
 
+.pinfo__payments {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.pinfo__payment-icon {
+  display: inline-flex;
+  width: auto;
+  height: 30px;
+  border-radius: 3px;
+}
+
+.pinfo__reassurance {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 300px;
+  max-width: 100%;
+  min-height: 58px;
+  align-self: center;
+  margin: var(--space-4) auto 0;
+  padding: 10px var(--space-4);
+  border: var(--surface-border);
+  border-radius: var(--control-radius);
+  background: rgba(0, 0, 0, 0.025);
+  color: var(--color-gray-700);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+  text-align: center;
+}
+
+.pinfo__reassurance-item {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 18px;
+}
+
+.pinfo__reassurance-item.is-active {
+  display: inline-flex;
+}
+
 .pinfo__reassurance-icon {
-  flex: 0 0 15px;
-  width: 15px;
-  height: 15px;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
   color: var(--color-gray-500);
 }
 
 .pinfo__reassurance-icon svg {
   width: 100%;
   height: 100%;
+}
+
+.pinfo__reassurance-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+}
+
+.pinfo__reassurance-dot {
+  display: block;
+  width: 18px;
+  height: 1px;
+  background: var(--color-gray-300);
+}
+
+.pinfo__reassurance-dot.is-active {
+  background: var(--color-black);
 }
 
 /* Accordéons */
@@ -1139,7 +1263,7 @@ body.template-product::before {
 @media (max-width: 768px) {
   .pmain {
     padding-top: var(--surface-gap);
-    padding-bottom: calc(198px + env(safe-area-inset-bottom));
+    padding-bottom: calc(96px + env(safe-area-inset-bottom));
   }
 
   .breadcrumb {
@@ -1245,6 +1369,16 @@ body.template-product::before {
     font-size: 28px;
   }
 
+  .pinfo__meta {
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .pinfo__sku {
+    font-size: var(--font-size-xs);
+    letter-spacing: 0.6px;
+  }
+
   .pinfo__units {
     margin-top: var(--space-2);
     flex-wrap: wrap;
@@ -1292,10 +1426,7 @@ body.template-product::before {
     border-radius: var(--surface-radius);
     background: var(--color-white);
     box-shadow: var(--surface-shadow);
-  }
-
-  .pinfo__buttons.has-mobile-pickup::before {
-    height: calc(144px + env(safe-area-inset-bottom));
+    transition: opacity .22s ease, transform .28s ease;
   }
 
   .pinfo__btn {
@@ -1315,25 +1446,11 @@ body.template-product::before {
     transform: translateY(calc((var(--space-3) + env(safe-area-inset-bottom)) * -1));
   }
 
-  .pinfo__buttons.has-mobile-pickup .pinfo__btn--pickup {
-    position: fixed;
-    left: calc(var(--surface-gap) + var(--space-4));
-    right: calc(var(--surface-gap) + var(--space-4));
-    bottom: var(--surface-gap);
-    z-index: 1100;
-    width: auto;
-    margin: 0;
-    min-height: 54px;
-    transform: translateY(calc((var(--space-6) + 54px + env(safe-area-inset-bottom)) * -1));
-  }
-
-  .pinfo__reassurance {
-    grid-template-columns: 1fr;
-    margin-top: var(--space-2);
-  }
-
-  .pinfo__reassurance-item {
-    padding: 8px var(--space-4);
+  .pmain.is-footer-visible .pinfo__buttons::before,
+  .pmain.is-footer-visible .pinfo__btn.btn--primary {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(calc(100% + var(--space-6)));
   }
 
   .size-guide-modal {
@@ -1373,10 +1490,61 @@ body.template-product::before {
   var radios = section.querySelectorAll('[data-variant-radio]');
   var hiddenInput = section.querySelector('[data-variant-id]');
   var cells = section.querySelectorAll('.size-cell');
+  var selectedVariantPrice = section.querySelector('[data-selected-variant-price]');
+  var reassuranceItems = section.querySelectorAll('[data-reassurance-item]');
+  var reassuranceDots = section.querySelectorAll('[data-reassurance-dot]');
+
+  function observeFooter() {
+    var footer = document.querySelector('.site-footer');
+    if (!footer || !('IntersectionObserver' in window)) return;
+
+    var footerObserver = new IntersectionObserver(function (entries) {
+      section.classList.toggle('is-footer-visible', entries[0].isIntersecting);
+    }, { threshold: 0 });
+    footerObserver.observe(footer);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', observeFooter, { once: true });
+  } else {
+    observeFooter();
+  }
+
+  function updateDelivery(isFast) {
+    var fast = section.querySelector('[data-shipping-fast]');
+    var standard = section.querySelector('[data-shipping-standard]');
+    if (!fast || !standard) return;
+
+    [fast, standard].forEach(function (pill, index) {
+      var active = index === 0 ? isFast : !isFast;
+      pill.classList.toggle('is-active', active);
+      pill.classList.toggle('is-muted', !active);
+      pill.querySelector('.ship-dot').classList.toggle('ship-dot--filled', active);
+      if (active) pill.setAttribute('aria-current', 'true');
+      else pill.removeAttribute('aria-current');
+    });
+
+    var tooltip = standard.querySelector('[role="tooltip"]');
+    standard.classList.toggle('has-tooltip', !isFast);
+    tooltip.hidden = isFast;
+    if (isFast) {
+      standard.removeAttribute('tabindex');
+      standard.removeAttribute('aria-describedby');
+    } else {
+      standard.setAttribute('tabindex', '0');
+      standard.setAttribute('aria-describedby', tooltip.id);
+    }
+    section.querySelectorAll('[data-delivery-description-fast]').forEach(function (text) { text.hidden = !isFast; });
+    section.querySelectorAll('[data-delivery-description-standard]').forEach(function (text) { text.hidden = isFast; });
+  }
 
   radios.forEach(function (radio) {
     radio.addEventListener('change', function () {
       if (hiddenInput) hiddenInput.value = radio.value;
+      updateDelivery(radio.dataset.fastDelivery === 'true');
+      if (selectedVariantPrice && radio.dataset.variantPrice) {
+        selectedVariantPrice.textContent = radio.dataset.variantPrice;
+      }
       cells.forEach(function (c) { c.classList.remove('is-selected'); });
       var cell = radio.closest('.size-cell');
       if (cell) cell.classList.add('is-selected');
@@ -1385,6 +1553,19 @@ body.template-product::before {
       window.history.replaceState({}, '', url);
     });
   });
+
+  if (reassuranceItems.length > 1) {
+    var reassuranceIndex = 0;
+    window.setInterval(function () {
+      reassuranceIndex = (reassuranceIndex + 1) % reassuranceItems.length;
+      reassuranceItems.forEach(function (item, index) {
+        item.classList.toggle('is-active', index === reassuranceIndex);
+      });
+      reassuranceDots.forEach(function (dot, index) {
+        dot.classList.toggle('is-active', index === reassuranceIndex);
+      });
+    }, 3200);
+  }
 
   // Gallery thumbnails
   var thumbs = section.querySelectorAll('.pgallery__thumb');
@@ -1875,14 +2056,33 @@ body.template-product::before {
   populateSizeGuide();
   updateSizeUnit('EU');
 
+  function moveUnitThumb(activeButton) {
+    var switcher = activeButton && activeButton.closest('.pinfo__unit-switch');
+    if (!switcher) return;
+
+    switcher.style.setProperty('--unit-thumb-width', activeButton.offsetWidth + 'px');
+    switcher.style.setProperty('--unit-thumb-x', activeButton.offsetLeft - 3 + 'px');
+  }
+
+  var activeUnitBtn = section.querySelector('.size-unit.is-active');
+  if (activeUnitBtn) {
+    moveUnitThumb(activeUnitBtn);
+  }
+
   unitBtns.forEach(function (b) {
     b.addEventListener('click', function (event) {
       event.preventDefault();
       unitBtns.forEach(function (x) { x.classList.remove('is-active'); });
       b.classList.add('is-active');
       unitBtns.forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      moveUnitThumb(b);
       updateSizeUnit(b.dataset.unit || 'EU');
     });
+  });
+
+  window.addEventListener('resize', function () {
+    var active = section.querySelector('.size-unit.is-active');
+    if (active) moveUnitThumb(active);
   });
 
 })();

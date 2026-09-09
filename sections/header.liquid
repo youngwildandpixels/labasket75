@@ -18,7 +18,7 @@
   }
 </style>
 
-<header class="site-header" role="banner" style="--site-logo-width: {{ logo_width }}px; --site-header-height: {{ header_height }}px;">
+<header class="site-header{% unless request.page_type == 'product' %} site-header--mobile-search-enabled{% endunless %}" role="banner" style="--site-logo-width: {{ logo_width }}px; --site-header-height: {{ header_height }}px;">
   <div class="site-trust-strip" aria-label="Réassurances">
     <div class="site-trust-strip__track">
       <span class="site-trust-strip__item">
@@ -199,6 +199,37 @@
       </button>
     </div>
   </div>
+
+  {%- unless request.page_type == 'product' -%}
+    <form action="{{ routes.search_url }}" method="get" class="mobile-scroll-search" role="search">
+      <input type="hidden" name="options[prefix]" value="last">
+      <input type="hidden" name="type" value="product">
+      <label class="visually-hidden" for="MobileScrollSearch-{{ section.id }}">{{ 'general.search' | t }}</label>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input
+        id="MobileScrollSearch-{{ section.id }}"
+        type="search"
+        name="q"
+        class="mobile-scroll-search__input"
+        placeholder="{{ 'general.search' | t }}"
+        autocomplete="off"
+        spellcheck="false"
+        role="combobox"
+        aria-expanded="false"
+        aria-controls="MobileScrollSearchResults-{{ section.id }}"
+        aria-autocomplete="list"
+        data-mobile-search-input
+      >
+      <button type="submit" class="mobile-scroll-search__submit" aria-label="{{ 'general.search' | t }}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>
+        </svg>
+      </button>
+      <div id="MobileScrollSearchResults-{{ section.id }}" class="mobile-scroll-search__results" data-mobile-search-results aria-live="polite"></div>
+    </form>
+  {%- endunless -%}
 </header>
 
 <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
@@ -298,6 +329,10 @@
 
 .site-header.is-hidden {
   transform: translateY(calc(-100% - var(--surface-gap)));
+}
+
+.mobile-scroll-search {
+  display: none;
 }
 
 .site-trust-strip {
@@ -536,6 +571,7 @@
 }
 
 .site-mega__link {
+  font-size: 12px;
   opacity: 0.72;
   transition: opacity 0.16s ease;
 }
@@ -839,6 +875,110 @@ body.search-open {
     justify-content: space-between;
     column-gap: 12px;
     height: 60px;
+    transition: opacity .22s ease, transform .28s ease, visibility .22s;
+  }
+
+  .site-header--mobile-search-enabled .mobile-scroll-search {
+    position: absolute;
+    top: var(--surface-gap);
+    left: var(--header-block-gap);
+    right: var(--header-block-gap);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 54px;
+    padding: 0 10px 0 16px;
+    color: var(--color-black);
+    background: rgba(255, 255, 255, .94);
+    border: var(--header-block-border);
+    border-radius: var(--header-block-radius);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .09);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-12px);
+    transition: opacity .22s ease, transform .28s ease, visibility .22s;
+  }
+
+  .mobile-scroll-search__input {
+    min-width: 0;
+    flex: 1;
+    height: 100%;
+    padding: 0;
+    color: var(--color-black);
+    background: transparent;
+    border: 0;
+    outline: 0;
+    font-size: 16px;
+  }
+
+  .mobile-scroll-search__input::placeholder {
+    color: var(--color-gray-500);
+  }
+
+  .mobile-scroll-search__submit {
+    display: grid;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    flex: 0 0 auto;
+    color: var(--color-white);
+    background: var(--color-black);
+    border-radius: 50%;
+  }
+
+  .mobile-scroll-search__results {
+    position: absolute;
+    top: calc(100% + var(--surface-gap));
+    left: 0;
+    right: 0;
+    max-height: min(68vh, 560px);
+    padding: var(--space-4);
+    overflow-y: auto;
+    color: var(--color-black);
+    background: rgba(255, 255, 255, .98);
+    border: var(--header-block-border);
+    border-radius: var(--header-block-radius);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, .14);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-6px);
+    transition: opacity .18s ease, transform .18s ease, visibility .18s;
+  }
+
+  .mobile-scroll-search__results.is-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .mobile-scroll-search__results .search-drawer__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .site-header--mobile-search-enabled.is-mobile-search {
+    height: 62px;
+    padding: 0;
+    transform: none;
+  }
+
+  .site-header--mobile-search-enabled.is-mobile-search .site-trust-strip,
+  .site-header--mobile-search-enabled.is-mobile-search .site-header__inner {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-12px);
+  }
+
+  .site-header--mobile-search-enabled.is-mobile-search .mobile-scroll-search {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
   }
 
   .site-logo img {
@@ -1068,7 +1208,9 @@ body.search-open {
   var input     = drawer.querySelector('[data-search-input]');
   var results   = drawer.querySelector('[data-search-results]');
   var debounce  = null;
-  var lastQuery = '';
+  var mobileInput = document.querySelector('[data-mobile-search-input]');
+  var mobileResults = document.querySelector('[data-mobile-search-results]');
+  var mobileDebounce = null;
 
   function open() {
     var menu = document.getElementById('mobile-menu');
@@ -1096,13 +1238,15 @@ body.search-open {
     if (e.key === 'Escape' && drawer.getAttribute('aria-hidden') === 'false') close();
   });
 
-  function fetchResults(q) {
+  function fetchResults(q, target, searchInput) {
     if (!q || q.length < 2) {
-      results.innerHTML = '';
+      target.innerHTML = '';
+      target.classList.remove('is-active');
+      if (searchInput) searchInput.setAttribute('aria-expanded', 'false');
       return;
     }
-    if (q === lastQuery) return;
-    lastQuery = q;
+    if (q === target.dataset.lastQuery) return;
+    target.dataset.lastQuery = q;
 
     var url = '/search/suggest?q=' + encodeURIComponent(q)
             + '&section_id=predictive-search'
@@ -1116,16 +1260,43 @@ body.search-open {
         tmp.innerHTML = html.trim();
         // Shopify wraps the section response in a div — extract first child
         var section = tmp.querySelector('.shopify-section') || tmp;
-        results.innerHTML = section.innerHTML || '';
+        target.innerHTML = section.innerHTML || '';
+        target.classList.toggle('is-active', target.innerHTML.trim() !== '');
+        if (searchInput) searchInput.setAttribute('aria-expanded', target.innerHTML.trim() !== '' ? 'true' : 'false');
       })
-      .catch(function () { results.innerHTML = ''; });
+      .catch(function () {
+        target.innerHTML = '';
+        target.classList.remove('is-active');
+        if (searchInput) searchInput.setAttribute('aria-expanded', 'false');
+      });
   }
 
   input.addEventListener('input', function () {
     clearTimeout(debounce);
     var q = input.value.trim();
-    debounce = setTimeout(function () { fetchResults(q); }, 200);
+    debounce = setTimeout(function () { fetchResults(q, results, input); }, 200);
   });
+
+  if (mobileInput && mobileResults) {
+    mobileInput.addEventListener('focus', function () {
+      document.body.classList.add('mobile-scroll-search-open');
+      if (mobileResults.innerHTML.trim() !== '') mobileResults.classList.add('is-active');
+    });
+
+    mobileInput.addEventListener('input', function () {
+      clearTimeout(mobileDebounce);
+      var q = mobileInput.value.trim();
+      mobileDebounce = setTimeout(function () { fetchResults(q, mobileResults, mobileInput); }, 200);
+    });
+
+    document.addEventListener('click', function (event) {
+      if (!event.target.closest('.mobile-scroll-search')) {
+        mobileResults.classList.remove('is-active');
+        mobileInput.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('mobile-scroll-search-open');
+      }
+    });
+  }
 })();
 </script>
 
@@ -1138,6 +1309,8 @@ body.search-open {
   var ticking = false;
   var threshold = 120;
   var delta = 8;
+  var mobileQuery = window.matchMedia('(max-width: 768px)');
+  var mobileSearchEnabled = header.classList.contains('site-header--mobile-search-enabled');
 
   function shouldStayVisible() {
     return document.body.classList.contains('menu-open')
@@ -1148,6 +1321,23 @@ body.search-open {
   function updateHeader() {
     var currentY = window.scrollY || 0;
     var diff = currentY - lastY;
+
+    if (mobileSearchEnabled && mobileQuery.matches) {
+      header.classList.remove('is-hidden');
+      if (document.body.classList.contains('mobile-scroll-search-open')) {
+        header.classList.add('is-mobile-search');
+      } else if (shouldStayVisible() || currentY <= threshold || diff < -delta) {
+        header.classList.remove('is-mobile-search');
+      } else if (diff > delta) {
+        header.classList.add('is-mobile-search');
+      }
+
+      lastY = currentY;
+      ticking = false;
+      return;
+    }
+
+    header.classList.remove('is-mobile-search');
 
     if (shouldStayVisible() || currentY <= threshold) {
       header.classList.remove('is-hidden');

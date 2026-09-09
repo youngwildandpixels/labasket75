@@ -1,26 +1,19 @@
 {% doc %}
   @description
-    Renders a fast delivery badge for available products tagged for 24-48h shipping.
+    Renders a two-line delivery badge when a variant has fast delivery enabled.
 
-  @param {product} product - Product used to determine availability and tags.
+  @param {product} product - Product whose variant delivery settings are checked.
   @param {string} [class] - Optional extra CSS class.
-  @param {string} [label] - Optional badge label.
 {% enddoc %}
 
 {%- liquid
-  assign badge_product = product
   assign show_badge = false
-  assign badge_label = label | default: 'Livraison 24-48h'
-
-  if badge_product.available
-    if badge_product.tags contains 'livraison-24-48h'
+  for variant in product.variants
+    if variant.metafields.custom.delivery_24_48h.value == true
       assign show_badge = true
-    elsif badge_product.tags contains 'livraison-24-48'
-      assign show_badge = true
-    elsif badge_product.tags contains '24-48h'
-      assign show_badge = true
+      break
     endif
-  endif
+  endfor
 
   assign badge_class = 'delivery-badge'
   if class != blank
@@ -30,7 +23,12 @@
 
 {%- if show_badge -%}
   <span class="{{ badge_class }}">
-    <span class="delivery-badge__dot" aria-hidden="true"></span>
-    {{ badge_label }}
+    <span class="delivery-badge__heading">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+        <path d="M13.5 2 4 14h7l-1 8L20 10h-7l.5-8Z"/>
+      </svg>
+      {{ 'products.product.fast_delivery_short' | t }}
+    </span>
+    <span class="delivery-badge__detail">{{ 'products.product.fast_delivery_sizes' | t }}</span>
   </span>
 {%- endif -%}

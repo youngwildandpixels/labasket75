@@ -49,6 +49,20 @@
   transform: scale(1.04);
 }
 
+@media (max-width: 768px) {
+  .product-card__media--has-secondary:hover .product-card__img--primary {
+    opacity: 1;
+  }
+
+  .product-card__media--has-secondary:hover .product-card__img--secondary {
+    opacity: 0;
+  }
+
+  .product-card:hover .product-card__img {
+    transform: none;
+  }
+}
+
 .product-card__media .badge {
   position: absolute;
   top: var(--space-2);

@@ -1,17 +1,62 @@
 {%- comment -%} Main Page — page statique : H1 + contenu rich text {%- endcomment -%}
-<section class="page">
-  <div class="page__inner container">
-    <header class="page__header">
-      <h1 class="page__title">{{ page.title | escape }}</h1>
+{%- unless page.handle == 'f-a-q' -%}
+<section class="page{% if page.handle == 'mon-histoire' %} page--story surface-page{% endif %}">
+  {%- if page.handle == 'mon-histoire' -%}
+    {%- assign story_overlay = section.settings.story_overlay | times: 0.01 -%}
+    <header
+      class="story-hero{% if section.settings.story_hero_image != blank %} story-hero--image{% endif %}"
+      {% if section.settings.story_hero_image != blank %}
+        style="background-image: linear-gradient(rgba(0, 0, 0, {{ story_overlay }}), rgba(0, 0, 0, {{ story_overlay }})), url('{{ section.settings.story_hero_image | image_url: width: 2400 }}'); background-position: {{ section.settings.story_hero_position }};"
+      {% endif %}
+    >
+      <div class="story-hero__copy">
+        <p class="story-hero__eyebrow">Paris — depuis 2018</p>
+        <h1 class="story-hero__title">Mon<br><span>histoire</span></h1>
+        <p class="story-hero__intro">Une histoire de sneakers, de culture et de passion.</p>
+      </div>
+      <div class="story-hero__mark" aria-hidden="true">75</div>
+      <div class="story-hero__footer" aria-hidden="true">
+        <span>Authenticité</span>
+        <span>Culture</span>
+        <span>Passion</span>
+      </div>
     </header>
+  {%- endif -%}
+
+  <div class="page__inner container">
+    {%- unless page.handle == 'mon-histoire' -%}
+      <header class="page__header">
+        <h1 class="page__title">{{ page.title | escape }}</h1>
+      </header>
+    {%- endunless -%}
 
     {%- if page.content != blank -%}
       <div class="page__content rte">
         {{ page.content | replace: '&amp;nbsp;', ' ' | replace: '&nbsp;', ' ' }}
       </div>
     {%- endif -%}
+
+    {%- if page.handle == 'mon-histoire' -%}
+      {%- if section.settings.story_image_1 != blank or section.settings.story_image_2 != blank -%}
+        <div class="story-gallery">
+        {%- if section.settings.story_image_1 != blank -%}
+          <figure class="story-gallery__item">
+            {{ section.settings.story_image_1 | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '480, 760, 1100, 1600', sizes: '(max-width: 768px) 100vw, 50vw', class: 'story-gallery__image' }}
+            {%- if section.settings.story_caption_1 != blank -%}<figcaption>{{ section.settings.story_caption_1 }}</figcaption>{%- endif -%}
+          </figure>
+        {%- endif -%}
+        {%- if section.settings.story_image_2 != blank -%}
+          <figure class="story-gallery__item">
+            {{ section.settings.story_image_2 | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '480, 760, 1100, 1600', sizes: '(max-width: 768px) 100vw, 50vw', class: 'story-gallery__image' }}
+            {%- if section.settings.story_caption_2 != blank -%}<figcaption>{{ section.settings.story_caption_2 }}</figcaption>{%- endif -%}
+          </figure>
+        {%- endif -%}
+        </div>
+      {%- endif -%}
+    {%- endif -%}
   </div>
 </section>
+{%- endunless -%}
 
 {% stylesheet %}
 .page {
@@ -49,6 +94,206 @@
 .page__content ol { margin: 0 0 var(--space-4) var(--space-6); }
 .page__content li { margin-bottom: var(--space-1); }
 .page__content a { text-decoration: underline; }
+
+/* Mon histoire */
+.page--story {
+  padding: var(--surface-gap);
+}
+
+.story-hero {
+  position: relative;
+  min-height: min(680px, calc(100vh - var(--header-height) - 8px));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: clamp(28px, 5vw, 72px);
+  color: var(--color-white);
+  background: var(--color-black);
+  border-radius: var(--surface-radius);
+}
+
+.story-hero--image {
+  background-color: var(--color-black);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.story-hero__copy {
+  position: relative;
+  z-index: 1;
+}
+
+.story-hero__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: clamp(32px, 6vw, 72px);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.story-hero__eyebrow::before {
+  content: '';
+  width: 34px;
+  height: 2px;
+  background: var(--color-promo);
+}
+
+.story-hero__title {
+  max-width: 900px;
+  margin: 0;
+  font-size: clamp(64px, 12vw, 168px);
+  line-height: .78;
+  letter-spacing: -.07em;
+}
+
+.story-hero__title span {
+  color: var(--color-promo);
+}
+
+.story-hero__intro {
+  max-width: 480px;
+  margin: clamp(28px, 5vw, 56px) 0 80px;
+  font-size: clamp(17px, 2vw, 23px);
+  line-height: 1.35;
+}
+
+.story-hero__mark {
+  position: absolute;
+  right: -0.04em;
+  bottom: -.22em;
+  color: transparent;
+  font-size: clamp(240px, 42vw, 620px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -.1em;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, .16);
+  user-select: none;
+}
+
+.story-hero__footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, .25);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.page--story .page__inner {
+  width: 100%;
+  max-width: none;
+  margin: var(--surface-gap) auto 0;
+  padding: clamp(40px, 8vw, 112px) clamp(24px, 7vw, 96px);
+  background: var(--color-white);
+  border: var(--surface-border);
+  border-radius: var(--surface-radius);
+  box-shadow: var(--surface-shadow);
+}
+
+.story-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--surface-gap);
+  margin-top: clamp(64px, 10vw, 120px);
+}
+
+.story-gallery__item {
+  overflow: hidden;
+  background: var(--color-gray-100);
+  border-radius: 10px;
+}
+
+.story-gallery__image {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.story-gallery figcaption {
+  padding: 14px 16px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.page--story .page__content {
+  font-size: clamp(16px, 1.4vw, 19px);
+  line-height: 1.75;
+}
+
+.page--story .about-story,
+.page--story .about-story__container {
+  display: contents;
+}
+
+.page--story .page__content h1 {
+  max-width: 720px;
+  margin: 0 0 clamp(36px, 6vw, 72px);
+  font-size: clamp(38px, 6vw, 72px);
+  line-height: .96;
+  letter-spacing: -.045em;
+}
+
+.page--story .page__content h1 + p {
+  margin-bottom: 30px;
+  color: var(--color-black);
+  font-size: clamp(21px, 2.5vw, 30px);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.page--story .page__content p {
+  max-width: 720px;
+  margin: 0 0 22px;
+  color: var(--color-gray-700);
+}
+
+.page--story .page__content h2 {
+  position: relative;
+  margin: clamp(64px, 10vw, 120px) 0 32px;
+  padding: 26px 0 0 24px;
+  border-top: 1px solid var(--color-gray-300);
+  font-size: clamp(30px, 4.5vw, 52px);
+  line-height: 1;
+  letter-spacing: -.035em;
+}
+
+.page--story .page__content h2::before {
+  content: '';
+  position: absolute;
+  top: 31px;
+  left: 0;
+  width: 6px;
+  height: 28px;
+  background: var(--color-promo);
+}
+
+.page--story .page__content p:nth-last-child(2) {
+  margin-top: 56px;
+  color: var(--color-black);
+  font-size: clamp(24px, 3vw, 38px);
+  font-weight: 700;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.page--story .page__content p:last-child {
+  margin-bottom: 0;
+  color: var(--color-promo);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
 
 /* Pages de politique boutique (CGU, CGV, remboursement...) : Shopify impose son
    propre gabarit (shopify-policy__*), non personnalisable via un template ou une
@@ -95,6 +340,40 @@
 @media (max-width: 768px) {
   .page__title { font-size: 32px; letter-spacing: -0.5px; }
 
+  .story-hero {
+    min-height: 610px;
+    padding: 28px 22px;
+  }
+
+  .story-hero__title {
+    font-size: clamp(62px, 22vw, 104px);
+  }
+
+  .story-hero__intro {
+    max-width: 270px;
+  }
+
+  .story-hero__footer span:nth-child(2) {
+    display: none;
+  }
+
+  .page--story .page__inner {
+    padding: 48px 24px 64px;
+  }
+
+  .story-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .page--story .page__content h2 {
+    padding-left: 18px;
+  }
+
+  .page--story .page__content h2::before {
+    width: 4px;
+    height: 22px;
+  }
+
   .shopify-policy__container { padding: var(--space-8) var(--space-4); }
   .shopify-policy__title h1 { font-size: 32px; letter-spacing: -0.5px; }
 }
@@ -104,6 +383,67 @@
 {
   "name": "Page",
   "tag": "section",
-  "settings": []
+  "settings": [
+    {
+      "type": "header",
+      "content": "Mon histoire — Hero"
+    },
+    {
+      "type": "image_picker",
+      "id": "story_hero_image",
+      "label": "Image de fond"
+    },
+    {
+      "type": "range",
+      "id": "story_overlay",
+      "label": "Opacité de l’overlay",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "default": 55
+    },
+    {
+      "type": "select",
+      "id": "story_hero_position",
+      "label": "Position de l’image",
+      "default": "center center",
+      "options": [
+        { "value": "left top", "label": "Haut gauche" },
+        { "value": "center top", "label": "Haut centre" },
+        { "value": "right top", "label": "Haut droite" },
+        { "value": "left center", "label": "Centre gauche" },
+        { "value": "center center", "label": "Centre" },
+        { "value": "right center", "label": "Centre droite" },
+        { "value": "left bottom", "label": "Bas gauche" },
+        { "value": "center bottom", "label": "Bas centre" },
+        { "value": "right bottom", "label": "Bas droite" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Mon histoire — Galerie"
+    },
+    {
+      "type": "image_picker",
+      "id": "story_image_1",
+      "label": "Image 1"
+    },
+    {
+      "type": "text",
+      "id": "story_caption_1",
+      "label": "Légende de l’image 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "story_image_2",
+      "label": "Image 2"
+    },
+    {
+      "type": "text",
+      "id": "story_caption_2",
+      "label": "Légende de l’image 2"
+    }
+  ]
 }
 {% endschema %}

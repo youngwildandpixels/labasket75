@@ -10,7 +10,10 @@
     "product": {
       "add_to_cart": "Ajouter au panier",
       "sold_out": "Épuisé",
-      "unavailable": "Indisponible"
+      "unavailable": "Indisponible",
+      "fast_delivery": "Expédition 24–48 h",
+      "fast_delivery_short": "24–48 h",
+      "fast_delivery_sizes": "sur certaines tailles"
     }
   },
   "cart": {
