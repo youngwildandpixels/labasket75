@@ -123,8 +123,13 @@
 .ftab {
   position: relative;
   z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
   font-size: 14px;
   font-weight: var(--font-weight-bold);
+  line-height: 1;
   color: var(--color-gray-500);
   background: none;
   border: none;
@@ -263,6 +268,7 @@
   .slider-arrow--next { right: var(--space-2); }
   .ftab {
     font-size: 13px;
+    min-height: 34px;
     padding: 8px 12px;
   }
 }
@@ -282,8 +288,11 @@
     if (!tabNav) return;
     var activeTab = section.querySelector('.ftab--active');
     if (!activeTab) return;
-    tabNav.style.setProperty('--featured-tabs-pill-width', activeTab.offsetWidth + 'px');
-    tabNav.style.setProperty('--featured-tabs-pill-x', activeTab.offsetLeft - 3 + 'px');
+    var navRect = tabNav.getBoundingClientRect();
+    var tabRect = activeTab.getBoundingClientRect();
+    var pillLeft = parseFloat(window.getComputedStyle(tabNav, '::before').left) || 0;
+    tabNav.style.setProperty('--featured-tabs-pill-width', tabRect.width + 'px');
+    tabNav.style.setProperty('--featured-tabs-pill-x', tabRect.left - navRect.left - pillLeft + 'px');
   }
 
   tabs.forEach(function (tab) {
@@ -301,6 +310,12 @@
   });
 
   updateActivePill();
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(updateActivePill);
+  }
+  if ('ResizeObserver' in window && tabNav) {
+    new ResizeObserver(updateActivePill).observe(tabNav);
+  }
   window.addEventListener('resize', updateActivePill);
 
   // --- Slider factory ---

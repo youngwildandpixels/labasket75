@@ -1,7 +1,16 @@
 {%- comment -%} Main Page — page statique : H1 + contenu rich text {%- endcomment -%}
 {%- unless page.handle == 'f-a-q' -%}
-<section class="page{% if page.handle == 'mon-histoire' %} page--story surface-page{% endif %}">
-  {%- if page.handle == 'mon-histoire' -%}
+{%- liquid
+  assign is_story_page = false
+  assign is_delivery_idf_page = false
+  if page.handle == 'mon-histoire'
+    assign is_story_page = true
+  elsif page.handle == 'livraison-a-domicile-en-ile-de-france'
+    assign is_delivery_idf_page = true
+  endif
+-%}
+<section class="page{% if is_story_page or is_delivery_idf_page %} page--story surface-page{% endif %}{% if is_delivery_idf_page %} page--delivery-idf{% endif %}">
+  {%- if is_story_page -%}
     {%- assign story_overlay = section.settings.story_overlay | times: 0.01 -%}
     <header
       class="story-hero{% if section.settings.story_hero_image != blank %} story-hero--image{% endif %}"
@@ -21,22 +30,45 @@
         <span>Passion</span>
       </div>
     </header>
+  {%- elsif is_delivery_idf_page -%}
+    {%- liquid
+      assign delivery_idf_overlay = section.settings.delivery_idf_overlay | times: 0.01
+      assign delivery_idf_hero_image = section.settings.delivery_idf_hero_image
+    -%}
+    <header
+      class="story-hero delivery-idf-hero{% if delivery_idf_hero_image != blank %} story-hero--image{% endif %}"
+      {% if delivery_idf_hero_image != blank %}
+        style="background-image: linear-gradient(rgba(0, 0, 0, {{ delivery_idf_overlay }}), rgba(0, 0, 0, {{ delivery_idf_overlay }})), url('{{ delivery_idf_hero_image | image_url: width: 2400 }}'); background-position: {{ section.settings.delivery_idf_hero_position }};"
+      {% endif %}
+    >
+      <div class="story-hero__copy">
+        <p class="story-hero__eyebrow">Paris &amp; Île-de-France</p>
+        <h1 class="story-hero__title">Livraison<br><span>à domicile</span></h1>
+        <p class="story-hero__intro">Vos sneakers livrées directement chez vous, partout en Île-de-France.</p>
+      </div>
+      <div class="story-hero__mark delivery-idf-hero__mark" aria-hidden="true">IDF</div>
+      <div class="story-hero__footer" aria-hidden="true">
+        <span>Rapide</span>
+        <span>Paris &amp; région parisienne</span>
+        <span>À domicile</span>
+      </div>
+    </header>
   {%- endif -%}
 
   <div class="page__inner container">
-    {%- unless page.handle == 'mon-histoire' -%}
+    {%- unless is_story_page or is_delivery_idf_page -%}
       <header class="page__header">
         <h1 class="page__title">{{ page.title | escape }}</h1>
       </header>
     {%- endunless -%}
 
     {%- if page.content != blank -%}
-      <div class="page__content rte">
+      <div class="page__content rte"{% if is_delivery_idf_page %} data-delivery-idf-content{% endif %}>
         {{ page.content | replace: '&amp;nbsp;', ' ' | replace: '&nbsp;', ' ' }}
       </div>
     {%- endif -%}
 
-    {%- if page.handle == 'mon-histoire' -%}
+    {%- if is_story_page -%}
       {%- if section.settings.story_image_1 != blank or section.settings.story_image_2 != blank -%}
         <div class="story-gallery">
         {%- if section.settings.story_image_1 != blank -%}
@@ -56,6 +88,244 @@
     {%- endif -%}
   </div>
 </section>
+{%- if is_delivery_idf_page -%}
+  <script>
+    (function () {
+      var content = document.querySelector('[data-delivery-idf-content]');
+      if (!content || content.querySelector('.delivery-rates')) return;
+
+      function normalizedText(element) {
+        return element.textContent.replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
+      }
+
+      function findRateNodes(container) {
+        var children = Array.prototype.slice.call(container.children);
+        var startIndex = children.findIndex(function (element) {
+          var text = normalizedText(element);
+          return /9[,.]90\s*€/.test(text) && /0\s*à\s*10\s*km/i.test(text);
+        });
+        var endIndex = children.findIndex(function (element, index) {
+          return index >= startIndex && /(?:^|\D)95850(?:\D|$)/.test(normalizedText(element));
+        });
+
+        if (startIndex !== -1 && endIndex >= startIndex) return children.slice(startIndex, endIndex + 1);
+
+        var wrappers = children.filter(function (element) { return element.children.length > 1; });
+        for (var i = 0; i < wrappers.length; i += 1) {
+          var nestedResult = findRateNodes(wrappers[i]);
+          if (nestedResult.length) return nestedResult;
+        }
+        return [];
+      }
+
+      var rateNodes = findRateNodes(content);
+      if (!rateNodes.length) return;
+
+      var entries = [];
+      rateNodes.forEach(function (node) {
+        var text = normalizedText(node);
+        var priceMatch = text.match(/\d+[,.]\d{2}\s*€/);
+        if (priceMatch) {
+          entries.push({ price: priceMatch[0], label: text, nodes: [node] });
+        } else if (entries.length) {
+          entries[entries.length - 1].nodes.push(node);
+        }
+      });
+      if (entries.length < 2) return;
+
+      var rates = document.createElement('section');
+      rates.className = 'delivery-rates';
+      rates.setAttribute('aria-labelledby', 'delivery-rates-title');
+
+      var intro = document.createElement('div');
+      intro.className = 'delivery-rates__intro';
+      intro.innerHTML = '<p class="delivery-rates__eyebrow">Paris &amp; Île-de-France</p><h2 id="delivery-rates-title">Grille tarifaire</h2><p>Survolez ou touchez une zone pour afficher son tarif.</p>';
+      rates.appendChild(intro);
+
+      var explorer = document.createElement('div');
+      explorer.className = 'delivery-rates__explorer';
+
+      var map = document.createElement('div');
+      map.className = 'delivery-rates__map';
+      map.setAttribute('aria-label', 'Zones tarifaires par distance autour de Paris');
+
+      var mapTop = document.createElement('div');
+      mapTop.className = 'delivery-rates__map-top';
+      mapTop.innerHTML = '<span>Schéma des zones</span><span>Paris au centre</span>';
+      map.appendChild(mapTop);
+
+      var mapCanvas = document.createElement('div');
+      mapCanvas.className = 'delivery-rates__canvas';
+      var activePanel = document.createElement('div');
+      activePanel.className = 'delivery-rates__active';
+      activePanel.setAttribute('aria-live', 'polite');
+      mapCanvas.appendChild(activePanel);
+      map.appendChild(mapCanvas);
+
+      var cards = document.createElement('div');
+      cards.className = 'delivery-rates__grid';
+
+      function activateRate(index) {
+        var entry = entries[index];
+        activePanel.innerHTML = '<strong>' + entry.price + '</strong><span>' + entry.label.replace(entry.price, '').replace(/^\s*[—–-]\s*/, '') + '</span>';
+        Array.prototype.forEach.call(rates.querySelectorAll('[data-rate-index]'), function (element) {
+          var active = Number(element.dataset.rateIndex) === index;
+          element.classList.toggle('is-active', active);
+          if (element.matches('button')) element.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
+      }
+
+      function renderGeographicMap(geojson) {
+        var svgNamespace = 'http://www.w3.org/2000/svg';
+        var width = 560;
+        var height = 430;
+        var padding = 22;
+        var points = [];
+
+        function collectPoints(coordinates) {
+          if (typeof coordinates[0] === 'number') {
+            points.push(coordinates);
+            return;
+          }
+          coordinates.forEach(collectPoints);
+        }
+        geojson.features.forEach(function (feature) { collectPoints(feature.geometry.coordinates); });
+
+        var longitudes = points.map(function (point) { return point[0]; });
+        var latitudes = points.map(function (point) { return point[1]; });
+        var minLongitude = Math.min.apply(null, longitudes);
+        var maxLongitude = Math.max.apply(null, longitudes);
+        var minLatitude = Math.min.apply(null, latitudes);
+        var maxLatitude = Math.max.apply(null, latitudes);
+        var longitudeFactor = Math.cos(((minLatitude + maxLatitude) / 2) * Math.PI / 180);
+        var scale = Math.min(
+          (width - padding * 2) / ((maxLongitude - minLongitude) * longitudeFactor),
+          (height - padding * 2) / (maxLatitude - minLatitude)
+        );
+        var offsetX = (width - (maxLongitude - minLongitude) * longitudeFactor * scale) / 2;
+        var offsetY = (height - (maxLatitude - minLatitude) * scale) / 2;
+
+        function project(point) {
+          return [
+            offsetX + (point[0] - minLongitude) * longitudeFactor * scale,
+            height - offsetY - (point[1] - minLatitude) * scale
+          ];
+        }
+
+        function polygonPath(polygon) {
+          return polygon.map(function (ring) {
+            return ring.map(function (point, index) {
+              var projected = project(point);
+              return (index ? 'L' : 'M') + projected[0].toFixed(1) + ',' + projected[1].toFixed(1);
+            }).join('') + 'Z';
+          }).join('');
+        }
+
+        var svg = document.createElementNS(svgNamespace, 'svg');
+        svg.setAttribute('class', 'delivery-rates__geo');
+        svg.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+        svg.setAttribute('role', 'group');
+        svg.setAttribute('aria-label', 'Carte géographique des huit départements d’Île-de-France et zones tarifaires autour de Paris');
+
+        geojson.features.forEach(function (feature) {
+          var path = document.createElementNS(svgNamespace, 'path');
+          var polygons = feature.geometry.type === 'MultiPolygon' ? feature.geometry.coordinates : [feature.geometry.coordinates];
+          path.setAttribute('d', polygons.map(polygonPath).join(''));
+          path.setAttribute('class', 'delivery-rates__department');
+          path.setAttribute('data-department', feature.properties.code);
+          svg.appendChild(path);
+        });
+
+        var paris = project([2.3522, 48.8566]);
+        entries.slice().reverse().forEach(function (entry, reverseIndex) {
+          var index = entries.length - reverseIndex - 1;
+          var distanceMatch = entry.label.match(/(?:à|–|-|jusqu(?:'|’)?à)\s*(\d+)\s*km/i);
+          var maximumDistance = distanceMatch ? Number(distanceMatch[1]) : (index + 1) * 10;
+          var circle = document.createElementNS(svgNamespace, 'circle');
+          circle.setAttribute('cx', paris[0]);
+          circle.setAttribute('cy', paris[1]);
+          circle.setAttribute('r', Math.max(18, maximumDistance * scale / 111));
+          circle.setAttribute('class', 'delivery-rates__tariff-zone');
+          circle.setAttribute('data-rate-index', index);
+          circle.setAttribute('tabindex', '0');
+          circle.setAttribute('role', 'button');
+          circle.setAttribute('aria-label', entry.label);
+          circle.style.setProperty('--zone-opacity', String(0.07 + index * 0.035));
+          circle.addEventListener('mouseenter', function () { activateRate(index); });
+          circle.addEventListener('focus', function () { activateRate(index); });
+          circle.addEventListener('click', function () { activateRate(index); });
+          svg.appendChild(circle);
+        });
+
+        geojson.features.forEach(function (feature) {
+          var featurePoints = [];
+          (function collectFeaturePoints(coordinates) {
+            if (typeof coordinates[0] === 'number') featurePoints.push(coordinates);
+            else coordinates.forEach(collectFeaturePoints);
+          })(feature.geometry.coordinates);
+          var center = project([
+            featurePoints.reduce(function (sum, point) { return sum + point[0]; }, 0) / featurePoints.length,
+            featurePoints.reduce(function (sum, point) { return sum + point[1]; }, 0) / featurePoints.length
+          ]);
+          var label = document.createElementNS(svgNamespace, 'text');
+          label.setAttribute('x', center[0]);
+          label.setAttribute('y', center[1]);
+          label.setAttribute('class', 'delivery-rates__department-label');
+          label.textContent = feature.properties.code;
+          svg.appendChild(label);
+        });
+
+        mapCanvas.insertBefore(svg, activePanel);
+      }
+
+      fetch({{ 'idf-departments.geojson' | asset_url | json }})
+        .then(function (response) {
+          if (!response.ok) throw new Error('Map data unavailable');
+          return response.json();
+        })
+        .then(renderGeographicMap)
+        .catch(function () {
+          map.classList.add('delivery-rates__map--unavailable');
+        });
+
+      entries.forEach(function (entry, index) {
+        var card = document.createElement('article');
+        card.className = 'delivery-rate-card';
+        card.dataset.rateIndex = index;
+
+        var heading = document.createElement('div');
+        heading.className = 'delivery-rate-card__heading';
+        heading.innerHTML = '<strong>' + entry.price + '</strong><span>' + entry.label.replace(entry.price, '').replace(/^\s*[—–-]\s*/, '') + '</span>';
+        card.appendChild(heading);
+
+        if (entry.nodes.length > 1) {
+          var details = document.createElement('details');
+          details.className = 'delivery-rate-card__details';
+          var summary = document.createElement('summary');
+          summary.textContent = 'Voir les codes postaux';
+          details.appendChild(summary);
+          var postalCodes = document.createElement('div');
+          postalCodes.className = 'delivery-rate-card__postcodes';
+          entry.nodes.slice(1).forEach(function (node) { postalCodes.appendChild(node); });
+          details.appendChild(postalCodes);
+          card.appendChild(details);
+        }
+
+        card.addEventListener('mouseenter', function () { activateRate(index); });
+        cards.appendChild(card);
+      });
+
+      explorer.appendChild(map);
+      explorer.appendChild(cards);
+      rates.appendChild(explorer);
+      rateNodes[0].parentNode.insertBefore(rates, rateNodes[0]);
+      rateNodes.forEach(function (node) {
+        if (node.parentNode && !node.closest('.delivery-rate-card')) node.remove();
+      });
+      activateRate(0);
+    })();
+  </script>
+{%- endif -%}
 {%- endunless -%}
 
 {% stylesheet %}
@@ -152,6 +422,244 @@
 
 .story-hero__title span {
   color: var(--color-promo);
+}
+
+.page--delivery-idf .story-hero__title {
+  max-width: 1100px;
+  font-size: clamp(54px, 10vw, 142px);
+}
+
+.delivery-idf-hero__mark {
+  right: .01em;
+  bottom: -.1em;
+  font-size: clamp(170px, 30vw, 440px);
+  letter-spacing: -.12em;
+}
+
+.delivery-rates {
+  max-width: none;
+  margin: clamp(64px, 10vw, 120px) 0 0;
+  padding-top: 30px;
+  border-top: 1px solid var(--color-gray-300);
+}
+
+.delivery-rates__intro {
+  max-width: 720px;
+  margin-bottom: 30px;
+}
+
+.delivery-rates__eyebrow {
+  margin: 0 0 12px !important;
+  color: var(--color-promo) !important;
+  font-size: 10px !important;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.page--story.page--delivery-idf .page__content .delivery-rates__intro h2 {
+  margin: 0 0 14px;
+  padding: 0;
+  border: 0;
+}
+
+.page--story.page--delivery-idf .page__content .delivery-rates__intro h2::before {
+  content: none;
+}
+
+.delivery-rates__explorer {
+  display: grid;
+  grid-template-columns: minmax(280px, .85fr) minmax(0, 1.6fr);
+  gap: var(--surface-gap);
+  align-items: start;
+}
+
+.delivery-rates__map {
+  position: sticky;
+  top: calc(var(--header-height) + 20px);
+  overflow: hidden;
+  min-height: 520px;
+  padding: 20px;
+  border-radius: var(--surface-radius);
+  background: var(--color-black);
+  color: var(--color-white);
+}
+
+.delivery-rates__map-top {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, .2);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.delivery-rates__canvas {
+  position: absolute;
+  inset: 70px 20px 20px;
+}
+
+.delivery-rates__geo {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.delivery-rates__department {
+  fill: #222;
+  stroke: rgba(255, 255, 255, .7);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+
+.delivery-rates__department-label {
+  fill: rgba(255, 255, 255, .78);
+  font-size: 11px;
+  font-weight: 700;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.delivery-rates__tariff-zone {
+  fill: rgba(232, 0, 27, var(--zone-opacity));
+  stroke: rgba(255, 255, 255, .55);
+  stroke-width: 1.5;
+  opacity: .08;
+  vector-effect: non-scaling-stroke;
+  cursor: pointer;
+  transition: opacity .2s ease, fill .2s ease, stroke .2s ease, stroke-width .2s ease;
+}
+
+.delivery-rates__tariff-zone:hover,
+.delivery-rates__tariff-zone:focus-visible,
+.delivery-rates__tariff-zone.is-active {
+  fill: rgba(232, 0, 27, .62);
+  stroke: var(--color-white);
+  stroke-width: 3;
+  opacity: 1;
+  outline: none;
+}
+
+.delivery-rates__active {
+  position: absolute;
+  z-index: 9;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  width: min(62%, 210px);
+  min-height: 112px;
+  padding: 18px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, .7);
+  border-radius: 50%;
+  background: var(--color-black);
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.delivery-rates__map--unavailable .delivery-rates__active {
+  width: min(72%, 250px);
+}
+
+.delivery-rates__active::before {
+  content: 'PARIS';
+  margin-bottom: 5px;
+  color: var(--color-promo);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .18em;
+}
+
+.delivery-rates__active strong {
+  color: var(--color-white);
+  font-size: clamp(24px, 3vw, 38px);
+  line-height: 1;
+}
+
+.delivery-rates__active span {
+  margin-top: 7px;
+  color: rgba(255, 255, 255, .72);
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.delivery-rates__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.delivery-rate-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--control-radius);
+  background: var(--color-gray-100);
+  transition: border-color .2s ease, background .2s ease;
+}
+
+.delivery-rate-card.is-active,
+.delivery-rate-card:hover {
+  border-color: var(--color-black);
+  background: var(--color-white);
+}
+
+.delivery-rate-card__heading {
+  display: flex;
+  min-height: 116px;
+  padding: 22px;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.delivery-rate-card__heading strong {
+  color: var(--color-promo);
+  font-size: clamp(27px, 3vw, 40px);
+  line-height: .95;
+}
+
+.delivery-rate-card__heading span {
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.delivery-rate-card__details {
+  border-top: 1px solid var(--color-gray-300);
+}
+
+.delivery-rate-card__details summary {
+  min-height: 48px;
+  padding: 15px 22px;
+  cursor: pointer;
+  color: var(--color-black);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  list-style-position: inside;
+  text-transform: uppercase;
+}
+
+.delivery-rate-card__postcodes {
+  max-height: 190px;
+  overflow-y: auto;
+  padding: 0 22px 20px;
+}
+
+.page--delivery-idf .delivery-rate-card__postcodes > * {
+  margin: 0;
+  color: var(--color-gray-700);
+  font-size: 11px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
 }
 
 .story-hero__intro {
@@ -277,7 +785,7 @@
   background: var(--color-promo);
 }
 
-.page--story .page__content p:nth-last-child(2) {
+.page--story:not(.page--delivery-idf) .page__content p:nth-last-child(2) {
   margin-top: 56px;
   color: var(--color-black);
   font-size: clamp(24px, 3vw, 38px);
@@ -286,7 +794,7 @@
   text-transform: uppercase;
 }
 
-.page--story .page__content p:last-child {
+.page--story:not(.page--delivery-idf) .page__content p:last-child {
   margin-bottom: 0;
   color: var(--color-promo);
   font-size: 12px;
@@ -349,6 +857,31 @@
     font-size: clamp(62px, 22vw, 104px);
   }
 
+  .page--delivery-idf .story-hero__title {
+    font-size: clamp(50px, 16vw, 82px);
+    line-height: .86;
+  }
+
+  .delivery-idf-hero__mark {
+    right: -.05em;
+    bottom: .04em;
+    font-size: clamp(130px, 43vw, 220px);
+  }
+
+  .delivery-rates__explorer {
+    grid-template-columns: 1fr;
+  }
+
+  .delivery-rates__map {
+    position: relative;
+    top: auto;
+    min-height: 420px;
+  }
+
+  .delivery-rates__grid {
+    grid-template-columns: 1fr;
+  }
+
   .story-hero__intro {
     max-width: 270px;
   }
@@ -391,7 +924,7 @@
     {
       "type": "image_picker",
       "id": "story_hero_image",
-      "label": "Image de fond"
+      "label": "Image de fond — Mon histoire"
     },
     {
       "type": "range",
@@ -406,6 +939,42 @@
     {
       "type": "select",
       "id": "story_hero_position",
+      "label": "Position de l’image",
+      "default": "center center",
+      "options": [
+        { "value": "left top", "label": "Haut gauche" },
+        { "value": "center top", "label": "Haut centre" },
+        { "value": "right top", "label": "Haut droite" },
+        { "value": "left center", "label": "Centre gauche" },
+        { "value": "center center", "label": "Centre" },
+        { "value": "right center", "label": "Centre droite" },
+        { "value": "left bottom", "label": "Bas gauche" },
+        { "value": "center bottom", "label": "Bas centre" },
+        { "value": "right bottom", "label": "Bas droite" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Livraison Île-de-France — Hero"
+    },
+    {
+      "type": "image_picker",
+      "id": "delivery_idf_hero_image",
+      "label": "Image de fond — Livraison"
+    },
+    {
+      "type": "range",
+      "id": "delivery_idf_overlay",
+      "label": "Opacité du voile sombre",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "default": 55
+    },
+    {
+      "type": "select",
+      "id": "delivery_idf_hero_position",
       "label": "Position de l’image",
       "default": "center center",
       "options": [

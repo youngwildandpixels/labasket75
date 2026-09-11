@@ -112,7 +112,11 @@ body {
   font-weight: var(--font-weight-regular);
   line-height: 1.6;
   color: var(--color-black);
-  background: var(--color-white);
+  background-color: var(--surface-bg);
+  background-image: var(--surface-bg-pattern);
+  background-size: var(--surface-bg-size);
+  background-attachment: fixed;
+  background-position: top left;
   -webkit-font-smoothing: antialiased;
   padding-top: var(--header-height);
 }
@@ -354,7 +358,18 @@ html.lenis.lenis-smooth {
   padding: 3px 7px;
   border-radius: 0;
 }
-.badge--promo { background: var(--color-promo); color: var(--color-white); }
+.badge--promo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 6px 8px;
+  border-radius: var(--control-radius);
+  background: var(--color-promo);
+  color: var(--color-white);
+  line-height: 1.1;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
 .badge--new   { background: var(--color-black); color: var(--color-white); }
 
 /* Grille produits */
@@ -768,6 +783,8 @@ body.quick-add-modal-open::after {
 }
 
 .delivery-badge {
+  --delivery-badge-turn: 0deg;
+  position: relative;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -784,6 +801,39 @@ body.quick-add-modal-open::after {
   font-weight: var(--font-weight-semibold);
   line-height: 1.1;
   text-align: center;
+}
+
+.delivery-badge::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: 1;
+  padding: 2px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: conic-gradient(
+    from var(--delivery-badge-turn),
+    transparent 0deg 230deg,
+    rgba(0, 102, 255, 0.15) 250deg,
+    #0066ff 315deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: delivery-badge-border 5.5s linear infinite;
+}
+
+@property --delivery-badge-turn {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes delivery-badge-border {
+  from { --delivery-badge-turn: 0deg; }
+  to { --delivery-badge-turn: 360deg; }
 }
 
 .delivery-badge__heading {
@@ -895,5 +945,11 @@ body.quick-add-modal-open::after {
   .postal-estimate-form input[placeholder*="code postal" i] {
     min-height: 52px;
     text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .delivery-badge::before {
+    animation: none;
   }
 }

@@ -188,7 +188,7 @@
                 endif
               -%}
               <label
-                class="size-cell{% unless variant.available %} is-sold-out{% endunless %}{% if variant.id == current.id %} is-selected{% endif %}"
+                class="size-cell{% unless variant.available %} is-sold-out{% endunless %}{% if variant.id == current.id %} is-selected{% endif %}{% if variant.metafields.custom.delivery_24_48h.value == true %} is-fast-delivery{% endif %}"
                 data-variant-id="{{ variant.id }}"
               >
                 <input
@@ -921,6 +921,28 @@ body.template-product::before {
   background: var(--color-white);
   box-shadow: none;
 }
+.size-cell.is-fast-delivery::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: 1;
+  padding: 2px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 1;
+  background: conic-gradient(
+    from var(--express-turn),
+    transparent 0deg 230deg,
+    rgba(0, 102, 255, 0.15) 250deg,
+    #0066ff 315deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: size-cell-express-border 5.5s linear infinite;
+}
 .size-cell:hover:not(.is-sold-out) {
   background: var(--color-gray-100);
   border-color: var(--color-black);
@@ -976,8 +998,46 @@ body.template-product::before {
   height: 16px;
   color: inherit;
   line-height: 1;
+  animation: size-cell-express-pulse 2.6s ease-in-out infinite;
 }
 .size-cell__express svg { display: block; }
+
+@property --express-turn {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes size-cell-express-pulse {
+  0%, 64%, 100% {
+    color: inherit;
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  72% {
+    color: #0066ff;
+    transform: scale(1.45);
+    filter: drop-shadow(0 0 4px rgba(0, 102, 255, 0.55));
+  }
+  82% {
+    color: #0066ff;
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 2px rgba(0, 102, 255, 0.35));
+  }
+}
+
+@keyframes size-cell-express-border {
+  from { --express-turn: 0deg; }
+  to { --express-turn: 360deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .size-cell.is-fast-delivery::before,
+  .size-cell__express,
+  .pinfo__shipping-option[data-shipping-fast].is-active::before {
+    animation: none;
+  }
+}
 
 .size-cell__size {
   font-weight: var(--font-weight-bold);
@@ -1045,6 +1105,27 @@ body.template-product::before {
   color: var(--color-black);
   background: var(--color-gray-100);
   opacity: 1;
+}
+.pinfo__shipping-option[data-shipping-fast].is-active::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: 1;
+  padding: 2px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: conic-gradient(
+    from var(--express-turn),
+    transparent 0deg 230deg,
+    rgba(0, 102, 255, 0.15) 250deg,
+    #0066ff 315deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: size-cell-express-border 5.5s linear infinite;
 }
 .pinfo__shipping-option.has-tooltip {
   outline: none;
@@ -1742,9 +1823,15 @@ body.template-product::before {
   var productVendor = {{ product.vendor | json }}.toLowerCase();
   var productSizingText = productVendor + ' ' + productTitle;
   var usesThirdEuSizing = /adidas|yeezy|samba|gazelle|spezial|campus|superstar|handball|forum|ozweego|ultraboost/.test(productSizingText);
-  var sizeProfile = productTitle.indexOf('(w)') !== -1 || productTitle.indexOf("women") !== -1 || productTitle.indexOf("femme") !== -1
+  var hasExplicitWomenSize = Array.prototype.some.call(sizeLabels, function (label) {
+    return /\bus\s*w\b|\bwomen(?:'s)?\b|\bfemme\b/i.test(label.getAttribute('data-size-source') || label.textContent);
+  });
+  var hasExplicitYouthSize = Array.prototype.some.call(sizeLabels, function (label) {
+    return /\bus\s*y\b|\bgs\b|\byouth\b/i.test(label.getAttribute('data-size-source') || label.textContent);
+  });
+  var sizeProfile = hasExplicitWomenSize || productTitle.indexOf('(w)') !== -1 || productTitle.indexOf("women") !== -1 || productTitle.indexOf("femme") !== -1
     ? 'women'
-    : productTitle.indexOf('(gs)') !== -1 || productTitle.indexOf("grade school") !== -1
+    : hasExplicitYouthSize || productTitle.indexOf('(gs)') !== -1 || productTitle.indexOf("grade school") !== -1
       ? 'gs'
       : 'men';
   var sizeMap = {
@@ -1905,13 +1992,21 @@ body.template-product::before {
       return findNearestEuKey(normalizedValue);
     }
 
-    if (usesThirdEuSizing && sourceUnit === 'US' && thirdEuByUs[normalizedValue]) {
+    var lookupUnit = sourceUnit;
+    if (lookupUnit === 'USW' || (lookupUnit === 'US' && sizeProfile === 'women')) {
+      normalizedValue = addSizeAmount(normalizedValue, -1.5);
+      lookupUnit = 'US';
+    } else if (lookupUnit === 'USM' || lookupUnit === 'USY') {
+      lookupUnit = 'US';
+    }
+
+    if (usesThirdEuSizing && lookupUnit === 'US' && thirdEuByUs[normalizedValue]) {
       return findNearestEuKey(thirdEuByUs[normalizedValue]) || thirdEuByUs[normalizedValue];
     }
 
     var matchedKeys = [];
     Object.keys(sizeMap).forEach(function (candidate) {
-      var candidateValue = sizeMap[candidate][sourceUnit];
+      var candidateValue = sizeMap[candidate][lookupUnit];
       if (!candidateValue) return;
       if (normalizeDecimal(String(candidateValue).replace(/[^\d.]/g, '')) === normalizedValue) {
         matchedKeys.push(candidate);
@@ -1919,7 +2014,7 @@ body.template-product::before {
     });
     if (!matchedKeys.length) return '';
 
-    if (sourceUnit === 'US') {
+    if (lookupUnit === 'US') {
       var preferredKeys = matchedKeys.filter(shouldShowGuideSize);
       if (preferredKeys.length) return preferredKeys[0];
     }
@@ -1939,7 +2034,6 @@ body.template-product::before {
       sourceUnit = (unitBefore ? match[1] : match[2]).toUpperCase().replace(/\s+/g, '');
       sourceValue = unitBefore ? match[2] : match[1];
       if (sourceUnit === 'EUR') sourceUnit = 'EU';
-      if (sourceUnit === 'USM' || sourceUnit === 'USW' || sourceUnit === 'USY') sourceUnit = 'US';
       if (sourceUnit === 'JP') sourceUnit = 'CM';
     }
 
@@ -1964,6 +2058,38 @@ body.template-product::before {
       euKey: findEuKeyByUnit(sourceUnit, sourceValue)
     };
   }
+
+  function sortSizeCellsAscending() {
+    var sizeGrid = section.querySelector('.size-grid');
+    if (!sizeGrid) return;
+
+    var sortableCells = Array.prototype.map.call(sizeGrid.querySelectorAll('.size-cell'), function (cell, index) {
+      var label = cell.querySelector('.size-cell__size');
+      var rawSize = label ? (label.getAttribute('data-size-source') || label.textContent.trim()) : '';
+      var parsed = parseSizeValue(rawSize);
+      var euKey = parsed.euKey || normalizeSizeKey(rawSize);
+      var numericSize = Number(euKey || parsed.value);
+      return {
+        cell: cell,
+        index: index,
+        label: normalizeSizeText(rawSize),
+        numericSize: Number.isFinite(numericSize) ? numericSize : Infinity
+      };
+    });
+
+    sortableCells.sort(function (first, second) {
+      if (first.numericSize !== second.numericSize) return first.numericSize - second.numericSize;
+      if (first.numericSize === Infinity && second.numericSize === Infinity) {
+        var labelOrder = first.label.localeCompare(second.label, 'fr', { numeric: true, sensitivity: 'base' });
+        if (labelOrder) return labelOrder;
+      }
+      return first.index - second.index;
+    });
+
+    sortableCells.forEach(function (item) { sizeGrid.appendChild(item.cell); });
+  }
+
+  sortSizeCellsAscending();
 
   function getConvertedSize(rawSize, unit) {
     var parsed = parseSizeValue(rawSize);
@@ -2004,7 +2130,10 @@ body.template-product::before {
   function formatSizeWithUnit(rawSize, unit) {
     var convertedSize = getConvertedSize(rawSize, unit);
     if (unit === 'EU') return unit + ' ' + convertedSize;
-    if (unit === 'US') return convertedSize + ' US M';
+    if (unit === 'US') {
+      var usLabel = sizeProfile === 'women' ? 'US W' : sizeProfile === 'gs' ? 'US Y' : 'US M';
+      return convertedSize + ' ' + usLabel;
+    }
     return convertedSize + ' ' + unit;
   }
 
@@ -2014,7 +2143,10 @@ body.template-product::before {
 
   function getGuideValue(key, unit) {
     if (unit === 'USW') {
-      return formatGuideValue(addSizeAmount(getConvertedSize(key, 'US'), 1.5));
+      return formatGuideValue(addSizeAmount(sizeMap[key] && sizeMap[key].US, 1.5));
+    }
+    if (unit === 'US') {
+      return formatGuideValue(sizeMap[key] && sizeMap[key].US);
     }
 
     return formatGuideValue(getConvertedSize(key, unit));
@@ -2055,6 +2187,11 @@ body.template-product::before {
 
   populateSizeGuide();
   updateSizeUnit('EU');
+
+  var usUnitButton = section.querySelector('.size-unit[data-unit="US"]');
+  if (usUnitButton) {
+    usUnitButton.textContent = sizeProfile === 'women' ? 'US W' : sizeProfile === 'gs' ? 'US Y' : 'US M';
+  }
 
   function moveUnitThumb(activeButton) {
     var switcher = activeButton && activeButton.closest('.pinfo__unit-switch');

@@ -1,6 +1,6 @@
 {% doc %}
   @description
-    Renders a two-line delivery badge when a variant has fast delivery enabled.
+    Renders a delivery badge when a variant has fast delivery enabled.
 
   @param {product} product - Product whose variant delivery settings are checked.
   @param {string} [class] - Optional extra CSS class.
@@ -29,6 +29,5 @@
       </svg>
       {{ 'products.product.fast_delivery_short' | t }}
     </span>
-    <span class="delivery-badge__detail">{{ 'products.product.fast_delivery_sizes' | t }}</span>
   </span>
 {%- endif -%}
