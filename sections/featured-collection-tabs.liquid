@@ -17,6 +17,19 @@
         </button>
       {%- endif -%}
     </div>
+
+    <div class="featured-tabs__desktop-links">
+      {%- if col1 != blank -%}
+        <a class="featured-tabs__view-all-link" href="{{ col1.url }}" data-view-all="0">
+          {{ 'collections.general.view_all' | t }}
+        </a>
+      {%- endif -%}
+      {%- if col2 != blank -%}
+        <a class="featured-tabs__view-all-link" href="{{ col2.url }}" data-view-all="1" hidden>
+          {{ 'collections.general.view_all' | t }}
+        </a>
+      {%- endif -%}
+    </div>
   </div>
 
   {%- for tab_index in (0..1) -%}
@@ -71,6 +84,14 @@
           <div class="slider-progress-fill" data-fill></div>
         </div>
       </div>
+
+      {%- if current_col != blank -%}
+        <div class="featured-tabs__view-all featured-tabs__view-all--mobile">
+          <a class="featured-tabs__view-all-link" href="{{ current_col.url }}">
+            {{ 'collections.general.view_all' | t }}
+          </a>
+        </div>
+      {%- endif -%}
     </div>
   {%- endfor -%}
 </section>
@@ -88,10 +109,24 @@
 
 /* Header tabs */
 .featured-tabs__head {
+  position: relative;
   display: flex;
+  align-items: center;
   justify-content: center;
+  min-height: 44px;
   margin-bottom: var(--space-5);
   padding: 0;
+}
+
+.featured-tabs__desktop-links {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+
+.featured-tabs__desktop-links [hidden] {
+  display: none;
 }
 
 .featured-tabs__nav {
@@ -255,12 +290,60 @@
   width: 25%;
 }
 
+.featured-tabs__view-all {
+  display: none;
+  justify-content: center;
+  padding-top: var(--space-5);
+}
+
+.featured-tabs__view-all-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 0;
+  color: var(--color-black);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 2px;
+  text-decoration: none;
+  text-transform: none;
+  white-space: pre-line;
+  transition: opacity 0.2s;
+}
+
+.featured-tabs__view-all-link::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 2px;
+  left: 0;
+  height: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.24s ease;
+}
+
+.featured-tabs__view-all-link:hover,
+.featured-tabs__view-all-link:focus-visible { opacity: 1; }
+
+.featured-tabs__view-all-link:hover::after,
+.featured-tabs__view-all-link:focus-visible::after { transform: scaleX(1); }
+
 @media (max-width: 1024px) {
   .slider-item { flex: 0 0 calc((100% - 8px) / 3); }
 }
 
 @media (max-width: 768px) {
   .featured-tabs { padding: var(--space-5); }
+  .featured-tabs__head { min-height: 0; }
+  .featured-tabs__desktop-links { display: none; }
+  .featured-tabs__view-all--mobile { display: flex; }
+  .featured-tabs__view-all-link::after { transform: scaleX(1); }
   /* 1 carte entière + moitié de la 2e ; 1 gap de 4px visible */
   .slider-item { flex: 0 0 calc((100% - 4px) / 1.5); }
   .slider-arrow { width: 32px; height: 32px; }
@@ -282,6 +365,7 @@
   // --- Tabs ---
   var tabs   = section.querySelectorAll('.ftab');
   var panels = section.querySelectorAll('.ftab-panel');
+  var viewAllLinks = section.querySelectorAll('[data-view-all]');
   var tabNav = section.querySelector('.featured-tabs__nav');
 
   function updateActivePill() {
@@ -299,6 +383,7 @@
     tab.addEventListener('click', function () {
       tabs.forEach(function (t) { t.classList.remove('ftab--active'); t.setAttribute('aria-selected', 'false'); });
       panels.forEach(function (p) { p.hidden = true; p.classList.remove('ftab-panel--active'); });
+      viewAllLinks.forEach(function (link) { link.hidden = link.dataset.viewAll !== tab.dataset.tab; });
       tab.classList.add('ftab--active');
       tab.setAttribute('aria-selected', 'true');
       var panel = section.querySelector('[data-panel="' + tab.dataset.tab + '"]');

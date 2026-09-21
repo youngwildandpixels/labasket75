@@ -22,6 +22,11 @@
       "title": "Panier"
     }
   },
+  "collections": {
+    "general": {
+      "view_all": "Tout voir"
+    }
+  },
   "gift_cards": {
     "issued": {
       "title": "Carte cadeau de {{ value }} pour {{ shop }}",
